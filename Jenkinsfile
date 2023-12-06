@@ -15,5 +15,15 @@ pipeline {
                 echo 'Build end'
             }
         }
+        stage('Sonarqube'){
+            steps{
+                script{
+                    def scannerHome = tool 'sonarqube-scanner';
+                    withSonarQubeEnv(credentialsId:'SONAR_TOKEN', installationName:'sonarqube'){
+                        sh '${scannerHome}/bin/sonar-scanner'
+                    }
+                }
+            }
+        }
     }
 }

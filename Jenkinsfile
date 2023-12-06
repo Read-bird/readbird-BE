@@ -6,5 +6,13 @@ pipeline {
                 echo 'hello world'
             }
         }
+        stage('Build'){
+            steps{
+                echo 'Build start'
+                sh 'npm install'
+                sh 'npm run build'
+                echo 'Build end'
+            }
+        }
     }
 }

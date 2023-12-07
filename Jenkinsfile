@@ -12,9 +12,11 @@ pipeline {
         }
         stage('Sonarqube'){
             steps{
+                script{
                         def scannerHome = tool 'sonarqube-scanner';
-                        withSonarQubeEnv(credentialsId:'SONAR_TOKEN',installationName:'sonarqube-scanner') {
+                        withSonarQubeEnv(credentialsId:"SONAR_TOKEN",installationName:'sonarqube-scanner') {
                         sh "${scannerHome}/bin/sonar-scanner"
+                    }
                 }
                 echo 'Sonarqube out'
             }

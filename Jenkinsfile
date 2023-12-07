@@ -21,5 +21,12 @@ pipeline {
                 echo 'Sonarqube out'
             }
         }
+        stage('Test'){
+            steps {
+                script {
+                    sh 'npm run test:coverage'
+                }
+            }
+        }
     }
 }

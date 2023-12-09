@@ -2,7 +2,7 @@
 require("dotenv").config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-// import { sequelize } from "./model";
+import { sequelize } from "./db/models";
 
 const app: Application = express();
 
@@ -21,14 +21,14 @@ app.listen(PORT, async () => {
     console.log(`App is listening on port ${PORT}!`);
 
     //sequelize-db 연결 테스트
-    //   await sequelize
-    //     .authenticate()
-    //     .then(async () => {
-    //       console.log("DB connection success");
-    //     })
-    //     .catch((e) => {
-    //       console.log("TT : ", e);
-    //     });
+    await sequelize
+        .authenticate()
+        .then(async () => {
+            console.log("DB connection success");
+        })
+        .catch((e: any) => {
+            console.log("TT : ", e);
+        });
 });
 
 app.get("/", (request: Request, response: Response) => {

@@ -4,7 +4,7 @@ export interface BooksAttributes {
     author: string;
     pubDate: string;
     description: string;
-    isbn: number;
+    isbn: string;
     coverImage: string;
     publisher: string;
     totalPage: number;

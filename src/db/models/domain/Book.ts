@@ -9,7 +9,7 @@ export class Book extends Model<BooksAttributes> {
     public author!: string;
     public pubDate!: string;
     public description!: string;
-    public isbn!: number;
+    public isbn!: string;
     public coverImage!: string;
     public publisher!: string;
     public totalPage!: number;
@@ -30,7 +30,7 @@ Book.init(
             primaryKey: true,
         },
         title: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
         author: {
@@ -42,11 +42,11 @@ Book.init(
             allowNull: true,
         },
         description: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.STRING(500),
             allowNull: false,
         },
         isbn: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.CHAR(10),
             unique: true,
             allowNull: false,
         },

@@ -10,8 +10,8 @@ export class Plan extends Model<PlanAttributes> {
     public totalPage!: number;
     public currentPage!: number;
     public status!: string;
-    public startDate!: Date;
-    public endDate!: Date;
+    public startDate!: string;
+    public endDate!: string;
     public userId!: number;
     public bookId!: number;
 
@@ -37,17 +37,19 @@ Plan.init(
         currentPage: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
         status: {
             type: DataTypes.STRING(50),
             allowNull: false,
+            defaultValue: "inProgress",
         },
         startDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.CHAR(10),
             allowNull: false,
         },
         endDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.CHAR(10),
             allowNull: false,
         },
         userId: {

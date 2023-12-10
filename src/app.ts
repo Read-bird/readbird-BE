@@ -43,11 +43,15 @@ app.use(router);
 // 서버측 에러 핸들링 부분
 app.use(
     (
-        error: { message: string },
+        error: any,
         request: Request,
         response: Response,
         next: NextFunction,
     ): void => {
-        response.status(500).json({ message: error.message });
+        if (error.message.includes("형식")) {
+            response.status(400).json({ message: error.message });
+        } else {
+            response.status(500).json({ message: "Server Error" });
+        }
     },
 );

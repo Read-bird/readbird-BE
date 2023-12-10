@@ -8,8 +8,9 @@
         "test:coverage": "jest --coverage",
         "dev": "nodemon",
         "db:create": "npx sequelize db:create",
-        "db:migrate": "./node_modules/.bin/ts-node ./src/db/migrations/migration-all-table.ts",
         "db:drop": "npx sequelize db:drop",
+        "db:migrate": "./node_modules/.bin/ts-node ./src/db/migrations/migration-all-table.ts",
+        "db:seed": "npx sequelize db:seed:all",
         "start-gendoc": "node ./src/swagger.js"
     },
     "author": "",
@@ -27,7 +28,7 @@
         "mysql2": "^3.6.5",
         "nodemon": "^3.0.1",
         "sequelize": "^6.35.1",
-        "sequelize-cli": "^6.6.2"
+        "sequelize-cli": "^6.3.0"
     },
     "devDependencies": {
         "@babel/core": "^7.23.3",

@@ -8,8 +8,8 @@ import { Book } from "./Book";
 export class Plan extends Model<PlanAttributes> {
     public readonly planId?: number;
     public totalPage!: number;
-    public currentPage!: number;
-    public status!: string;
+    public currentPage?: number;
+    public status?: string;
     public startDate!: string;
     public endDate!: string;
     public userId!: number;

@@ -39,10 +39,9 @@ User.init(
         },
     },
     {
-        modelName: "User",
-        // Table name
-        tableName: "Users",
         sequelize,
-        freezeTableName: true,
+        modelName: "User",
+        tableName: "User", // Table name
+        freezeTableName: true, //테이블명 변경 불가
     },
 );

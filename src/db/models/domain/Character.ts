@@ -39,10 +39,9 @@ Character.init(
         },
     },
     {
-        modelName: "Character",
-        // Table name
-        tableName: "Characters",
         sequelize,
+        modelName: "Character",
+        tableName: "Character",
         freezeTableName: true,
     },
 );

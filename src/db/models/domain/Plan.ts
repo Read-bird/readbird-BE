@@ -1,6 +1,8 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../index";
 import { PlanAttributes } from "../interface/Plan.interface";
+import { User } from "./User";
+import { Book } from "./Book";
 
 // User Class 정의
 export class Plan extends Model<PlanAttributes> {
@@ -10,6 +12,8 @@ export class Plan extends Model<PlanAttributes> {
     public status!: string;
     public startDate!: Date;
     public endDate!: Date;
+    public userId!: number;
+    public bookId!: number;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;
@@ -46,12 +50,25 @@ Plan.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
+        userId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: User,
+                key: "userId",
+            },
+        },
+        bookId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: Book,
+                key: "bookId",
+            },
+        },
     },
     {
-        modelName: "Plan",
-        // Table name
-        tableName: "Plans",
         sequelize,
+        modelName: "Plan",
+        tableName: "Plan",
         freezeTableName: true,
     },
 );

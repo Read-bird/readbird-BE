@@ -1,11 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../index";
 import { CollectionAttributes } from "../interface/Collection.interface";
+import { User } from "./User";
 
 // User Class 정의
 export class Collection extends Model<CollectionAttributes> {
     public readonly collectionId?: number;
     public contents!: string;
+    public userId!: number;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;
@@ -27,12 +29,18 @@ Collection.init(
             allowNull: false,
             defaultValue: "{}",
         },
+        userId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: User,
+                key: "userId",
+            },
+        },
     },
     {
-        modelName: "Collection",
-        // Table name
-        tableName: "Collections",
         sequelize,
+        modelName: "Collection",
+        tableName: "Collection",
         freezeTableName: true,
     },
 );

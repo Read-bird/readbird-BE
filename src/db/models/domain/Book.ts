@@ -65,10 +65,9 @@ Book.init(
         },
     },
     {
-        modelName: "Book",
-        // Table name
-        tableName: "Books",
         sequelize,
+        modelName: "Book",
+        tableName: "Book",
         freezeTableName: true,
     },
 );

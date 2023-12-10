@@ -1,7 +1,12 @@
-import { Book } from "../../db/models/domain/Book";
-import { Plan } from "../../db/models/domain/Plan";
-
 class PlanRepository {
+    planModel: any;
+    bookModel: any;
+
+    constructor(Plan: any, Book: any) {
+        this.planModel = Plan;
+        this.bookModel = Book;
+    }
+
     createPlan = async (
         totalPage: number,
         startDate: string,
@@ -9,7 +14,7 @@ class PlanRepository {
         userId: number,
         bookId: number,
     ) => {
-        return Plan.create({
+        return this.planModel.create({
             totalPage,
             startDate,
             endDate,
@@ -21,9 +26,15 @@ class PlanRepository {
     };
 
     findOneBook = async (bookId: number) => {
-        return Book.findOne({
+        return this.bookModel.findOne({
             raw: true,
             where: { bookId },
+        });
+    };
+
+    createBook = async (newBook: any) => {
+        return this.bookModel.create({
+            newBook,
         });
     };
 }

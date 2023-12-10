@@ -2,6 +2,7 @@ require("dotenv").config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import sequelize from "./db/models";
+import router from "./routers/index";
 
 const app: Application = express();
 
@@ -33,6 +34,9 @@ app.listen(PORT, async () => {
 app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
 });
+
+//index 라우터
+app.use(router);
 
 // 서버측 에러 핸들링 부분
 app.use(

@@ -36,12 +36,12 @@ Plan.init(
         },
         currentPage: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 0,
         },
         status: {
             type: DataTypes.STRING(50),
-            allowNull: false,
+            allowNull: true,
             defaultValue: "inProgress",
         },
         startDate: {

@@ -17,6 +17,8 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
+app.use(express.json());
+
 app.listen(PORT, async () => {
     console.log(`App is listening on port ${PORT}!`);
 

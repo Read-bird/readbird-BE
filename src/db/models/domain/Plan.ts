@@ -68,7 +68,7 @@ Plan.init(
     {
         sequelize,
         modelName: "Plan",
-        tableName: "Plan",
+        tableName: "Plans",
         freezeTableName: true,
     },
 );

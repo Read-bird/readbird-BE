@@ -13,4 +13,6 @@ const development: Options = {
     port: 3306,
 };
 
+module.exports = development;
+
 export default development;

@@ -41,7 +41,7 @@ User.init(
     {
         sequelize,
         modelName: "User",
-        tableName: "User", // Table name
+        tableName: "Users", // Table name
         freezeTableName: true, //테이블명 변경 불가
     },
 );

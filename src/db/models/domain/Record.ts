@@ -48,7 +48,7 @@ Record.init(
     {
         sequelize,
         modelName: "Record",
-        tableName: "Record",
+        tableName: "Records",
         freezeTableName: true,
     },
 );

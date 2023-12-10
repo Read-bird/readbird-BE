@@ -41,7 +41,7 @@ Character.init(
     {
         sequelize,
         modelName: "Character",
-        tableName: "Character",
+        tableName: "Characters",
         freezeTableName: true,
     },
 );

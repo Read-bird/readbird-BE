@@ -1,9 +1,7 @@
 #기존 node 16버전의 이미지로부터 새로운 이미지 생성함을 지정
 FROM node:18.18.0
 
-RUN apk --no-cache add tzdata && \
-        cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
-        echo "Asia/Seoul" > /etc/timezone
+MAINTAINER Read-Bird
 
 # 이미지내에 /app 디렉토리 생성
 # 컨테이너 안에는 기본적으로 root권한으로 만들어짐

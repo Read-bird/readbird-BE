@@ -1,5 +1,5 @@
 #기존 node 16버전의 이미지로부터 새로운 이미지 생성함을 지정
-FROM node:16-alpine
+FROM node:18
 
 #dockerfile을 생성/관리하는사람
 MAINTAINER ReadBird <yuwang0130@gmail.com>
@@ -27,4 +27,4 @@ ENV NODE_ENV production
 # ENTRYPOINT는 컨테이너가 수행될 때 반드시 지정한 명령을 수행되도록 지정
 # CMD는 사용자가 입력하는 파라미터에 따라 변동가능
 # 추후 두개의 명령어 테스트 필요
-CMD ["npm","start"]
+CMD ["npm","run","dev"]

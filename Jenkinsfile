@@ -71,10 +71,10 @@ pipeline {
     }
     post {
         success {
-            discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
+            discordSend description: "Jenkins Pipeline Build Success", footer: "CICD 빌드 배포 성공 알림", result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
         }
         failure {
-            discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
+            discordSend description: "Jenkins Pipeline Build Failed", footer: "CICD 빌드 배포 실패 알림", result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
         }
     }
 }

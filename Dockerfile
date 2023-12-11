@@ -1,7 +1,5 @@
 #기존 node 16버전의 이미지로부터 새로운 이미지 생성함을 지정
-FROM node:18.18.0
-
-MAINTAINER Read-Bird
+FROM node:16
 
 # 이미지내에 /app 디렉토리 생성
 # 컨테이너 안에는 기본적으로 root권한으로 만들어짐
@@ -16,6 +14,7 @@ COPY ./ /app
 
 # 실행하는 컨테이너 안에서 work dir에 있는 package.json을 기반으로 모듈 설치
 RUN npm install
+RUN npm install -g nodemon
 
 #환경변수 설정 : 운영 or 개발
 ENV NODE_ENV production

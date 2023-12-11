@@ -27,15 +27,6 @@ pipeline {
                 }
             }
         }
-        stage("Checkout") {
-                steps{
-                    echo "checkout start"
-                    script{
-                        checkout scm;
-                    }
-                    echo "checkout end"
-                }
-            }
         stage("Transfer") {
             steps([$class:"BapSshPromotionPublisherPlugin"]){
                 script{

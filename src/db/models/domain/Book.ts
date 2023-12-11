@@ -7,12 +7,12 @@ export class Book extends Model<BooksAttributes> {
     public readonly bookId?: number;
     public title!: string;
     public author!: string;
-    public pubDate!: string;
-    public description!: string;
-    public isbn!: string;
-    public coverImage!: string;
-    public publisher!: string;
-    public totalPage!: number;
+    public pubDate?: string;
+    public description?: string;
+    public isbn?: string;
+    public coverImage?: string;
+    public publisher?: string;
+    public totalPage?: number;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;
@@ -43,24 +43,23 @@ Book.init(
         },
         description: {
             type: DataTypes.STRING(500),
-            allowNull: false,
+            allowNull: true,
         },
         isbn: {
             type: DataTypes.CHAR(10),
-            unique: true,
-            allowNull: false,
+            allowNull: true,
         },
         coverImage: {
             type: DataTypes.STRING(255),
-            allowNull: false,
+            allowNull: true,
         },
         publisher: {
             type: DataTypes.STRING(50),
-            allowNull: false,
+            allowNull: true,
         },
         totalPage: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 0,
         },
     },

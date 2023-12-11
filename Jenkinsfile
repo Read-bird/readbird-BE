@@ -7,7 +7,7 @@ pipeline {
                 discordSend description: ":tada: Jenkins Pipeline Build Start", footer: "CICD 빌드 배포 시작", title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
                 echo 'Build start'
                 sh 'npm install'
-                sh './gradlew clean build'
+                sh 'npm run dev'
                 echo 'Build end'
             }
         }

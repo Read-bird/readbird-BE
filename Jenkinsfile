@@ -69,4 +69,22 @@ pipeline {
             }
          }
     }
+    post {
+        success {
+            discordSend description : "디스코드 CICD 알림",
+                footer : "CICD 빌드가 성공하였습니다."
+                link: env.BUILD_URL,
+                result: currentBuild.currentResult,
+                title: "CICD Success",
+                webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
+        }
+        failure {
+            discordSend description : "디스코드 CICD 알림",
+                footer : "CICD 빌드가 실패하였습니다."
+                link: env.BUILD_URL,
+                result: currentBuild.currentResult,
+                title: "CICD Failed",
+                webhookURL: "https://discord.com/api/webhooks/1183713768014889010/OXT-wS7_hVmlNl2w_mvK7t9Ojq8WuHTdJG9VKASE7dXEe2p_ppY2ztoy4gXF-Lw-xJeU"
+        }
+    }
 }

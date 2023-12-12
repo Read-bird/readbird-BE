@@ -6,6 +6,8 @@
     "scripts": {
         "test": "jest",
         "test:coverage": "jest --coverage",
+        "build": "tsc",
+        "start": "node ./build/app.js",
         "dev": "nodemon",
         "db:create": "npx sequelize db:create",
         "db:drop": "npx sequelize db:drop",

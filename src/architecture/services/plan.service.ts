@@ -15,6 +15,15 @@ class PlanService {
         let newTotalPage;
         let newBookId = bookId;
 
+        const userInProgressPlan =
+            await this.planRepository.getInProgressPlan(userId);
+
+        console.log(userInProgressPlan);
+
+        if (userInProgressPlan.length > 2) {
+            throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
+        }
+
         const dateForm = RegExp(
             /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/,
         );
@@ -26,13 +35,6 @@ class PlanService {
         }
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
-
-        const userInProgressPlan =
-            await this.planRepository.getInProgressPlan(userId);
-
-        if (userInProgressPlan.length > 3) {
-            throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
-        }
 
         const bookData = await this.planRepository.findOneBook(bookId);
 

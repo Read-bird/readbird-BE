@@ -4,6 +4,9 @@ import cors from "cors";
 import sequelize from "./db/models";
 import router from "./routers/index";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerJson from "./swagger.json";
+
 const app: Application = express();
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
@@ -39,6 +42,7 @@ app.get("/", (request: Request, response: Response) => {
 
 //index 라우터
 app.use(router);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 // 서버측 에러 핸들링 부분
 app.use(

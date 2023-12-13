@@ -1,7 +1,4 @@
 import PlanRepository from "../repositories/plan.repository";
-// import { Book } from "../../db/models/domain/Book";
-// import { Plan } from "../../db/models/domain/Plan";
-// import { Record } from "../../db/models/domain/Record";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
 class PlanService {
     planRepository: PlanRepository;

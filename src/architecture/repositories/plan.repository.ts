@@ -47,9 +47,7 @@ class PlanRepository {
     };
 
     createBook = async (newBook: any) => {
-        return this.bookModel.create({
-            newBook,
-        });
+        return this.bookModel.create(newBook);
     };
 
     getTodayPlans = async (userId: number, date: Date) => {

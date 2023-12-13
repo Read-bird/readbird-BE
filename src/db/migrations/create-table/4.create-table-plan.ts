@@ -1,4 +1,4 @@
-import { Plan } from "../../models/domain/Plan";
+import { Plan } from "../../models/domain/Tables";
 
 console.log("======Create Plan Table======");
 

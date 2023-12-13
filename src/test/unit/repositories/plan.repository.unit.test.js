@@ -2,6 +2,7 @@ import PlanRepository from "../../../architecture/repositories/plan.repository";
 
 let mockPlanModel = {
     create: jest.fn(),
+    findAll: jest.fn(),
 };
 
 let mockBookModel = {
@@ -42,6 +43,19 @@ describe("Layered Architecture Pattern Plan Repository Unit test", () => {
         expect(newPlan).toBe("create success");
         expect(mockPlanModel.create).toHaveBeenCalledTimes(1);
         expect(mockPlanModel.create).toHaveBeenCalledWith(createPlanParams);
+    });
+
+    it("Plan Repository - findOneBook Method", async () => {
+        mockPlanModel.findAll = jest.fn(() => {
+            return "findAll success";
+        });
+
+        const date = "2023-12-13";
+
+        const planList = await planRepository.findAllPlan(date);
+
+        expect(planRepository.planModel.findAll).toHaveBeenCalledTimes(1);
+        expect(planList).toBe("findOne success");
     });
 
     it("Plan Repository - findOneBook Method", async () => {

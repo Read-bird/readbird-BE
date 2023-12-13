@@ -48,7 +48,7 @@ app.use(
         response: Response,
         next: NextFunction,
     ): void => {
-        if (error.message.includes("형식")) {
+        if (error.message.includes("Bad Request")) {
             response.status(400).json({ message: error.message });
         } else {
             response.status(500).json({ message: "Server Error" });

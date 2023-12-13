@@ -1,4 +1,4 @@
-import { Record } from "../../models/domain/Record";
+import { Record } from "../../models/domain/Tables";
 
 console.log("======Create Record Table======");
 

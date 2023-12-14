@@ -1,4 +1,4 @@
-import { User } from "../../db/models/domain/User";
+import { User } from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
     try {

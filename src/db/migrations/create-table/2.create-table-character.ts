@@ -1,4 +1,4 @@
-import { Character } from "../../models/domain/Character";
+import { Character } from "../../models/domain/Tables";
 
 console.log("======Create Character Table======");
 

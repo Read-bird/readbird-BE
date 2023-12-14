@@ -1,4 +1,4 @@
-import { Book } from "../../models/domain/Book";
+import { Book } from "../../models/domain/Tables";
 
 console.log("======Create Book Table======");
 

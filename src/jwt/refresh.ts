@@ -47,12 +47,9 @@ export const refresh = async (req: Request, res: Response) => {
             } else {
                 //2. access token이 만료되고, refresh token은 만료되지 않은 경우 -> 새로운 access token을 발급
                 const newAccessToken = jwtUtil.sign(decoded);
-                return res.status(200).json({
-                    data: {
-                        accessToken: newAccessToken,
-                        refreshToken: refreshToken,
-                    },
-                });
+                return res
+                    .header("accesstoken", "Bearer " + newAccessToken)
+                    .status(200);
             }
         } else {
             //3. access token이 만료되지 않은 경우 -> refresh 할 필요가 없다

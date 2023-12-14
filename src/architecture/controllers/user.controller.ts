@@ -27,12 +27,15 @@ const signInKakao = async (req: Request, res: Response) => {
     //redis DB에 refreshToken을 저장
     await redis.redisCli.set(userId, refreshToken);
 
-    return res.header("accesstoken", accesstoken).status(200).json({
-        userId: userData.userId,
-        email: userData.email,
-        nickName: userData.nickName,
-        imageUrl: userData.imageUrl,
-    });
+    return res
+        .header("accesstoken", "Bearer " + accesstoken)
+        .status(200)
+        .json({
+            userId: userData.userId,
+            email: userData.email,
+            nickName: userData.nickName,
+            imageUrl: userData.imageUrl,
+        });
 };
 
 export default {

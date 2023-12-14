@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import userService from "../services/user.service";
 import jwtUtil from "../../jwt/jwt-util";
 import redis from "../../redis";
@@ -38,6 +38,34 @@ const signInKakao = async (req: Request, res: Response) => {
         });
 };
 
+const signInGuest = async (
+    requset: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    try {
+        const userData: any = await userService.findGuestData();
+
+        const accessToken = jwtUtil.sign(userData);
+        const refreshToken = jwtUtil.refresh();
+
+        await redis.redisCli.set("1", refreshToken);
+
+        return response
+            .header("accessToken", "Bearer " + accessToken)
+            .status(200)
+            .json({
+                userId: userData.userId,
+                email: userData.email,
+                nickName: userData.nickName,
+                imageUrl: userData.imageUrl,
+            });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
+    signInGuest,
 };

@@ -51,6 +51,7 @@ class PlanRepository {
     };
 
     getTodayPlans = async (userId: number, date: Date) => {
+        console.log(date);
         return this.planModel.findAll({
             include: [
                 {

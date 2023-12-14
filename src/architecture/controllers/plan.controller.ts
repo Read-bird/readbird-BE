@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import PlanService from "../services/plan.service";
 
-//dummy data
-const userId = 1;
-
 class PlanController {
     planService = new PlanService();
 
@@ -41,6 +38,8 @@ class PlanController {
                     description: 'body 또는 params를 입력받지 못한 경우',
         } */
         try {
+            const { userId } = request.body;
+
             const createPlan = await this.planService.createPlan({
                 userId,
                 body: request.body,
@@ -105,9 +104,9 @@ class PlanController {
                     }
         } */
         try {
-            const userId = 1;
+            const { userId } = request.body;
 
-            const { date }: { date: string } = request.body;
+            const { date }: any = request.query;
 
             const weedRecord = await this.planService.weedRecord(userId, date);
 

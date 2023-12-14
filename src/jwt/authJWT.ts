@@ -15,7 +15,7 @@ export const authJWT = (req: Request, res: Response, next: NextFunction) => {
         //accessToken 검증
         const result = jwtUtil.verify(token);
 
-        //accessToken이 유효하면 result:{"ok":true, "userId": 2} 반환
+        //accessToken이 유효하면 result:{"ok":true, "userId": userId} 반환
         if (result.ok) {
             req.body = result.userId;
             next();

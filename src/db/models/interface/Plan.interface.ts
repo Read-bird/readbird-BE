@@ -3,8 +3,6 @@ export interface PlanAttributes {
     totalPage: number;
     currentPage: number;
     status: string;
-    startDate: string;
-    endDate: string;
-    userId: number;
-    bookId: number;
+    startDate: Date;
+    endDate: Date;
 }

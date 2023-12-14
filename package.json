@@ -22,6 +22,8 @@
         "@typescript-eslint/eslint-plugin": "^6.12.0",
         "@typescript-eslint/parser": "^6.12.0",
         "axios": "^1.6.2",
+        "class-transformer": "^0.5.1",
+        "class-validator-jsonschema": "^5.0.0",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "eslint-plugin-import": "^2.29.0",
@@ -29,7 +31,9 @@
         "mysql2": "^3.6.5",
         "nodemon": "^3.0.1",
         "sequelize": "^6.35.1",
-        "sequelize-cli": "^6.3.0"
+        "sequelize-cli": "^6.3.0",
+        "swagger-cli": "^4.0.4",
+        "swagger-ui-express": "^5.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.23.3",
@@ -39,6 +43,8 @@
         "@types/express": "^4.17.21",
         "@types/jest": "^29.5.10",
         "@types/node": "^20.9.4",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.6",
         "@types/validator": "^13.11.7",
         "babel-jest": "^29.7.0",
         "eslint": "^8.54.0",
@@ -48,6 +54,7 @@
         "node-mocks-http": "^1.13.0",
         "prettier": "^3.1.0",
         "supertest": "^6.3.3",
+        "swagger-jsdoc": "^6.2.8",
         "ts-node": "^10.9.1",
         "typescript": "^5.3.2"
     }

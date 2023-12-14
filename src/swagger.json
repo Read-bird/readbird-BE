@@ -1,0 +1,256 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "읽어보새 API 명세서",
+    "description": "독서 습관 플래너 - 읽어보새의 Api 명세서 입니다.",
+    "version": "1.0.0"
+  },
+  "host": "https://port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "in": "header",
+      "bearerFormat": "JWT"
+    }
+  },
+  "paths": {
+    "/api/plan/": {
+      "post": {
+        "tags": [
+          "Plans"
+        ],
+        "description": "플랜 등록",
+        "parameters": [
+          {
+            "name": "",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookId": {
+                  "type": "number",
+                  "example": 7
+                },
+                "startDate": {
+                  "type": "string",
+                  "example": "2023-12-12"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "2023-12-30"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "title"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "author"
+                },
+                "totalPage": {
+                  "type": "number",
+                  "example": 100
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "플랜 등록 성공",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "planId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "title": {
+                  "type": "string",
+                  "example": "title"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "author"
+                },
+                "coverImage": {
+                  "type": "string",
+                  "example": "url"
+                },
+                "totalPage": {
+                  "type": "number",
+                  "example": 100
+                },
+                "target": {
+                  "type": "number",
+                  "example": 30
+                },
+                "status": {
+                  "type": "string",
+                  "example": "inProgress"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "body 또는 params를 입력받지 못한 경우"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Plans"
+        ],
+        "description": "플랜 조회",
+        "parameters": [
+          {
+            "name": "",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "example": "2023-12-12"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "플랜 조회 성공",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "weedRecord": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "example": "2023-12-10"
+                      },
+                      "achievementStatus": {
+                        "type": "string",
+                        "example": "failed"
+                      }
+                    }
+                  }
+                },
+                "planData": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "planId": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "title": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "author": {
+                        "type": "string",
+                        "example": "베르나르 베르베르 지음, 이세욱 옮김"
+                      },
+                      "coverImage": {
+                        "type": "string",
+                        "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                      },
+                      "totalPage": {
+                        "type": "number",
+                        "example": 100
+                      },
+                      "currentPage": {
+                        "type": "number",
+                        "example": 60
+                      },
+                      "target": {
+                        "type": "number",
+                        "example": 30
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "example": "2023-12-29T15:00:00.000Z"
+                      },
+                      "planStatus": {
+                        "type": "string",
+                        "example": "failed"
+                      },
+                      "recordStatus": {
+                        "type": "string",
+                        "example": "success"
+                      }
+                    }
+                  }
+                },
+                "previouslyFailedPlan": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "planId": {
+                        "type": "number",
+                        "example": 5
+                      },
+                      "totalPage": {
+                        "type": "number",
+                        "example": 900
+                      },
+                      "currentPage": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "inProgress"
+                      },
+                      "startDate": {
+                        "type": "string",
+                        "example": "2023-12-09T00:00:00.000Z"
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "example": "2023-12-11T00:00:00.000Z"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2023-12-13T19:00:19.000Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2023-12-13T19:00:19.000Z"
+                      },
+                      "userId": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "bookId": {
+                        "type": "number",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

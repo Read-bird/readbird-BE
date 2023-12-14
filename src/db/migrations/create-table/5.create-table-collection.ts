@@ -1,4 +1,4 @@
-import { Collection } from "../../models/domain/Collection";
+import { Collection } from "../../models/domain/Tables";
 
 console.log("======Create Collection Table======");
 

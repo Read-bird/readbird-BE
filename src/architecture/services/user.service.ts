@@ -1,6 +1,5 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
-import { error } from "console";
 
 const signInKakao = async (kakaoToken: String) => {
     const result = await axios.get("https://kapi.kakao.com/v2/user/me", {

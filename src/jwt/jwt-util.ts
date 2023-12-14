@@ -1,20 +1,19 @@
+require("dotenv").config();
 import { promisify } from "util";
 import jwt from "jsonwebtoken";
 import redis from "../redis";
+
 const secretKey: any = process.env.SECRETKEY;
+const algorithm: any = process.env.ALGORITHM;
 
 export default {
     sign: (userData: any) => {
         const payload = {
-            email: userData.email,
-            nickName: userData.nickName,
-            imageUrl: userData.imageUrl,
+            userId: userData.userId,
         };
-        // console.log("\nuserData.email :: " + userData.email);
-        // console.log("\nuserData.nickname :: " + userData.nickName);
-        // console.log("\nuserData.imageUrl :: " + userData.imageUrl);
+
         return jwt.sign(payload, secretKey, {
-            algorithm: "HS256",
+            algorithm: algorithm,
             expiresIn: "1h",
         });
     },
@@ -24,9 +23,7 @@ export default {
             decoded = jwt.verify(token, secretKey);
             return {
                 ok: true,
-                email: decoded.email,
-                nickName: decoded.nickName,
-                imageUrl: decoded.imageUrl,
+                userId: decoded.userId,
             };
         } catch (error: any) {
             return {
@@ -37,23 +34,19 @@ export default {
     },
     refresh: () => {
         return jwt.sign({}, secretKey, {
-            algorithm: "HS256",
+            algorithm: algorithm,
             expiresIn: "7d",
         });
     },
-    refreshVerify: async (token: any, email: String) => {
+    refreshVerify: async (token: any, userId: String) => {
         const getAsync = promisify(redis.redisClient.get).bind(
             redis.redisClient,
         );
         try {
-            const data = await getAsync(email);
+            const data = await getAsync(userId);
             if (token === data) {
-                try {
-                    jwt.verify(token, secretKey);
-                    return true;
-                } catch (error) {
-                    return false;
-                }
+                jwt.verify(token, secretKey);
+                return true;
             } else {
                 return false;
             }

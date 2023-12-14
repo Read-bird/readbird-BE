@@ -13,16 +13,8 @@ const signInKakao = async (kakaoToken: String) => {
     const email: String = data.kakao_account.email;
     const nickName: String = data.properties.nickname;
     const imageUrl: String = data.properties.profile_image;
-    console.log(
-        "\nemail, nickName, imageUrl, kakaoId ::: " +
-            email +
-            ", " +
-            nickName +
-            ", " +
-            imageUrl,
-    );
 
-    //if (!email || !nickName) throw new Error("KEY_ERROR");
+    if (!email || !nickName) throw new Error("KEY_ERROR");
 
     //DB 유저 정보 찾기
     const userData = await UserRepository.getUserByEmail(email);
@@ -31,7 +23,6 @@ const signInKakao = async (kakaoToken: String) => {
     if (!userData) {
         await UserRepository.signUp(email, nickName, imageUrl);
         const userData = await UserRepository.getUserByEmail(email);
-        console.log("\nuserData ::: " + JSON.stringify(userData));
         return userData;
     }
 

@@ -8,6 +8,6 @@ const router = Router();
 
 router.use("/api/plan", authJWT, plan);
 router.use("/api/user", user);
-// router.use("/api/user", authJWT, book);
+router.use("/api/book", authJWT, book);
 
 export default router;

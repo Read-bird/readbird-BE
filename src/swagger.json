@@ -359,7 +359,7 @@
         "tags": [
           "Plan"
         ],
-        "description": "해당 일자의 플랜 리스트를 조회 할 수 있습니다.",
+        "description": "플랜의 종료일을 수정할 수 있습니다.",
         "parameters": [
           {
             "name": "planId",
@@ -440,6 +440,50 @@
                 "name": "main"
               }
             }
+          },
+          "400": {
+            "description": "값이 알맞게 들어오지 않을 경우"
+          },
+          "404": {
+            "description": "플랜을 찾을 수 없는 경우"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plan"
+        ],
+        "description": "플랜을 삭제할 수 있습니다..",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "accessToken",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "플랜 삭제 완료"
           },
           "400": {
             "description": "값이 알맞게 들어오지 않을 경우"

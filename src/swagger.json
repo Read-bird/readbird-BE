@@ -8,6 +8,7 @@
   "host": "https://port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
   "basePath": "/",
   "schemes": [
+    "http",
     "https"
   ],
   "securityDefinitions": {
@@ -126,7 +127,7 @@
         "description": "플랜을 등록 할 수 있습니다.",
         "parameters": [
           {
-            "name": "accessToken",
+            "name": "authorization",
             "in": "header",
             "description": "accessToken",
             "required": true,
@@ -220,7 +221,7 @@
         "description": "해당 일자의 플랜 리스트를 조회 할 수 있습니다.",
         "parameters": [
           {
-            "name": "accessToken",
+            "name": "authorization",
             "in": "header",
             "description": "accessToken",
             "required": true,
@@ -361,7 +362,7 @@
         "description": "검색어를 이용하여 도서를 검색할 수 있습니다.",
         "parameters": [
           {
-            "name": "accessToken",
+            "name": "authorization",
             "in": "header",
             "description": "accessToken",
             "required": true,

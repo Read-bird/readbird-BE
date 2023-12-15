@@ -57,6 +57,7 @@ app.use(
         if (error.message.includes("Bad Request")) {
             response.status(400).json({ message: error.message });
         } else {
+            console.error(error);
             response.status(500).json({ message: "Server Error" });
         }
     },

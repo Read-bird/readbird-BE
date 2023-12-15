@@ -137,6 +137,13 @@ class PlanRepository {
     findOnePlanById = async (planId: any) => {
         return this.planModel.findOne({ where: { planId }, raw: true });
     };
+
+    deletePlan = async (userId: number, planId: number) => {
+        return this.planModel.update(
+            { status: "delete" },
+            { where: { userId, planId }, raw: true },
+        );
+    };
 }
 
 export default PlanRepository;

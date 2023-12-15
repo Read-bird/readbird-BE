@@ -199,6 +199,25 @@ class PlanController {
             next(error);
         }
     };
+
+    deletePlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const { userId }: { userId: number } = request.body;
+            const { planId } = request.params;
+
+            await this.planService.deletePlan(userId, planId);
+
+            response
+                .status(200)
+                .json({ message: "플랜 삭제에 성공하였습니다." });
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default PlanController;

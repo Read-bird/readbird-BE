@@ -194,6 +194,21 @@ class PlanService {
 
         return this.planRepository.findOnePlanById(planId);
     };
+
+    deletePlan = async (userId: number, planId: any) => {
+        const plan = await this.planRepository.findOnePlanById(planId);
+
+        if (plan === null)
+            throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+        if (plan.status === "delete")
+            throw new Error("Bad Request :이미 삭제 된 플랜입니다.");
+
+        const deletePlan = await this.planRepository.deletePlan(userId, planId);
+
+        console.log(deletePlan);
+
+        return deletePlan;
+    };
 }
 
 export default PlanService;

@@ -26,6 +26,8 @@ export const authJWT = (req: Request, res: Response, next: NextFunction) => {
                     "Precondition Failed: accessToken이 만료 되었습니다. 토큰 갱신이 필요합니다.",
                 );
         }
+    } else if (req.headers.authorization == null) {
+        return res.status(400).send("Bad Request: 토큰이 존재하지 않습니다.");
     }
 };
 

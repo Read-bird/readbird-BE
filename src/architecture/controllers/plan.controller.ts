@@ -150,7 +150,7 @@ class PlanController {
         response: Response,
         next: NextFunction,
     ) => {
-        //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
+        //  #swagger.description = '플랜의 종료일을 수정할 수 있습니다.'
         //  #swagger.tags = ['Plan']
         /* #swagger.parameters['authorization'] = {
             in: "header",                            
@@ -205,6 +205,23 @@ class PlanController {
         response: Response,
         next: NextFunction,
     ) => {
+        //  #swagger.description = '플랜을 삭제할 수 있습니다..'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['authorization'] = {
+            in: "header",                            
+            description: "accessToken",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /*  #swagger.responses[200] = {
+            description: '플랜 삭제 완료'
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        /*  #swagger.responses[404] = {
+            description: '플랜을 찾을 수 없는 경우',
+        }*/
         try {
             const { userId }: { userId: number } = request.body;
             const { planId } = request.params;

@@ -118,6 +118,25 @@ class PlanRepository {
             },
         );
     };
+
+    updatePlan = async (userId: number, planId: number, endDate: string) => {
+        return this.planModel.update(
+            {
+                endDate,
+            },
+            {
+                where: {
+                    planId,
+                    userId,
+                },
+                raw: true,
+            },
+        );
+    };
+
+    findOnePlanById = async (planId: any) => {
+        return this.planModel.findOne({ where: { planId }, raw: true });
+    };
 }
 
 export default PlanRepository;

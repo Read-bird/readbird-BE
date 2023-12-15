@@ -144,6 +144,27 @@ class PlanController {
             next(error);
         }
     };
+
+    updatePlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const { userId, endDate }: { userId: number; endDate: string } =
+                request.body;
+            const { planId } = request.params;
+
+            const updatePlan = await this.planService.updatePlan(
+                userId,
+                planId,
+                endDate,
+            );
+            response.status(200).json(updatePlan);
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default PlanController;

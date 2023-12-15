@@ -1,5 +1,9 @@
 import PlanRepository from "../repositories/plan.repository";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
+import getDateFormat from "../../util/setDateFormat";
+
+const dateForm = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
+
 class PlanService {
     planRepository: PlanRepository;
 
@@ -20,10 +24,6 @@ class PlanService {
         if (userInProgressPlan.length > 2) {
             throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
         }
-
-        const dateForm = RegExp(
-            /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/,
-        );
 
         if (!dateForm.test(startDate) || !dateForm.test(endDate)) {
             throw new Error(
@@ -67,6 +67,7 @@ class PlanService {
     };
 
     findAllPlansByDate = async (userId: number, date: string) => {
+        const today: any = new Date();
         const baseDate: Date = new Date(date);
 
         const getTodayPlan = await this.planRepository.getTodayPlans(
@@ -80,8 +81,8 @@ class PlanService {
                 totalPage: number;
                 currentPage: number;
                 status: string;
-                startDate: Date;
-                endDate: Date;
+                startDate: string;
+                endDate: string;
                 createdAt: Date;
                 updatedAt: Date;
                 userId: number;
@@ -95,14 +96,21 @@ class PlanService {
                 "Book.title": string;
                 "Book.bookId": number;
             }) => {
+                const masDate: any = new Date(plan.endDate);
+
+                const target = Math.floor(
+                    (plan.totalPage - plan.currentPage) /
+                        Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+                );
+
                 return {
                     planId: plan.planId,
                     title: plan["Book.bookId"],
                     author: plan["Book.author"],
                     coverImage: plan["Book.coverImage"],
-                    totalPage: 100,
-                    currentPage: 60,
-                    target: 30,
+                    totalPage: plan.totalPage,
+                    currentPage: plan.currentPage,
+                    target,
                     endDate: plan.endDate,
                     planStatus: plan.status,
                     recordStatus: plan["records.status"],
@@ -161,6 +169,30 @@ class PlanService {
             });
         }
         return weedPlans;
+    };
+
+    updatePlan = async (userId: number, planId: any, endDate: string) => {
+        if (!dateForm.test(endDate)) {
+            throw new Error(
+                "Bad Request : 올바르지않은 날짜 형식입니다. 형식은 yyyy-mm-dd 입니다.",
+            );
+        }
+
+        if (endDate < getDateFormat(new Date()))
+            throw new Error(
+                "Bad Request : 종료일은 오늘보다 빠를 수 없습니다.",
+            );
+
+        const plan = await this.planRepository.findOnePlanById(planId);
+
+        if (plan === null)
+            throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+        if (plan.status === "failed")
+            throw new Error("Bad Request : 실패한 플랜은 수정할 수 없습니다.");
+
+        await this.planRepository.updatePlan(userId, plan.planId, endDate);
+
+        return this.planRepository.findOnePlanById(planId);
     };
 }
 

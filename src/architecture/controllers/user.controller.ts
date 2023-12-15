@@ -4,6 +4,23 @@ import jwtUtil from "../../jwt/jwt-util";
 import redis from "../../redis";
 
 const signInKakao = async (req: Request, res: Response) => {
+    //  #swagger.description = '게스트로 로그인 해 서비스를 체험해볼 수 있습니다.'
+    //  #swagger.tags = ['Login']
+    /* #swagger.parameters['accessToken'] = {
+            in: "header",                            
+            description: "accessToken",                   
+            required: true,                     
+            type: "string"         
+        } */
+    /*  #swagger.responses[200] = {
+            description: '카카오 소셜 로그인 성공',
+            schema: {                
+                userId: 1,
+                email: "guest@readbird.com",
+                nickName: "guest",
+                imageUrl: "",
+            }
+        }*/
     const headers = req.headers["authorization"];
     const kakaoToken: any = headers?.split("Bearer ")[1];
 
@@ -43,6 +60,17 @@ const signInGuest = async (
     response: Response,
     next: NextFunction,
 ) => {
+    //  #swagger.description = '게스트로 로그인 해 서비스를 체험해볼 수 있습니다.'
+    //  #swagger.tags = ['Login']
+    /*  #swagger.responses[200] = {
+            description: '게스트 로그인 성공',
+            schema: {                
+                userId: 1,
+                email: "guest@readbird.com",
+                nickName: "guest",
+                imageUrl: "",
+            }
+        }*/
     try {
         const userData: any = await userService.findGuestData();
 
@@ -53,6 +81,7 @@ const signInGuest = async (
 
         return response
             .header("accessToken", "Bearer " + accessToken)
+            .header("refreshToken", "Bearer " + refreshToken)
             .status(200)
             .json({
                 userId: userData.userId,

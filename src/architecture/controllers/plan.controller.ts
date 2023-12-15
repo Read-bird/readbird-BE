@@ -150,6 +150,40 @@ class PlanController {
         response: Response,
         next: NextFunction,
     ) => {
+        //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['authorization'] = {
+            in: "header",                            
+            description: "accessToken",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters[""] = {
+            in: "body",                            
+            description: "변경할 종료일",    
+            schema : { endDate : "2023-12-25"}
+        } */
+        /*  #swagger.responses[200] = {
+            description: '플랜 수정 완료',
+            schema: {    
+                "planId": 5,
+                "totalPage": 900,
+                "currentPage": 0,
+                "status": "inProgress",
+                "startDate": "2023-12-09T00:00:00.000Z",
+                "endDate": "2023-12-17T00:00:00.000Z",
+                "createdAt": "2023-12-15T11:19:58.000Z",
+                "updatedAt": "2023-12-15T11:30:15.000Z",
+                "userId": 1,
+                "bookId": 1
+            }
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        /*  #swagger.responses[404] = {
+            description: '플랜을 찾을 수 없는 경우',
+        }*/
         try {
             const { userId, endDate }: { userId: number; endDate: string } =
                 request.body;

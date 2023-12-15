@@ -11,7 +11,7 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜을 등록 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['accessToken'] = {
+        /* #swagger.parameters['authorization'] = {
             in: "header",                            
             description: "accessToken",                   
             required: true,                     
@@ -67,7 +67,7 @@ class PlanController {
     ) => {
         //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['accessToken'] = {
+        /* #swagger.parameters['authorization'] = {
             in: "header",                            
             description: "accessToken",                   
             required: true,                     

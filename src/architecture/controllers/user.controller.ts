@@ -33,7 +33,9 @@ const signInKakao = async (req: Request, res: Response) => {
 
     //userData에서 받오는 값이 없을 경우
     if (userData == undefined) {
-        return res.status(500).send("Server Error: 서버 오류");
+        return res
+            .status(401)
+            .send("Unauthorized: 유저의 토큰이 유효하지 않습니다.");
     }
 
     //사용자 정보를 받아 토큰 발급

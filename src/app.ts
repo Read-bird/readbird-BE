@@ -6,7 +6,7 @@ import router from "./routers/index";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerJson from "./swagger.json";
-
+import req from "request";
 const app: Application = express();
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
@@ -16,7 +16,7 @@ const corsOption = {
     credentials: true,
     withCredential: true,
     optionsSuccessStatus: 200,
-    exposedHeaders: ["accesstoken", "refreshtoken"],
+    exposedHeaders: ["authorization", "refreshtoken"],
 };
 app.use(cors(corsOption));
 

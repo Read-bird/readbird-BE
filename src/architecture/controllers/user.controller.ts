@@ -28,7 +28,10 @@ const signInKakao = async (req: Request, res: Response) => {
     await redis.redisCli.set(userId, refreshToken);
 
     return res
-        .header("accesstoken", "Bearer " + accesstoken)
+        .header({
+            Authorization: "Bearer " + accesstoken,
+            refreshToken: "Bearer " + refreshToken,
+        })
         .status(200)
         .json({
             userId: userData.userId,

@@ -4,9 +4,6 @@ import cors from "cors";
 import sequelize from "./db/models";
 import router from "./routers/index";
 
-import swaggerUi from "swagger-ui-express";
-import swaggerJson from "./swagger.json";
-import req from "request";
 const app: Application = express();
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
@@ -16,7 +13,7 @@ const corsOption = {
     credentials: true,
     withCredential: true,
     optionsSuccessStatus: 200,
-    exposedHeaders: ["authorization", "refreshtoken"],
+    exposedHeaders: ["Authorization", "RefreshToken"],
 };
 app.use(cors(corsOption));
 
@@ -42,6 +39,11 @@ app.get("/", (request: Request, response: Response) => {
 
 //index 라우터
 app.use(router);
+
+//swagger
+import swaggerUi from "swagger-ui-express";
+import swaggerJson from "./swagger.json";
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 // 서버측 에러 핸들링 부분
@@ -54,7 +56,10 @@ app.use(
     ): void => {
         if (error.message.includes("Bad Request")) {
             response.status(400).json({ message: error.message });
+        } else if (error.message.includes("Not Found")) {
+            response.status(404).json({ message: error.message });
         } else {
+            console.error(error);
             response.status(500).json({ message: "Server Error" });
         }
     },

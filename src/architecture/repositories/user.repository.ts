@@ -29,7 +29,18 @@ const signUp = async (email: any, nickName: any, imageUrl: any) => {
     }
 };
 
+const findUserById = async (userId: number) => {
+    return User.findOne({
+        where: {
+            userId,
+        },
+        attributes: ["userId", "email", "nickName", "imageUrl"],
+        raw: true,
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
+    findUserById,
 };

@@ -29,6 +29,11 @@ const signInKakao = async (kakaoToken: String) => {
     return userData;
 };
 
+const findGuestData = async () => {
+    return UserRepository.findUserById(1);
+};
+
 export default {
     signInKakao,
+    findGuestData,
 };

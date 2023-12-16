@@ -9,11 +9,11 @@ const app: Application = express();
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
 const corsOption = {
-    origin: true,
-    credentials: true,
+    origin: true, //출처 허용 옵션
+    credentials: true, //사용자 인증이 필요한 리소스 접근
     withCredential: true,
     optionsSuccessStatus: 200,
-    exposedHeaders: ["accesstoken", "refreshtoken"],
+    exposedHeaders: ["Authorization", "RefreshToken"],
 };
 app.use(cors(corsOption));
 

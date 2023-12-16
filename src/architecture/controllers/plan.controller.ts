@@ -11,9 +11,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜을 등록 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -67,9 +67,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -152,9 +152,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜의 종료일을 수정할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -207,9 +207,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜을 삭제할 수 있습니다..'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */

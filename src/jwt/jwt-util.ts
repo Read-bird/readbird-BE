@@ -14,7 +14,7 @@ export default {
 
         return jwt.sign(payload, secretKey, {
             algorithm: algorithm,
-            expiresIn: "1h",
+            expiresIn: "10m",
         });
     },
     verify: (token: any) => {

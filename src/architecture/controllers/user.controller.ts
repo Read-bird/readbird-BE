@@ -31,8 +31,10 @@ const signInKakao = async (req: Request, res: Response) => {
     }
     const userData: any = await userService.signInKakao(kakaoToken);
 
-    //userData에서 받오는 값이 false일 경우
-    if (!userData) res.status(500).send("Server Error: 서버 오류");
+    //userData에서 받오는 값이 없을 경우
+    if (userData == undefined) {
+        return res.status(500).send("Server Error: 서버 오류");
+    }
 
     //사용자 정보를 받아 토큰 발급
     const accesstoken = jwtUtil.sign(userData);

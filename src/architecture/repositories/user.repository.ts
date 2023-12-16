@@ -10,9 +10,7 @@ const getUserByEmail = async (email: any) => {
         });
 
         return userSelect;
-    } catch (error) {
-        return false;
-    }
+    } catch (error) {}
 };
 
 const signUp = async (email: any, nickName: any, imageUrl: any) => {
@@ -24,9 +22,7 @@ const signUp = async (email: any, nickName: any, imageUrl: any) => {
         });
 
         return userInsert;
-    } catch (error) {
-        return false;
-    }
+    } catch (error) {}
 };
 
 const findUserById = async (userId: number) => {

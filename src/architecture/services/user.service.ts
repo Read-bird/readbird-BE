@@ -28,9 +28,7 @@ const signInKakao = async (kakaoToken: String) => {
         }
 
         return userData;
-    } catch (error) {
-        console.log("\nerror ::: " + error);
-    }
+    } catch (error) {}
 };
 
 const findGuestData = async () => {

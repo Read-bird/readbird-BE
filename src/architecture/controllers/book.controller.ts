@@ -56,7 +56,7 @@ class BookController {
                         "coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
                     }
                 ]
-             } 
+            } 
         }*/
         try {
             let { title, page, scale }: any = request.query;

@@ -13,7 +13,7 @@ const corsOption = {
     credentials: true,
     withCredential: true,
     optionsSuccessStatus: 200,
-    exposedHeaders: ["accesstoken", "refreshtoken"],
+    exposedHeaders: ["Authorization", "RefreshToken"],
 };
 app.use(cors(corsOption));
 

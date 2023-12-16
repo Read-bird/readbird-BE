@@ -17,6 +17,7 @@ class PlanRepository {
         endDate: Date,
         userId: number,
         bookId: number,
+        currentPage: number,
     ) => {
         return this.planModel.create({
             totalPage,
@@ -24,7 +25,7 @@ class PlanRepository {
             endDate,
             userId,
             bookId,
-            currentPage: 0,
+            currentPage,
             status: "inProgress",
         });
     };

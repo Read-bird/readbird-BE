@@ -27,6 +27,8 @@ class PlanController {
                 title : 'title' || null,
                 author : 'author' || null,
                 totalPage : 100 || null,
+                currentPage : 100,
+                publisher : 'publisher',
                 startDate : '2023-12-12',
                 endDate : '2023-12-30'
             }

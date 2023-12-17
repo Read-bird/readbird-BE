@@ -12,14 +12,12 @@ class PlanService {
     }
 
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
-        const { bookId, startDate, endDate } = body;
+        const { bookId, startDate, endDate, currentPage } = body;
         let newTotalPage;
         let newBookId = bookId;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
-
-        console.log(userInProgressPlan);
 
         if (userInProgressPlan.length > 2) {
             throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
@@ -36,16 +34,16 @@ class PlanService {
         const bookData = await this.planRepository.findOneBook(bookId);
 
         if (bookData === null) {
-            const { title, author, totalPage } = body;
+            const { title, author, totalPage, publisher } = body;
 
             const newBook = {
                 title,
                 author,
                 totalPage,
+                publisher,
                 description: null,
                 isbn: null,
                 coverImage: null,
-                publisher: null,
                 pubDate: null,
             };
 
@@ -63,6 +61,7 @@ class PlanService {
             newEndDate,
             userId,
             newBookId,
+            currentPage,
         );
     };
 

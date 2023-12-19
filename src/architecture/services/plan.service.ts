@@ -1,6 +1,7 @@
 import PlanRepository from "../repositories/plan.repository";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
 import getDateFormat from "../../util/setDateFormat";
+import makeWeekArr from "../../util/makeWeekArr";
 
 const dateForm = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
 
@@ -14,7 +15,7 @@ class PlanService {
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
         const { bookId, startDate, endDate, currentPage } = body;
         let newTotalPage;
-        let newBookId = bookId;
+        let newBookId = bookId || 0;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
@@ -31,7 +32,7 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
-        const bookData = await this.planRepository.findOneBook(bookId);
+        const bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
             const { title, author, totalPage, publisher } = body;
@@ -135,14 +136,14 @@ class PlanService {
 
     weedRecord = async (userId: number, date: string) => {
         let weedPlans = [];
-        for (let i = -3; i < 4; i++) {
+        const weekDateArr = makeWeekArr(new Date(date));
+
+        for (let i = 0; i < 7; i++) {
             let achievementStatus: string | null = "failed";
-            let baseDate = new Date(
-                new Date(date).setDate(new Date(date).getDate() + i),
-            );
+
             const findAllPlansByDate = await this.planRepository.getTodayPlans(
                 userId,
-                baseDate,
+                weekDateArr[i],
             );
             const dateRecord = findAllPlansByDate.map((plan: any) => {
                 return plan["records.status"];
@@ -158,12 +159,12 @@ class PlanService {
                 !dateRecord.indexOf(null)
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < baseDate) {
+            } else if (new Date() < weekDateArr[i]) {
                 achievementStatus = null;
             }
 
             weedPlans.push({
-                date: baseDate.toISOString().split("T")[0],
+                date: weekDateArr[i].toISOString().split("T")[0],
                 achievementStatus,
             });
         }

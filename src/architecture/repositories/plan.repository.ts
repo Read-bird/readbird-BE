@@ -52,13 +52,15 @@ class PlanRepository {
     };
 
     getTodayPlans = async (userId: number, date: Date) => {
-        console.log(date);
         return this.planModel.findAll({
             include: [
                 {
                     model: this.recordModel,
                     where: {
                         successAt: date.toISOString().split("T")[0],
+                        status: {
+                            [Op.ne]: "delete",
+                        },
                     },
                     attributes: ["status", "successAt"],
                     required: false,

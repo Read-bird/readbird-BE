@@ -1,679 +1,692 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "title": "읽어보새 API 명세서",
-    "description": "독서 습관 플래너 - 읽어보새의 Api 명세서 입니다.",
-    "version": "1.0.0"
-  },
-  "host": "port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
-  ],
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "http",
-      "scheme": "bearer",
-      "in": "header",
-      "bearerFormat": "JWT"
+    "swagger": "2.0",
+    "info": {
+        "title": "읽어보새 API 명세서",
+        "description": "독서 습관 플래너 - 읽어보새의 Api 명세서 입니다.",
+        "version": "1.0.0"
+    },
+    "host": "port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
+    "basePath": "/",
+    "schemes": ["http", "https"],
+    "securityDefinitions": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "in": "header",
+            "bearerFormat": "JWT"
+        }
+    },
+    "paths": {
+        "/api/user/login": {
+            "post": {
+                "tags": ["Login"],
+                "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "accessToken",
+                        "in": "header",
+                        "description": "accessToken",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "카카오 소셜 로그인 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "guest@readbird.com"
+                                },
+                                "nickName": {
+                                    "type": "string",
+                                    "example": "guest"
+                                },
+                                "imageUrl": {
+                                    "type": "string",
+                                    "example": ""
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "권한 없음"
+                    },
+                    "500": {
+                        "description": "내부 서버 오류"
+                    }
+                }
+            }
+        },
+        "/api/user/token": {
+            "post": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/user/login-guest": {
+            "post": {
+                "tags": ["Login"],
+                "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
+                "responses": {
+                    "200": {
+                        "description": "게스트 로그인 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "guest@readbird.com"
+                                },
+                                "nickName": {
+                                    "type": "string",
+                                    "example": "guest"
+                                },
+                                "imageUrl": {
+                                    "type": "string",
+                                    "example": ""
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/plan/delete": {
+            "delete": {
+                "tags": ["MyPage"],
+                "description": "모든 플랜을 삭제합니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "삭제 성공 여부",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "모든 플랜을 삭제하였습니다."
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/plan/": {
+            "post": {
+                "tags": ["Plan"],
+                "description": "플랜을 등록 할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "등록 할 플랜의 정보",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "planId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "title"
+                                },
+                                "author": {
+                                    "type": "string",
+                                    "example": "author"
+                                },
+                                "totalPage": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "currentPage": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "publisher": {
+                                    "type": "string",
+                                    "example": "publisher"
+                                },
+                                "startDate": {
+                                    "type": "string",
+                                    "example": "2023-12-12"
+                                },
+                                "endDate": {
+                                    "type": "string",
+                                    "example": "2023-12-30"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "플랜 등록 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "planId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "title"
+                                },
+                                "author": {
+                                    "type": "string",
+                                    "example": "author"
+                                },
+                                "coverImage": {
+                                    "type": "string",
+                                    "example": "url"
+                                },
+                                "totalPage": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "target": {
+                                    "type": "number",
+                                    "example": 30
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "inProgress"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
+                    }
+                }
+            },
+            "get": {
+                "tags": ["Plan"],
+                "description": "해당 일자의 플랜 리스트를 조회 할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회 할 일자",
+                        "required": true,
+                        "type": "string",
+                        "example": "2023-12-15"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "일자별 플랜 리스트 조회 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "weedRecord": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date": {
+                                                "type": "string",
+                                                "example": "2023-12-12"
+                                            },
+                                            "achievementStatus": {
+                                                "type": "string",
+                                                "example": "success"
+                                            }
+                                        }
+                                    }
+                                },
+                                "planData": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "planId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "title"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "author"
+                                            },
+                                            "coverImage": {
+                                                "type": "string",
+                                                "example": "url"
+                                            },
+                                            "totalPage": {
+                                                "type": "number",
+                                                "example": 100
+                                            },
+                                            "currentPage": {
+                                                "type": "number",
+                                                "example": 60
+                                            },
+                                            "target": {
+                                                "type": "number",
+                                                "example": 30
+                                            },
+                                            "endDate": {
+                                                "type": "string",
+                                                "example": "2023-12-30"
+                                            },
+                                            "planStatus": {
+                                                "type": "string",
+                                                "example": "success"
+                                            },
+                                            "recordStatus": {
+                                                "type": "string",
+                                                "example": "success"
+                                            }
+                                        }
+                                    }
+                                },
+                                "previouslyFailedPlan": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "planId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "title"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "author"
+                                            },
+                                            "coverImage": {
+                                                "type": "string",
+                                                "example": "url"
+                                            },
+                                            "totalPage": {
+                                                "type": "number",
+                                                "example": 100
+                                            },
+                                            "currentPage": {
+                                                "type": "number",
+                                                "example": 60
+                                            },
+                                            "endDate": {
+                                                "type": "string",
+                                                "example": "2023-12-30"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
+                    }
+                }
+            }
+        },
+        "/api/plan/{planId}": {
+            "put": {
+                "tags": ["Plan"],
+                "description": "플랜의 종료일을 수정할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "planId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "in": "body",
+                        "description": "변경할 종료일",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "endDate": {
+                                    "type": "string",
+                                    "example": "2023-12-25"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "플랜 수정 완료",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "planId": {
+                                    "type": "number",
+                                    "example": 5
+                                },
+                                "totalPage": {
+                                    "type": "number",
+                                    "example": 900
+                                },
+                                "currentPage": {
+                                    "type": "number",
+                                    "example": 0
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "inProgress"
+                                },
+                                "startDate": {
+                                    "type": "string",
+                                    "example": "2023-12-09T00:00:00.000Z"
+                                },
+                                "endDate": {
+                                    "type": "string",
+                                    "example": "2023-12-17T00:00:00.000Z"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "example": "2023-12-15T11:19:58.000Z"
+                                },
+                                "updatedAt": {
+                                    "type": "string",
+                                    "example": "2023-12-15T11:30:15.000Z"
+                                },
+                                "userId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "bookId": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
+                    },
+                    "404": {
+                        "description": "플랜을 찾을 수 없는 경우"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Plan"],
+                "description": "플랜을 삭제할 수 있습니다..",
+                "parameters": [
+                    {
+                        "name": "planId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "플랜 삭제 완료"
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
+                    },
+                    "404": {
+                        "description": "플랜을 찾을 수 없는 경우"
+                    }
+                }
+            }
+        },
+        "/api/book/": {
+            "get": {
+                "tags": ["Book"],
+                "description": "검색어를 이용하여 도서를 검색할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "검색어",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "검색 할 페이지",
+                        "required": false,
+                        "type": "number",
+                        "default": 1
+                    },
+                    {
+                        "name": "scale",
+                        "in": "query",
+                        "description": "검색 할 도서의 개수",
+                        "required": false,
+                        "type": "number",
+                        "default": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "도서 검색 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "scale": {
+                                    "type": "number",
+                                    "example": 2
+                                },
+                                "totalPage": {
+                                    "type": "number",
+                                    "example": 2
+                                },
+                                "bookList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "bookId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "제3인류 1"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 지음, 이세욱 옮김"
+                                            },
+                                            "pubDate": {
+                                                "type": "string",
+                                                "example": "2013-10-21"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…"
+                                            },
+                                            "isbn": {
+                                                "type": "string",
+                                                "example": "8932916373"
+                                            },
+                                            "publisher": {
+                                                "type": "string",
+                                                "example": "열린책들"
+                                            },
+                                            "totalPage": {
+                                                "type": "number",
+                                                "example": 900
+                                            },
+                                            "coverImage": {
+                                                "type": "string",
+                                                "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/record/{planId}": {
+            "put": {
+                "tags": ["Record"],
+                "description": "오늘의 플랜 달성을 변경할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "planId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "업데이트 할 목표 데이터",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "currentPage": {
+                                    "type": "number",
+                                    "example": 300
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "목표 달성 성공, 플랜 달성 성공여부",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "plan.status = success"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "플랜이 이미 성공, 실패, 삭제 된 경우, 변경할 recordStatus가 동일 한 경우"
+                    },
+                    "404": {
+                        "description": "플랜이 없는 경우"
+                    }
+                }
+            }
+        }
     }
-  },
-  "paths": {
-    "/api/user/login": {
-      "post": {
-        "tags": [
-          "Login"
-        ],
-        "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
-        "parameters": [
-          {
-            "name": "accessToken",
-            "in": "header",
-            "description": "accessToken",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "카카오 소셜 로그인 성공",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "type": "number",
-                  "example": 1
-                },
-                "email": {
-                  "type": "string",
-                  "example": "guest@readbird.com"
-                },
-                "nickName": {
-                  "type": "string",
-                  "example": "guest"
-                },
-                "imageUrl": {
-                  "type": "string",
-                  "example": ""
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "401": {
-            "description": "권한 없음"
-          },
-          "500": {
-            "description": "내부 서버 오류"
-          }
-        }
-      }
-    },
-    "/api/user/token": {
-      "post": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/user/login-guest": {
-      "post": {
-        "tags": [
-          "Login"
-        ],
-        "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
-        "responses": {
-          "200": {
-            "description": "게스트 로그인 성공",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "type": "number",
-                  "example": 1
-                },
-                "email": {
-                  "type": "string",
-                  "example": "guest@readbird.com"
-                },
-                "nickName": {
-                  "type": "string",
-                  "example": "guest"
-                },
-                "imageUrl": {
-                  "type": "string",
-                  "example": ""
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/plan/": {
-      "post": {
-        "tags": [
-          "Plan"
-        ],
-        "description": "플랜을 등록 할 수 있습니다.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "data",
-            "in": "body",
-            "description": "등록 할 플랜의 정보",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "planId": {
-                  "type": "number",
-                  "example": 1
-                },
-                "title": {
-                  "type": "string",
-                  "example": "title"
-                },
-                "author": {
-                  "type": "string",
-                  "example": "author"
-                },
-                "totalPage": {
-                  "type": "number",
-                  "example": 100
-                },
-                "currentPage": {
-                  "type": "number",
-                  "example": 100
-                },
-                "publisher": {
-                  "type": "string",
-                  "example": "publisher"
-                },
-                "startDate": {
-                  "type": "string",
-                  "example": "2023-12-12"
-                },
-                "endDate": {
-                  "type": "string",
-                  "example": "2023-12-30"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "플랜 등록 성공",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "planId": {
-                  "type": "number",
-                  "example": 1
-                },
-                "title": {
-                  "type": "string",
-                  "example": "title"
-                },
-                "author": {
-                  "type": "string",
-                  "example": "author"
-                },
-                "coverImage": {
-                  "type": "string",
-                  "example": "url"
-                },
-                "totalPage": {
-                  "type": "number",
-                  "example": 100
-                },
-                "target": {
-                  "type": "number",
-                  "example": 30
-                },
-                "status": {
-                  "type": "string",
-                  "example": "inProgress"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "값이 알맞게 들어오지 않을 경우"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Plan"
-        ],
-        "description": "해당 일자의 플랜 리스트를 조회 할 수 있습니다.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "date",
-            "in": "query",
-            "description": "조회 할 일자",
-            "required": true,
-            "type": "string",
-            "example": "2023-12-15"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "일자별 플랜 리스트 조회 성공",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "weedRecord": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "date": {
-                        "type": "string",
-                        "example": "2023-12-12"
-                      },
-                      "achievementStatus": {
-                        "type": "string",
-                        "example": "success"
-                      }
-                    }
-                  }
-                },
-                "planData": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "planId": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "title"
-                      },
-                      "author": {
-                        "type": "string",
-                        "example": "author"
-                      },
-                      "coverImage": {
-                        "type": "string",
-                        "example": "url"
-                      },
-                      "totalPage": {
-                        "type": "number",
-                        "example": 100
-                      },
-                      "currentPage": {
-                        "type": "number",
-                        "example": 60
-                      },
-                      "target": {
-                        "type": "number",
-                        "example": 30
-                      },
-                      "endDate": {
-                        "type": "string",
-                        "example": "2023-12-30"
-                      },
-                      "planStatus": {
-                        "type": "string",
-                        "example": "success"
-                      },
-                      "recordStatus": {
-                        "type": "string",
-                        "example": "success"
-                      }
-                    }
-                  }
-                },
-                "previouslyFailedPlan": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "planId": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "title"
-                      },
-                      "author": {
-                        "type": "string",
-                        "example": "author"
-                      },
-                      "coverImage": {
-                        "type": "string",
-                        "example": "url"
-                      },
-                      "totalPage": {
-                        "type": "number",
-                        "example": 100
-                      },
-                      "currentPage": {
-                        "type": "number",
-                        "example": 60
-                      },
-                      "endDate": {
-                        "type": "string",
-                        "example": "2023-12-30"
-                      }
-                    }
-                  }
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "값이 알맞게 들어오지 않을 경우"
-          }
-        }
-      }
-    },
-    "/api/plan/{planId}": {
-      "put": {
-        "tags": [
-          "Plan"
-        ],
-        "description": "플랜의 종료일을 수정할 수 있습니다.",
-        "parameters": [
-          {
-            "name": "planId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "",
-            "in": "body",
-            "description": "변경할 종료일",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "endDate": {
-                  "type": "string",
-                  "example": "2023-12-25"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "플랜 수정 완료",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "planId": {
-                  "type": "number",
-                  "example": 5
-                },
-                "totalPage": {
-                  "type": "number",
-                  "example": 900
-                },
-                "currentPage": {
-                  "type": "number",
-                  "example": 0
-                },
-                "status": {
-                  "type": "string",
-                  "example": "inProgress"
-                },
-                "startDate": {
-                  "type": "string",
-                  "example": "2023-12-09T00:00:00.000Z"
-                },
-                "endDate": {
-                  "type": "string",
-                  "example": "2023-12-17T00:00:00.000Z"
-                },
-                "createdAt": {
-                  "type": "string",
-                  "example": "2023-12-15T11:19:58.000Z"
-                },
-                "updatedAt": {
-                  "type": "string",
-                  "example": "2023-12-15T11:30:15.000Z"
-                },
-                "userId": {
-                  "type": "number",
-                  "example": 1
-                },
-                "bookId": {
-                  "type": "number",
-                  "example": 1
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "값이 알맞게 들어오지 않을 경우"
-          },
-          "404": {
-            "description": "플랜을 찾을 수 없는 경우"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Plan"
-        ],
-        "description": "플랜을 삭제할 수 있습니다..",
-        "parameters": [
-          {
-            "name": "planId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "플랜 삭제 완료"
-          },
-          "400": {
-            "description": "값이 알맞게 들어오지 않을 경우"
-          },
-          "404": {
-            "description": "플랜을 찾을 수 없는 경우"
-          }
-        }
-      }
-    },
-    "/api/book/": {
-      "get": {
-        "tags": [
-          "Book"
-        ],
-        "description": "검색어를 이용하여 도서를 검색할 수 있습니다.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "title",
-            "in": "query",
-            "description": "검색어",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "검색 할 페이지",
-            "required": false,
-            "type": "number",
-            "default": 1
-          },
-          {
-            "name": "scale",
-            "in": "query",
-            "description": "검색 할 도서의 개수",
-            "required": false,
-            "type": "number",
-            "default": 10
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "도서 검색 성공",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "page": {
-                  "type": "number",
-                  "example": 1
-                },
-                "scale": {
-                  "type": "number",
-                  "example": 2
-                },
-                "totalPage": {
-                  "type": "number",
-                  "example": 2
-                },
-                "bookList": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "bookId": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "제3인류 1"
-                      },
-                      "author": {
-                        "type": "string",
-                        "example": "베르나르 베르베르 지음, 이세욱 옮김"
-                      },
-                      "pubDate": {
-                        "type": "string",
-                        "example": "2013-10-21"
-                      },
-                      "description": {
-                        "type": "string",
-                        "example": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…"
-                      },
-                      "isbn": {
-                        "type": "string",
-                        "example": "8932916373"
-                      },
-                      "publisher": {
-                        "type": "string",
-                        "example": "열린책들"
-                      },
-                      "totalPage": {
-                        "type": "number",
-                        "example": 900
-                      },
-                      "coverImage": {
-                        "type": "string",
-                        "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
-                      }
-                    }
-                  }
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/record/{planId}": {
-      "put": {
-        "tags": [
-          "Record"
-        ],
-        "description": "오늘의 플랜 달성을 변경할 수 있습니다.",
-        "parameters": [
-          {
-            "name": "planId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "data",
-            "in": "body",
-            "description": "업데이트 할 목표 데이터",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "currentPage": {
-                  "type": "number",
-                  "example": 300
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "목표 달성 성공, 플랜 달성 성공여부",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "plan.status = success"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "플랜이 이미 성공, 실패, 삭제 된 경우, 변경할 recordStatus가 동일 한 경우"
-          },
-          "404": {
-            "description": "플랜이 없는 경우"
-          }
-        }
-      }
-    }
-  }
 }

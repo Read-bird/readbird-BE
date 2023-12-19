@@ -57,6 +57,53 @@ class RecordController {
             next(error);
         }
     };
+
+    getRecordByMonth = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '오늘의 플랜 달성을 변경할 수 있습니다.'
+        //  #swagger.tags = ['Record']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters['date'] = {
+            in: "query",                            
+            description: "YYYY-MM",         
+            required: true,         
+        } */
+        /*  #swagger.responses[200] = {
+            description: '월간 달성률',
+            schema: {
+                "record": {
+                    "date": "2023-12-25",
+                    "achievementStatus": "failed"                    
+                }
+            }
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '날짜의 형식이 올바르지 않은 경우',
+        }*/
+        try {
+            const { userId } = request.body;
+            const { date } = request.query;
+
+            console.log(typeof date);
+
+            const getRecordByMonth = await this.recordService.getRecordByMonth(
+                userId,
+                String(date),
+            );
+
+            response.status(200).json({ record: getRecordByMonth });
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default RecordController;

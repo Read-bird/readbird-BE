@@ -1,5 +1,6 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
+import userRepository from "../repositories/user.repository";
 
 const signInKakao = async (kakaoToken: String) => {
     try {
@@ -37,7 +38,12 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
+const getPlanBySuccess = async (userId: number) => {
+    return userRepository.getPlanBySuccess(userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
+    getPlanBySuccess,
 };

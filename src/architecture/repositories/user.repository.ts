@@ -1,4 +1,4 @@
-import { Plan, User } from "../../db/models/domain/Tables";
+import { Book, Plan, User } from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
     try {
@@ -62,10 +62,44 @@ const deletePlan = async (userId: number, planId: number) => {
     );
 };
 
+const findPlanByDelete = async (userId: number) => {
+    return Plan.findAll({
+        include: {
+            model: Book,
+            attributes: [
+                "bookId",
+                "title",
+                "author",
+                "description",
+                "coverImage",
+                "isbn",
+            ],
+            required: false,
+        },
+        where: {
+            userId,
+            status: "delete",
+        },
+        raw: true,
+        attributes: [
+            "planId",
+            "startDate",
+            "endDate",
+            "totalPage",
+            "currentPage",
+        ],
+        order: [
+            ["updatedAt", "desc"],
+            ["planId", "desc"],
+        ],
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
     findUserById,
     findAllPlanByUserId,
     deletePlan,
+    findPlanByDelete,
 };

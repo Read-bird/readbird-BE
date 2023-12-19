@@ -52,8 +52,13 @@ const deleteAllPlan = async (userId: number) => {
     }
 };
 
+const findPlanByDelete = async (userId: number) => {
+    return userRepository.findPlanByDelete(userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
     deleteAllPlan,
+    findPlanByDelete,
 };

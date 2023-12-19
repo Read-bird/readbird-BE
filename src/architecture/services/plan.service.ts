@@ -14,7 +14,7 @@ class PlanService {
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
         const { bookId, startDate, endDate, currentPage } = body;
         let newTotalPage;
-        let newBookId = bookId;
+        let newBookId = bookId || 0;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
@@ -31,7 +31,7 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
-        const bookData = await this.planRepository.findOneBook(bookId);
+        const bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
             const { title, author, totalPage, publisher } = body;

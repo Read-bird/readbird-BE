@@ -59,6 +59,9 @@ class PlanRepository {
                     model: this.recordModel,
                     where: {
                         successAt: date.toISOString().split("T")[0],
+                        status: {
+                            [Op.ne]: "delete",
+                        },
                     },
                     attributes: ["status", "successAt"],
                     required: false,

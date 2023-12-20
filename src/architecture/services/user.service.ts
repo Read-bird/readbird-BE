@@ -54,9 +54,43 @@ const deleteAllPlan = async (userId: number) => {
     }
 };
 
+const restorePlan = async (userId: number, planId: number) => {
+    const findOnePlanById = await userRepository.findOnePlanById(
+        userId,
+        planId,
+    );
+
+    if (findOnePlanById === null)
+        throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+    if (findOnePlanById.status !== "delete")
+        throw new Error("Bad Request : 삭제 되지 않은 플랜입니다.");
+
+    let status = "success";
+
+    if ((findOnePlanById.currentPage || 0) < findOnePlanById.totalPage) {
+        if (findOnePlanById.endDate < new Date()) {
+            status = "failed";
+        } else {
+            status = "inProgress";
+        }
+    }
+
+    const restorePlan = await userRepository.restorePlan(
+        userId,
+        planId,
+        status,
+    );
+
+    if (!restorePlan)
+        throw new Error(
+            "Server Error : 복구에 실패하였습니다. 다시 시도해주세요.",
+        );
+};
+
 export default {
     signInKakao,
     findGuestData,
     getPlanBySuccess,
     deleteAllPlan,
+    restorePlan,
 };

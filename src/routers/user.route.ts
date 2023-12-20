@@ -10,5 +10,6 @@ userRouter.post("/token", refresh);
 userRouter.post("/login-guest", userController.signInGuest);
 userRouter.get("/plan/success", authJWT, userController.getPlanBySuccess);
 userRouter.delete("/plan/delete", authJWT, userController.deleteAllPlan);
+userRouter.put("/plan/delete/:planId", authJWT, userController.restorePlan);
 
 export default userRouter;

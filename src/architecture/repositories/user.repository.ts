@@ -86,6 +86,31 @@ const deletePlan = async (userId: number, planId: number) => {
     );
 };
 
+const findOnePlanById = async (userId: number, planId: number) => {
+    return Plan.findOne({
+        where: {
+            userId,
+            planId,
+        },
+        raw: true,
+    });
+};
+
+const restorePlan = async (userId: number, planId: number, status: string) => {
+    return Plan.update(
+        {
+            status,
+        },
+        {
+            where: {
+                planId,
+                userId,
+                status: "delete",
+            },
+        },
+    );
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -93,4 +118,6 @@ export default {
     getPlanBySuccess,
     findAllPlanByUserId,
     deletePlan,
+    findOnePlanById,
+    restorePlan,
 };

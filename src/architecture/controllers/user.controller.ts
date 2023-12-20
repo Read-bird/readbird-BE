@@ -165,9 +165,47 @@ const deleteAllPlan = async (
     }
 };
 
+const restorePlan = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '플랜을 복구 할 수 있습니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '플랜 복구 완료',
+        schema: {    
+            "message": "복구를 성공하였습니다."
+        }
+    }*/
+    /*  #swagger.responses[400] = {
+        description: '값이 알맞게 들어오지 않을 경우',
+    }*/
+    /*  #swagger.responses[404] = {
+        description: '플랜을 찾을 수 없는 경우',
+    }*/
+    try {
+        const { userId } = request.body;
+        const { planId } = request.params;
+
+        await userService.restorePlan(userId, Number(planId));
+
+        response.status(200).json({ message: "복구를 성공하였습니다." });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
     getPlanBySuccess,
     deleteAllPlan,
+    restorePlan,
 };

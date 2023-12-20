@@ -5,5 +5,6 @@ const router: Router = express.Router();
 const collectionController = new CollectionController();
 
 router.post("/", collectionController.createCollection);
+router.get("/", collectionController.getCollection);
 
 export default router;

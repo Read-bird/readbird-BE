@@ -670,18 +670,6 @@
                         "description": "Authorization",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "userId": {
-                                    "example": "any"
-                                }
-                            }
-                        }
                     }
                 ],
                 "responses": {
@@ -883,34 +871,70 @@
                     "201": {
                         "description": "첫 캐릭터 등록 성공",
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "collectionId": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "contents": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "characterId": {
-                                                "type": "number",
-                                                "example": 1
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "example": "베이비버드"
-                                            },
-                                            "content": {
-                                                "type": "string",
-                                                "example": "플랜을 처음 등록하면 개방되는 짹짹이"
-                                            },
-                                            "imageUrl": {
-                                                "type": "string",
-                                                "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
-                                            }
-                                        }
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "characterId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "베이비버드"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                    },
+                                    "imageUrl": {
+                                        "type": "string",
+                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["Collection"],
+                "description": "도감을 조회할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "도감 조회 성공",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "characterId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "베이비버드"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                    },
+                                    "imageUrl": {
+                                        "type": "string",
+                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
                                     }
                                 }
                             },

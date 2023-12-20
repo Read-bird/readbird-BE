@@ -87,10 +87,15 @@ const restorePlan = async (userId: number, planId: number) => {
         );
 };
 
+const findPlanByDelete = async (userId: number) => {
+    return userRepository.findPlanByDelete(userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
     getPlanBySuccess,
     deleteAllPlan,
     restorePlan,
+    findPlanByDelete,
 };

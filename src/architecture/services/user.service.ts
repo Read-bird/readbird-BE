@@ -38,11 +38,13 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
+const getPlanBySuccess = async (userId: number) => {
+    return userRepository.getPlanBySuccess(userId);
+};
+
 const deleteAllPlan = async (userId: number) => {
     const findAllPlanByUserId =
         await userRepository.findAllPlanByUserId(userId);
-
-    console.log(findAllPlanByUserId[0]);
 
     for (let i = 0; i < findAllPlanByUserId.length; i++) {
         await userRepository.deletePlan(
@@ -55,5 +57,6 @@ const deleteAllPlan = async (userId: number) => {
 export default {
     signInKakao,
     findGuestData,
+    getPlanBySuccess,
     deleteAllPlan,
 };

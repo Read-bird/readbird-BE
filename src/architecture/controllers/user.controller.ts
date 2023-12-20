@@ -59,7 +59,7 @@ const signInKakao = async (req: Request, res: Response) => {
 };
 
 const signInGuest = async (
-    requset: Request,
+    request: Request,
     response: Response,
     next: NextFunction,
 ) => {
@@ -92,6 +92,44 @@ const signInGuest = async (
                 nickName: userData.nickName,
                 imageUrl: userData.imageUrl,
             });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getPlanBySuccess = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '나의 서재 : 성공한 모든 플랜을 조회합니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+            description: '조회 성공',
+            schema: {                
+                "planId": 1,
+                "startDate": "2023-12-11T15:00:00.000Z",
+                "endDate": "2023-12-13T00:00:00.000Z",
+                "Book.bookId": 1,
+                "Book.title": "제3인류 1",
+                "Book.author": "베르나르 베르베르 지음, 이세욱 옮김",
+                "Book.description": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…",
+                "Book.coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg",
+                "Book.isbn": "8932916373"
+            }
+        }*/
+    try {
+        const { userId } = request.body;
+
+        const getPlanBySuccess = await userService.getPlanBySuccess(userId);
+
+        response.status(200).json(getPlanBySuccess);
     } catch (error) {
         next(error);
     }
@@ -130,5 +168,6 @@ const deleteAllPlan = async (
 export default {
     signInKakao,
     signInGuest,
+    getPlanBySuccess,
     deleteAllPlan,
 };

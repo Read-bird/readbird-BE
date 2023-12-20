@@ -112,6 +112,70 @@
                 }
             }
         },
+        "/api/user/plan/success": {
+            "get": {
+                "tags": ["MyPage"],
+                "description": "나의 서재 : 성공한 모든 플랜을 조회합니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "조회 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "planId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "startDate": {
+                                    "type": "string",
+                                    "example": "2023-12-11T15:00:00.000Z"
+                                },
+                                "endDate": {
+                                    "type": "string",
+                                    "example": "2023-12-13T00:00:00.000Z"
+                                },
+                                "Book.bookId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "Book.title": {
+                                    "type": "string",
+                                    "example": "제3인류 1"
+                                },
+                                "Book.author": {
+                                    "type": "string",
+                                    "example": "베르나르 베르베르 지음, 이세욱 옮김"
+                                },
+                                "Book.description": {
+                                    "type": "string",
+                                    "example": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…"
+                                },
+                                "Book.coverImage": {
+                                    "type": "string",
+                                    "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                                },
+                                "Book.isbn": {
+                                    "type": "string",
+                                    "example": "8932916373"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/plan/delete": {
             "delete": {
                 "tags": ["MyPage"],

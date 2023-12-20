@@ -1,4 +1,4 @@
-import { User } from "../../db/models/domain/Tables";
+import { Plan, User } from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
     try {
@@ -39,8 +39,33 @@ const findUserById = async (userId: number) => {
     });
 };
 
+const findAllPlanByUserId = async (userId: number) => {
+    return Plan.findAll({
+        where: {
+            userId,
+        },
+        raw: true,
+    });
+};
+
+const deletePlan = async (userId: number, planId: number) => {
+    return Plan.update(
+        {
+            status: "delete",
+        },
+        {
+            where: {
+                userId,
+                planId,
+            },
+        },
+    );
+};
+
 export default {
     getUserByEmail,
     signUp,
     findUserById,
+    findAllPlanByUserId,
+    deletePlan,
 };

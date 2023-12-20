@@ -1,5 +1,6 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
+import userRepository from "../repositories/user.repository";
 
 const signInKakao = async (kakaoToken: String) => {
     try {
@@ -37,7 +38,22 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
+const deleteAllPlan = async (userId: number) => {
+    const findAllPlanByUserId =
+        await userRepository.findAllPlanByUserId(userId);
+
+    console.log(findAllPlanByUserId[0]);
+
+    for (let i = 0; i < findAllPlanByUserId.length; i++) {
+        await userRepository.deletePlan(
+            userId,
+            Number(findAllPlanByUserId[i].planId),
+        );
+    }
+};
+
 export default {
     signInKakao,
     findGuestData,
+    deleteAllPlan,
 };

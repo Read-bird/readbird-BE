@@ -26,10 +26,13 @@ class BookService {
         const createCollection =
             await this.collectionRepository.createCollection(
                 userId,
-                JSON.stringify(newCollection),
+                JSON.stringify([newCollection]),
             );
 
-        return createCollection;
+        return {
+            collectionId: createCollection.collectionId,
+            contents: JSON.parse(createCollection.contents),
+        };
     };
 }
 

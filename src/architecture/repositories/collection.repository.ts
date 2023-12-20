@@ -15,9 +15,9 @@ class CollectionRepository {
         });
     };
 
-    findFirstCharacter = async () => {
+    findNewCharacter = async (characterId: number) => {
         return this.characterModel.findOne({
-            where: { characterId: 1 },
+            where: characterId,
             attributes: ["characterId", "name", "content", "imageUrl"],
             raw: true,
         });
@@ -28,6 +28,19 @@ class CollectionRepository {
             UserUserId: userId,
             contents,
         });
+    };
+
+    updateCollection = async (userId: number, contents: string) => {
+        return this.collectionModel.update(
+            {
+                contents,
+            },
+            {
+                where: {
+                    UserUserId: userId,
+                },
+            },
+        );
     };
 }
 

@@ -9,5 +9,6 @@ userRouter.post("/login", userController.signInKakao);
 userRouter.post("/token", refresh);
 userRouter.post("/login-guest", userController.signInGuest);
 userRouter.get("/plan/success", authJWT, userController.getPlanBySuccess);
+userRouter.delete("/plan/delete", authJWT, userController.deleteAllPlan);
 
 export default userRouter;

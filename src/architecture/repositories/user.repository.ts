@@ -86,6 +86,39 @@ const deletePlan = async (userId: number, planId: number) => {
     );
 };
 
+const findPlanByDelete = async (userId: number) => {
+    return Plan.findAll({
+        include: {
+            model: Book,
+            attributes: [
+                "bookId",
+                "title",
+                "author",
+                "description",
+                "coverImage",
+                "isbn",
+            ],
+            required: false,
+        },
+        where: {
+            userId,
+            status: "delete",
+        },
+        raw: true,
+        attributes: [
+            "planId",
+            "startDate",
+            "endDate",
+            "totalPage",
+            "currentPage",
+        ],
+        order: [
+            ["updatedAt", "desc"],
+            ["planId", "desc"],
+        ],
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -93,4 +126,5 @@ export default {
     getPlanBySuccess,
     findAllPlanByUserId,
     deletePlan,
+    findPlanByDelete,
 };

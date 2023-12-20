@@ -6,9 +6,9 @@ import redis from "../../redis";
 const signInKakao = async (req: Request, res: Response) => {
     //  #swagger.description = '게스트로 로그인 해 서비스를 체험해볼 수 있습니다.'
     //  #swagger.tags = ['Login']
-    /* #swagger.parameters['accessToken'] = {
+    /* #swagger.parameters['authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "authorization",                   
             required: true,                     
             type: "string"         
         } */

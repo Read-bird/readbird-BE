@@ -110,7 +110,7 @@ class PlanService {
                     coverImage: plan["Book.coverImage"],
                     totalPage: plan.totalPage,
                     currentPage: plan.currentPage,
-                    target,
+                    target: plan.status === "inProgress" ? target : 0,
                     endDate: plan.endDate,
                     planStatus: plan.status,
                     recordStatus: plan["records.status"],

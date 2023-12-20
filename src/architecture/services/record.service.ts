@@ -24,10 +24,12 @@ class RecordService {
         );
 
         if (!plan) throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+
         if (plan.status === "failed" || plan.status === "success")
             throw new Error(
                 "Bad Request : 이미 성공 혹은 실패한 플랜은 수정할 수 없습니다.",
             );
+
         if (plan.status === "delete")
             throw new Error("Bad Request : 삭제된 플랜입니다.");
 
@@ -63,8 +65,13 @@ class RecordService {
             }
         }
 
-        const updatePlanCurrentPage =
-            status === "failed" ? 0 : plan.currentPage + currentPage;
+        const newPage =
+            plan.currentPage + currentPage > plan.totalPage
+                ? plan.totalPage
+                : plan.currentPage + currentPage;
+
+        const updatePlanCurrentPage = status === "failed" ? 0 : newPage;
+
         const planStatus =
             plan.totalPage === updatePlanCurrentPage ? "success" : plan.status;
 

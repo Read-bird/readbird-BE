@@ -105,7 +105,7 @@ class PlanService {
 
                 return {
                     planId: plan.planId,
-                    title: plan["Book.bookId"],
+                    title: plan["Book.title"],
                     author: plan["Book.author"],
                     coverImage: plan["Book.coverImage"],
                     totalPage: plan.totalPage,

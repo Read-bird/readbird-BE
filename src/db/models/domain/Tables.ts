@@ -303,9 +303,8 @@ Collection.init(
             primaryKey: true,
         },
         contents: {
-            type: DataTypes.STRING(50000),
+            type: DataTypes.TEXT("long"),
             allowNull: false,
-            defaultValue: "[]",
         },
     },
     {

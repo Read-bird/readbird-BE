@@ -39,7 +39,21 @@ const findGuestData = async () => {
 };
 
 const getPlanBySuccess = async (userId: number) => {
-    return userRepository.getPlanBySuccess(userId);
+    const getPlanBySuccess = await userRepository.getPlanBySuccess(userId);
+
+    return getPlanBySuccess.map((plan: any) => {
+        return {
+            planId: plan.planId,
+            startDate: plan.startDate,
+            endDate: plan.endDate,
+            "Book.bookId": plan["Book.bookId"],
+            "Book.title": plan["Book.title"],
+            "Book.author": plan["Book.author"],
+            "Book.description": plan["Book.description"],
+            "Book.coverImage": plan["Book.coverImage"],
+            "Book.isbn": plan["Book.isbn"],
+        };
+    });
 };
 
 const deleteAllPlan = async (userId: number) => {
@@ -88,7 +102,21 @@ const restorePlan = async (userId: number, planId: number) => {
 };
 
 const findPlanByDelete = async (userId: number) => {
-    return userRepository.findPlanByDelete(userId);
+    const findPlanByDelete = await userRepository.findPlanByDelete(userId);
+
+    return findPlanByDelete.map((plan: any) => {
+        return {
+            planId: plan.planId,
+            startDate: plan.startDate,
+            endDate: plan.endDate,
+            "Book.bookId": plan["Book.bookId"],
+            "Book.title": plan["Book.title"],
+            "Book.author": plan["Book.author"],
+            "Book.description": plan["Book.description"],
+            "Book.coverImage": plan["Book.coverImage"],
+            "Book.isbn": plan["Book.isbn"],
+        };
+    });
 };
 
 export default {

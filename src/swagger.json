@@ -792,6 +792,67 @@
                 }
             }
         },
+        "/api/record/": {
+            "get": {
+                "tags": ["Record"],
+                "description": "오늘의 플랜 달성을 변경할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "YYYY-MM",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "schema",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "월간 달성률",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "record": {
+                                    "type": "object",
+                                    "properties": {
+                                        "date": {
+                                            "type": "string",
+                                            "example": "2023-12-25"
+                                        },
+                                        "achievementStatus": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        }
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "날짜의 형식이 올바르지 않은 경우"
+                    }
+                }
+            }
+        },
         "/api/record/{planId}": {
             "put": {
                 "tags": ["Record"],

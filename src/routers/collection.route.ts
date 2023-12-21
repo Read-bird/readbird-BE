@@ -6,5 +6,6 @@ const collectionController = new CollectionController();
 
 router.post("/", collectionController.createCollection);
 router.get("/", collectionController.getCollection);
+router.put("/", collectionController.updateCollection);
 
 export default router;

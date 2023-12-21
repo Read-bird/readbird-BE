@@ -944,6 +944,48 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "tags": ["Collection"],
+                "description": "새로운 캐릭터를 추가 할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "캐릭터 추가 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "characterId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "베이비버드"
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                },
+                                "imageUrl": {
+                                    "type": "string",
+                                    "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
             }
         }
     }

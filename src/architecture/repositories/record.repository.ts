@@ -91,9 +91,6 @@ class RecordRepository {
                     model: this.recordModel,
                     where: {
                         successAt: date.toISOString().split("T")[0],
-                        status: {
-                            [Op.ne]: "delete",
-                        },
                     },
                     attributes: ["status", "successAt"],
                     required: false,
@@ -107,6 +104,9 @@ class RecordRepository {
                 },
                 endDate: {
                     [Op.gte]: date,
+                },
+                status: {
+                    [Op.ne]: "delete",
                 },
             },
             raw: true,

@@ -19,16 +19,15 @@ class CollectionController {
         } */
         /*  #swagger.responses[201] = {
             description: '첫 캐릭터 등록 성공',
-            schema: {
-                collectionId : 1,
-                contents : [
+            schema: 
+                [
                     {
                         "characterId":1,"name":"베이비버드",
                         "content":"플랜을 처음 등록하면 개방되는 짹짹이",
                         "imageUrl":"https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
                     }
                 ]
-             } 
+             
         }*/
         try {
             const { userId } = request.body;
@@ -37,6 +36,42 @@ class CollectionController {
                 await this.collectionService.createCollection(userId);
 
             response.status(201).json(newCollection);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getCollection = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '도감을 조회할 수 있습니다.'
+        //  #swagger.tags = ['Collection']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /*  #swagger.responses[200] = {
+            description: '도감 조회 성공',
+            schema: 
+                [
+                    {
+                        "characterId":1,"name":"베이비버드",
+                        "content":"플랜을 처음 등록하면 개방되는 짹짹이",
+                        "imageUrl":"https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                    }
+                ]
+        }*/
+        try {
+            const { userId } = request.body;
+
+            const userCollection =
+                await this.collectionService.getCollection(userId);
+
+            response.status(200).json(userCollection);
         } catch (error) {
             next(error);
         }

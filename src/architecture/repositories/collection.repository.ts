@@ -10,6 +10,7 @@ class CollectionRepository {
     findOneCollectionByUserId = async (userId: number) => {
         return this.collectionModel.findOne({
             where: { UserUserId: userId },
+            attributes: ["collectionId", "contents"],
             raw: true,
         });
     };

@@ -29,10 +29,14 @@ class BookService {
                 JSON.stringify([newCollection]),
             );
 
-        return {
-            collectionId: createCollection.collectionId,
-            contents: JSON.parse(createCollection.contents),
-        };
+        return JSON.parse(createCollection.contents);
+    };
+
+    getCollection = async (userId: number) => {
+        const userCollection =
+            await this.collectionRepository.findOneCollectionByUserId(userId);
+
+        return JSON.parse(userCollection.contents);
     };
 }
 

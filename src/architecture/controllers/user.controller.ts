@@ -6,9 +6,9 @@ import redis from "../../redis";
 const signInKakao = async (req: Request, res: Response) => {
     //  #swagger.description = '게스트로 로그인 해 서비스를 체험해볼 수 있습니다.'
     //  #swagger.tags = ['Login']
-    /* #swagger.parameters['accessToken'] = {
+    /* #swagger.parameters['authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -59,7 +59,7 @@ const signInKakao = async (req: Request, res: Response) => {
 };
 
 const signInGuest = async (
-    requset: Request,
+    request: Request,
     response: Response,
     next: NextFunction,
 ) => {
@@ -97,7 +97,156 @@ const signInGuest = async (
     }
 };
 
+const getPlanBySuccess = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '나의 서재 : 성공한 모든 플랜을 조회합니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+            description: '조회 성공',
+            schema: {                
+                "planId": 1,
+                "startDate": "2023-12-11T15:00:00.000Z",
+                "endDate": "2023-12-13T00:00:00.000Z",
+                "Book.bookId": 1,
+                "Book.title": "제3인류 1",
+                "Book.author": "베르나르 베르베르 지음, 이세욱 옮김",
+                "Book.description": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…",
+                "Book.coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg",
+                "Book.isbn": "8932916373"
+            }
+        }*/
+    try {
+        const { userId } = request.body;
+
+        const getPlanBySuccess = await userService.getPlanBySuccess(userId);
+
+        response.status(200).json(getPlanBySuccess);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteAllPlan = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '모든 플랜을 삭제합니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '삭제 성공 여부',
+        schema: {
+            "message": "모든 플랜을 삭제하였습니다."
+        }
+    }*/
+    try {
+        const { userId } = request.body;
+
+        await userService.deleteAllPlan(userId);
+
+        response.status(200).json({ message: "모든 플랜을 삭제하였습니다." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const restorePlan = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '플랜을 복구 할 수 있습니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '플랜 복구 완료',
+        schema: {    
+            "message": "복구를 성공하였습니다."
+        }
+    }*/
+    /*  #swagger.responses[400] = {
+        description: '값이 알맞게 들어오지 않을 경우',
+    }*/
+    /*  #swagger.responses[404] = {
+        description: '플랜을 찾을 수 없는 경우',
+    }*/
+    try {
+        const { userId } = request.body;
+        const { planId } = request.params;
+
+        await userService.restorePlan(userId, Number(planId));
+
+        response.status(200).json({ message: "복구를 성공하였습니다." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const findPlanByDelete = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '삭제 된 플랜을 조회할 수 있습니다.'
+    //  #swagger.tags = ['MyPage']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '조회 성공',
+        schema: {
+            "planId": 1,
+            "startDate": "2023-12-11T15:00:00.000Z",
+            "endDate": "2023-12-13T00:00:00.000Z",
+            "totalPage": 100,
+            "currentPage": 30,
+            "Book.bookId": 1,
+            "Book.title": "제3인류 1",
+            "Book.author": "베르나르 베르베르 지음, 이세욱 옮김",
+            "Book.description": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…",
+            "Book.coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg",
+            "Book.isbn": "8932916373"
+        }
+    }*/
+    try {
+        const { userId } = request.body;
+
+        const findPlanByDelete = await userService.findPlanByDelete(userId);
+
+        response.status(200).json(findPlanByDelete);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
+    getPlanBySuccess,
+    deleteAllPlan,
+    restorePlan,
+    findPlanByDelete,
 };

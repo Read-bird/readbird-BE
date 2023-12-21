@@ -71,7 +71,7 @@ class CollectionController {
             const userCollection =
                 await this.collectionService.getCollection(userId);
 
-            response.status(200).json(userCollection.contents);
+            response.status(200).json(userCollection);
         } catch (error) {
             next(error);
         }

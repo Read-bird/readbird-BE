@@ -492,6 +492,10 @@
                                                 "type": "string",
                                                 "example": "url"
                                             },
+                                            "publisher": {
+                                                "type": "string",
+                                                "example": "publisher"
+                                            },
                                             "totalPage": {
                                                 "type": "number",
                                                 "example": 100
@@ -503,6 +507,10 @@
                                             "target": {
                                                 "type": "number",
                                                 "example": 30
+                                            },
+                                            "startDate": {
+                                                "type": "string",
+                                                "example": "2023-12-10"
                                             },
                                             "endDate": {
                                                 "type": "string",

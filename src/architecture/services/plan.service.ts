@@ -95,6 +95,7 @@ class PlanService {
                 "Book.author": string;
                 "Book.title": string;
                 "Book.bookId": number;
+                "Book.publisher": string;
             }) => {
                 const masDate: any = new Date(plan.endDate);
 
@@ -108,9 +109,11 @@ class PlanService {
                     title: plan["Book.title"],
                     author: plan["Book.author"],
                     coverImage: plan["Book.coverImage"],
+                    publisher: plan["Book.publisher"],
                     totalPage: plan.totalPage,
                     currentPage: plan.currentPage,
                     target: plan.status === "inProgress" ? target : 0,
+                    startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
                     recordStatus: plan["records.status"],

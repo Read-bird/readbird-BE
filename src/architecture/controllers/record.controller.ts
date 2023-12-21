@@ -99,7 +99,12 @@ class RecordController {
                 String(date),
             );
 
-            response.status(200).json({ record: getRecordByMonth });
+            response
+                .status(200)
+                .json({
+                    trophy: "확정 되면 수정하겠습니다.",
+                    record: getRecordByMonth,
+                });
         } catch (error) {
             next(error);
         }

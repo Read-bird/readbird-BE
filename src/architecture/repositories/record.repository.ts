@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+
 class RecordRepository {
     recordModel: any;
     planModel: any;
@@ -80,6 +82,35 @@ class RecordRepository {
                 raw: true,
             },
         );
+    };
+
+    getTodayPlans = async (userId: number, date: Date) => {
+        return this.planModel.findAll({
+            include: [
+                {
+                    model: this.recordModel,
+                    where: {
+                        successAt: date.toISOString().split("T")[0],
+                    },
+                    attributes: ["status", "successAt"],
+                    required: false,
+                    as: "records",
+                },
+            ],
+            where: {
+                userId,
+                startDate: {
+                    [Op.lte]: date,
+                },
+                endDate: {
+                    [Op.gte]: date,
+                },
+                status: {
+                    [Op.ne]: "delete",
+                },
+            },
+            raw: true,
+        });
     };
 }
 

@@ -1,4 +1,5 @@
 import { Plan, Record } from "../../db/models/domain/Tables";
+import makeMonthArr from "../../util/makeMonthArr";
 import getDateFormat from "../../util/setDateFormat";
 import RecordRepository from "../repositories/record.repository";
 
@@ -91,6 +92,58 @@ class RecordService {
             updatedPlan.currentPage >= updatedPlan.totalPage ? true : false;
 
         return returnMessage;
+    };
+
+    getRecordByMonth = async (userId: number, date: string) => {
+        const dateForm = RegExp(
+            /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/,
+        );
+
+        const baseDate = date + "-01";
+
+        if (!dateForm.test(baseDate)) {
+            throw new Error(
+                "Bad Request : 올바르지않은 날짜 형식입니다. 형식은 yyyy-mm 입니다.",
+            );
+        }
+
+        let monthRecord = [];
+        const monthDateArr = makeMonthArr(new Date(baseDate));
+
+        for (let i = 0; i < monthDateArr.length; i++) {
+            let achievementStatus: string | null = "failed";
+
+            const findAllPlansByDate =
+                await this.recordRepository.getTodayPlans(
+                    userId,
+                    monthDateArr[i],
+                );
+
+            const dateRecord = findAllPlansByDate.map((plan: any) => {
+                return plan["records.status"];
+            });
+
+            if (
+                dateRecord.indexOf("success") !== -1 &&
+                dateRecord.indexOf(null) !== -1
+            ) {
+                achievementStatus = "unTable";
+            } else if (
+                dateRecord.indexOf("success") !== -1 &&
+                !dateRecord.indexOf(null)
+            ) {
+                achievementStatus = "success";
+            } else if (new Date() < monthDateArr[i]) {
+                achievementStatus = null;
+            }
+
+            monthRecord.push({
+                date: monthDateArr[i].toISOString().split("T")[0],
+                achievementStatus,
+            });
+        }
+
+        return monthRecord;
     };
 }
 

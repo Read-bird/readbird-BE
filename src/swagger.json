@@ -23,9 +23,9 @@
                 "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
                 "parameters": [
                     {
-                        "name": "accessToken",
+                        "name": "authorization",
                         "in": "header",
-                        "description": "accessToken",
+                        "description": "authorization",
                         "required": true,
                         "type": "string"
                     }
@@ -862,6 +862,62 @@
                     },
                     "404": {
                         "description": "플랜이 없는 경우"
+                    }
+                }
+            }
+        },
+        "/api/collection/": {
+            "post": {
+                "tags": ["Collection"],
+                "description": "플랜 생성 축하 캐릭터가 추가됩니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "첫 캐릭터 등록 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "collectionId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "contents": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "characterId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "베이비버드"
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                            },
+                                            "imageUrl": {
+                                                "type": "string",
+                                                "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
                     }
                 }
             }

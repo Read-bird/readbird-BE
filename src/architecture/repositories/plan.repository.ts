@@ -69,6 +69,7 @@ class PlanRepository {
                         "bookId",
                         "title",
                         "author",
+                        "publisher",
                         "description",
                         "coverImage",
                         "isbn",

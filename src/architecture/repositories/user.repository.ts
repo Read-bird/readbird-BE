@@ -146,6 +146,21 @@ const findPlanByDelete = async (userId: number) => {
     });
 };
 
+const userSecession = async (userId: number) => {
+    return User.update(
+        {
+            email: "delete",
+            nickName: "delete",
+            imageUrl: "delete",
+        },
+        {
+            where: {
+                userId,
+            },
+        },
+    );
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -156,4 +171,5 @@ export default {
     findOnePlanById,
     restorePlan,
     findPlanByDelete,
+    userSecession,
 };

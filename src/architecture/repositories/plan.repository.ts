@@ -17,6 +17,7 @@ class PlanRepository {
         endDate: Date,
         userId: number,
         bookId: number,
+        currentPage: number,
     ) => {
         return this.planModel.create({
             totalPage,
@@ -24,7 +25,7 @@ class PlanRepository {
             endDate,
             userId,
             bookId,
-            currentPage: 0,
+            currentPage,
             status: "inProgress",
         });
     };
@@ -51,7 +52,6 @@ class PlanRepository {
     };
 
     getTodayPlans = async (userId: number, date: Date) => {
-        console.log(date);
         return this.planModel.findAll({
             include: [
                 {
@@ -69,6 +69,7 @@ class PlanRepository {
                         "bookId",
                         "title",
                         "author",
+                        "publisher",
                         "description",
                         "coverImage",
                         "isbn",
@@ -83,6 +84,9 @@ class PlanRepository {
                 },
                 endDate: {
                     [Op.gte]: date,
+                },
+                status: {
+                    [Op.notLike]: "delete",
                 },
             },
             raw: true,

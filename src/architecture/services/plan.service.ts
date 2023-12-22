@@ -1,6 +1,7 @@
 import PlanRepository from "../repositories/plan.repository";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
 import getDateFormat from "../../util/setDateFormat";
+import makeWeekArr from "../../util/makeWeekArr";
 
 const dateForm = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
 
@@ -12,14 +13,12 @@ class PlanService {
     }
 
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
-        const { bookId, startDate, endDate } = body;
+        const { bookId, startDate, endDate, currentPage } = body;
         let newTotalPage;
-        let newBookId = bookId;
+        let newBookId = bookId || 0;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
-
-        console.log(userInProgressPlan);
 
         if (userInProgressPlan.length > 2) {
             throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
@@ -33,19 +32,19 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
-        const bookData = await this.planRepository.findOneBook(bookId);
+        const bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
-            const { title, author, totalPage } = body;
+            const { title, author, totalPage, publisher } = body;
 
             const newBook = {
                 title,
                 author,
                 totalPage,
+                publisher,
                 description: null,
                 isbn: null,
                 coverImage: null,
-                publisher: null,
                 pubDate: null,
             };
 
@@ -63,6 +62,7 @@ class PlanService {
             newEndDate,
             userId,
             newBookId,
+            currentPage,
         );
     };
 
@@ -95,6 +95,7 @@ class PlanService {
                 "Book.author": string;
                 "Book.title": string;
                 "Book.bookId": number;
+                "Book.publisher": string;
             }) => {
                 const masDate: any = new Date(plan.endDate);
 
@@ -105,12 +106,14 @@ class PlanService {
 
                 return {
                     planId: plan.planId,
-                    title: plan["Book.bookId"],
+                    title: plan["Book.title"],
                     author: plan["Book.author"],
                     coverImage: plan["Book.coverImage"],
+                    publisher: plan["Book.publisher"],
                     totalPage: plan.totalPage,
                     currentPage: plan.currentPage,
-                    target,
+                    target: plan.status === "inProgress" ? target : 0,
+                    startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
                     recordStatus: plan["records.status"],
@@ -136,14 +139,14 @@ class PlanService {
 
     weedRecord = async (userId: number, date: string) => {
         let weedPlans = [];
-        for (let i = -3; i < 4; i++) {
+        const weekDateArr = makeWeekArr(new Date(date));
+
+        for (let i = 0; i < 7; i++) {
             let achievementStatus: string | null = "failed";
-            let baseDate = new Date(
-                new Date(date).setDate(new Date(date).getDate() + i),
-            );
+
             const findAllPlansByDate = await this.planRepository.getTodayPlans(
                 userId,
-                baseDate,
+                weekDateArr[i],
             );
             const dateRecord = findAllPlansByDate.map((plan: any) => {
                 return plan["records.status"];
@@ -159,12 +162,12 @@ class PlanService {
                 !dateRecord.indexOf(null)
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < baseDate) {
+            } else if (new Date() < weekDateArr[i]) {
                 achievementStatus = null;
             }
 
             weedPlans.push({
-                date: baseDate.toISOString().split("T")[0],
+                date: weekDateArr[i].toISOString().split("T")[0],
                 achievementStatus,
             });
         }

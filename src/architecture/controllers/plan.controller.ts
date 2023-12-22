@@ -11,9 +11,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜을 등록 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -27,6 +27,8 @@ class PlanController {
                 title : 'title' || null,
                 author : 'author' || null,
                 totalPage : 100 || null,
+                currentPage : 100,
+                publisher : 'publisher',
                 startDate : '2023-12-12',
                 endDate : '2023-12-30'
             }
@@ -67,9 +69,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -95,9 +97,11 @@ class PlanController {
                         title : 'title',
                         author : 'author',
                         coverImage : 'url',
+                        publisher : 'publisher',
                         totalPage : 100,
                         currentPage : 60,
                         target : 30,
+                        startDate : '2023-12-10',
                         endDate : '2023-12-30',
                         planStatus : 'success',
                         recordStatus : 'success',
@@ -152,9 +156,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜의 종료일을 수정할 수 있습니다.'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */
@@ -207,9 +211,9 @@ class PlanController {
     ) => {
         //  #swagger.description = '플랜을 삭제할 수 있습니다..'
         //  #swagger.tags = ['Plan']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */

@@ -11,9 +11,9 @@ class BookController {
     ) => {
         //  #swagger.description = '검색어를 이용하여 도서를 검색할 수 있습니다.'
         //  #swagger.tags = ['Book']
-        /* #swagger.parameters['authorization'] = {
+        /* #swagger.parameters['Authorization'] = {
             in: "header",                            
-            description: "accessToken",                   
+            description: "Authorization",                   
             required: true,                     
             type: "string"         
         } */

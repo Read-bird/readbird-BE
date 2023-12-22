@@ -913,6 +913,24 @@
                                 "message": {
                                     "type": "string",
                                     "example": "plan.status = success"
+                                },
+                                "newCharacter": {
+                                    "characterId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "짹짹이"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                    },
+                                    "imageUrl": {
+                                        "type": "string",
+                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                    }
                                 }
                             },
                             "xml": {

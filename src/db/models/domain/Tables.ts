@@ -251,7 +251,7 @@ Record.init(
         status: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            defaultValue: "실패",
+            defaultValue: "success",
         },
         successAt: {
             type: DataTypes.STRING(50),

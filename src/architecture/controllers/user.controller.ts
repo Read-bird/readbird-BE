@@ -243,7 +243,7 @@ const findPlanByDelete = async (
 };
 const userSecession = async (req: Request, res: Response) => {
     //  #swagger.description = '유저의 회원 탈퇴'
-    //  #swagger.tags = ['Delete']
+    //  #swagger.tags = ['User']
     /* #swagger.parameters['authorization'] = {
             in: "header",                            
             description: "authorization",                   

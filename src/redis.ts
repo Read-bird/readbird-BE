@@ -13,9 +13,6 @@ redisClient.on("error", (err) => {
 });
 redisClient.connect().then();
 const redisCli = redisClient.v4;
-// const REDIS_PORT: any = process.env.REDIS_PORT;
-
-// const redisClient = redis.createClient(REDIS_PORT);
 
 export default {
     redisClient,

@@ -251,7 +251,7 @@ Record.init(
         status: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            defaultValue: "실패",
+            defaultValue: "success",
         },
         successAt: {
             type: DataTypes.STRING(50),
@@ -303,9 +303,8 @@ Collection.init(
             primaryKey: true,
         },
         contents: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT("long"),
             allowNull: false,
-            defaultValue: "{}",
         },
     },
     {

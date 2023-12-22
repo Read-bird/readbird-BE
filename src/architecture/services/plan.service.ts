@@ -1,5 +1,10 @@
 import PlanRepository from "../repositories/plan.repository";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
+import getDateFormat from "../../util/setDateFormat";
+import makeWeekArr from "../../util/makeWeekArr";
+
+const dateForm = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
+
 class PlanService {
     planRepository: PlanRepository;
 
@@ -8,22 +13,16 @@ class PlanService {
     }
 
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
-        const { bookId, startDate, endDate } = body;
+        const { bookId, startDate, endDate, currentPage } = body;
         let newTotalPage;
-        let newBookId = bookId;
+        let newBookId = bookId || 0;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
 
-        console.log(userInProgressPlan);
-
         if (userInProgressPlan.length > 2) {
             throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
         }
-
-        const dateForm = RegExp(
-            /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/,
-        );
 
         if (!dateForm.test(startDate) || !dateForm.test(endDate)) {
             throw new Error(
@@ -33,19 +32,19 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
-        const bookData = await this.planRepository.findOneBook(bookId);
+        const bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
-            const { title, author, totalPage } = body;
+            const { title, author, totalPage, publisher } = body;
 
             const newBook = {
                 title,
                 author,
                 totalPage,
+                publisher,
                 description: null,
                 isbn: null,
                 coverImage: null,
-                publisher: null,
                 pubDate: null,
             };
 
@@ -63,10 +62,12 @@ class PlanService {
             newEndDate,
             userId,
             newBookId,
+            currentPage,
         );
     };
 
     findAllPlansByDate = async (userId: number, date: string) => {
+        const today: any = new Date();
         const baseDate: Date = new Date(date);
 
         const getTodayPlan = await this.planRepository.getTodayPlans(
@@ -80,8 +81,8 @@ class PlanService {
                 totalPage: number;
                 currentPage: number;
                 status: string;
-                startDate: Date;
-                endDate: Date;
+                startDate: string;
+                endDate: string;
                 createdAt: Date;
                 updatedAt: Date;
                 userId: number;
@@ -94,18 +95,31 @@ class PlanService {
                 "Book.author": string;
                 "Book.title": string;
                 "Book.bookId": number;
+                "Book.publisher": string;
             }) => {
+                const masDate: any = new Date(plan.endDate);
+
+                const target = Math.floor(
+                    (plan.totalPage - plan.currentPage) /
+                        Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+                );
+
                 return {
                     planId: plan.planId,
-                    title: plan["Book.bookId"],
+                    title: plan["Book.title"],
                     author: plan["Book.author"],
                     coverImage: plan["Book.coverImage"],
-                    totalPage: 100,
-                    currentPage: 60,
-                    target: 30,
+                    publisher: plan["Book.publisher"],
+                    totalPage: plan.totalPage,
+                    currentPage: plan.currentPage,
+                    target: plan.status === "inProgress" ? target : 0,
+                    startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
-                    recordStatus: plan["records.status"],
+                    recordStatus:
+                        plan["records.status"] === null
+                            ? "failed"
+                            : plan["records.status"],
                 };
             },
         );
@@ -128,14 +142,14 @@ class PlanService {
 
     weedRecord = async (userId: number, date: string) => {
         let weedPlans = [];
-        for (let i = -3; i < 4; i++) {
+        const weekDateArr = makeWeekArr(new Date(date));
+
+        for (let i = 0; i < 7; i++) {
             let achievementStatus: string | null = "failed";
-            let baseDate = new Date(
-                new Date(date).setDate(new Date(date).getDate() + i),
-            );
+
             const findAllPlansByDate = await this.planRepository.getTodayPlans(
                 userId,
-                baseDate,
+                weekDateArr[i],
             );
             const dateRecord = findAllPlansByDate.map((plan: any) => {
                 return plan["records.status"];
@@ -151,16 +165,55 @@ class PlanService {
                 !dateRecord.indexOf(null)
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < baseDate) {
+            } else if (new Date() < weekDateArr[i]) {
                 achievementStatus = null;
             }
 
             weedPlans.push({
-                date: baseDate.toISOString().split("T")[0],
+                date: weekDateArr[i].toISOString().split("T")[0],
                 achievementStatus,
             });
         }
         return weedPlans;
+    };
+
+    updatePlan = async (userId: number, planId: any, endDate: string) => {
+        if (!dateForm.test(endDate)) {
+            throw new Error(
+                "Bad Request : 올바르지않은 날짜 형식입니다. 형식은 yyyy-mm-dd 입니다.",
+            );
+        }
+
+        if (endDate < getDateFormat(new Date()))
+            throw new Error(
+                "Bad Request : 종료일은 오늘보다 빠를 수 없습니다.",
+            );
+
+        const plan = await this.planRepository.findOnePlanById(planId);
+
+        if (plan === null)
+            throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+        if (plan.status === "failed")
+            throw new Error("Bad Request : 실패한 플랜은 수정할 수 없습니다.");
+
+        await this.planRepository.updatePlan(userId, plan.planId, endDate);
+
+        return this.planRepository.findOnePlanById(planId);
+    };
+
+    deletePlan = async (userId: number, planId: any) => {
+        const plan = await this.planRepository.findOnePlanById(planId);
+
+        if (plan === null)
+            throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
+        if (plan.status === "delete")
+            throw new Error("Bad Request :이미 삭제 된 플랜입니다.");
+
+        const deletePlan = await this.planRepository.deletePlan(userId, planId);
+
+        console.log(deletePlan);
+
+        return deletePlan;
     };
 }
 

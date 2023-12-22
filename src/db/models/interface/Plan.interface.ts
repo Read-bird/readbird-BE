@@ -5,4 +5,5 @@ export interface PlanAttributes {
     status: string;
     startDate: Date;
     endDate: Date;
+    userId?: number;
 }

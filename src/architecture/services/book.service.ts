@@ -22,6 +22,10 @@ class BookService {
 
         return dd;
     };
+
+    getBookDetail = async (bookId: number) => {
+        return await this.bookRepository.getBookDetail(bookId);
+    };
 }
 
 export default BookService;

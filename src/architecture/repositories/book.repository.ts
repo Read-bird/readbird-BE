@@ -1,4 +1,6 @@
 import { Op } from "sequelize";
+import { Book } from "../../db/models/domain/Tables";
+import { ALL } from "dns";
 
 class BookRepository {
     bookModel: any;
@@ -31,6 +33,25 @@ class BookRepository {
             offset: (page - 1) * scale,
             limit: Number(scale),
             order: [["createdAt", "DESC"]],
+        });
+    };
+
+    getBookDetail = async (bookId: number) => {
+        return await this.bookModel.findOne({
+            attributes: [
+                "bookId",
+                "title",
+                "author",
+                "pubDate",
+                "description",
+                "isbn",
+                "publisher",
+                "totalPage",
+                "coverImage",
+            ],
+            where: {
+                bookId: bookId,
+            },
         });
     };
 }

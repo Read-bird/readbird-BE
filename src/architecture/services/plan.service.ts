@@ -116,7 +116,10 @@ class PlanService {
                     startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
-                    recordStatus: plan["records.status"],
+                    recordStatus:
+                        plan["records.status"] === null
+                            ? "failed"
+                            : plan["records.status"],
                 };
             },
         );

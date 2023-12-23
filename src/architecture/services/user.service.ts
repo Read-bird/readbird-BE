@@ -117,6 +117,9 @@ const findPlanByDelete = async (userId: number) => {
     });
 };
 
+const userSecession = async (userId: number) => {
+    return await userRepository.userSecession(userId);
+};
 export default {
     signInKakao,
     findGuestData,
@@ -124,4 +127,5 @@ export default {
     deleteAllPlan,
     restorePlan,
     findPlanByDelete,
+    userSecession,
 };

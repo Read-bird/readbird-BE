@@ -146,10 +146,10 @@ const findPlanByDelete = async (userId: number) => {
     });
 };
 
-const userSecession = async (userId: number) => {
+const userSecession = async (userId: number, email: String | any) => {
     return User.update(
         {
-            email: "delete",
+            email: email,
             nickName: "delete",
             imageUrl: "delete",
         },

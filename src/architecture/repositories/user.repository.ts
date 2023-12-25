@@ -161,6 +161,26 @@ const userSecession = async (userId: number, email: String | any) => {
     );
 };
 
+const planValidation = async (userId: number) => {
+    const result = await Plan.findAndCountAll({
+        where: {
+            userId: userId,
+            status: "inProgress",
+        },
+    });
+    return result.count;
+};
+
+const bookValidation = async (bookId: number, userId: number) => {
+    return Plan.findOne({
+        where: {
+            bookId: bookId,
+            userId: userId,
+            status: ["inProgress", "Success"],
+        },
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -172,4 +192,6 @@ export default {
     restorePlan,
     findPlanByDelete,
     userSecession,
+    planValidation,
+    bookValidation,
 };

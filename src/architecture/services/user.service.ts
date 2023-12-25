@@ -136,6 +136,14 @@ const userSecession = async (userId: number) => {
     return await userRepository.userSecession(userId, Remail);
 };
 
+const planValidation = async (userId: number) => {
+    return await userRepository.planValidation(userId);
+};
+
+const bookValidation = async (bookId: number, userId: number) => {
+    return await userRepository.bookValidation(bookId, userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
@@ -144,4 +152,6 @@ export default {
     restorePlan,
     findPlanByDelete,
     userSecession,
+    planValidation,
+    bookValidation,
 };

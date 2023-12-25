@@ -248,7 +248,7 @@ const userSecession = async (
     next: NextFunction,
 ) => {
     //  #swagger.description = '유저의 회원 탈퇴'
-    //  #swagger.tags = ['Delete']
+    //  #swagger.tags = ['User']
     /* #swagger.parameters['authorization'] = {
             in: "header",                            
             description: "authorization",                   
@@ -348,7 +348,7 @@ const bookValidation = async (
     }*/
     try {
         const { bookId }: any = req.params;
-        let { userId } = req.body;
+        const { userId } = req.body;
         if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
 
         const result = await userService.bookValidation(

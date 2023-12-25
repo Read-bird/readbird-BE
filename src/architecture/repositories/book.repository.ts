@@ -8,6 +8,7 @@ class BookRepository {
     }
 
     searchAllBooks = async (
+        type: string,
         searchValue: string,
         page: number,
         scale: number,
@@ -25,7 +26,7 @@ class BookRepository {
                 "coverImage",
             ],
             where: {
-                title: { [Op.like]: searchValue },
+                [type]: { [Op.like]: searchValue },
             },
             raw: true,
             offset: (page - 1) * scale,

@@ -120,7 +120,20 @@ const findPlanByDelete = async (userId: number) => {
 };
 
 const userSecession = async (userId: number) => {
-    return await userRepository.userSecession(userId);
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    //삭제할 계정의 이메일 명 랜덤으로 생성하여 넣을 변수
+    let Remail: String = "";
+    const charactersLength = characters.length;
+    let num: number = 5;
+    //A~z까지 랜덤한 문자 5개를 Remail에 담는다
+    for (let i = 0; i < num; i++) {
+        Remail += characters.charAt(
+            Math.floor(Math.random() * charactersLength),
+        );
+    }
+    //랜덤한 문자 + userId (혹시 모를 중복값을 대비하여 추가)
+    Remail += userId.toString();
+    return await userRepository.userSecession(userId, Remail);
 };
 export default {
     signInKakao,

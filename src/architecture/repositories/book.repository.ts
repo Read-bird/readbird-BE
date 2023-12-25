@@ -1,6 +1,4 @@
 import { Op } from "sequelize";
-import { Book } from "../../db/models/domain/Tables";
-import { ALL } from "dns";
 
 class BookRepository {
     bookModel: any;

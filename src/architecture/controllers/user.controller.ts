@@ -241,9 +241,13 @@ const findPlanByDelete = async (
         next(error);
     }
 };
-const userSecession = async (req: Request, res: Response) => {
+const userSecession = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     //  #swagger.description = '유저의 회원 탈퇴'
-    //  #swagger.tags = ['Delete']
+    //  #swagger.tags = ['User']
     /* #swagger.parameters['authorization'] = {
             in: "header",                            
             description: "authorization",                   
@@ -253,14 +257,16 @@ const userSecession = async (req: Request, res: Response) => {
     /*  #swagger.responses[200] = {
             description: '회원 탈퇴 완료',
         }*/
-    const { userId } = req.body;
-
-    const result = await userService.userSecession(userId);
-
-    if (result) {
-        res.status(200).send("회원 탈퇴 완료");
-    } else {
-        res.status(500).send("Server Error: 서버 오류");
+    try {
+        const { userId } = req.body;
+        const result = await userService.userSecession(userId);
+        if (result) {
+            res.status(200).send("회원 탈퇴 완료");
+        } else {
+            res.status(500).send("Server Error: 서버 오류");
+        }
+    } catch (error) {
+        next(error);
     }
 };
 

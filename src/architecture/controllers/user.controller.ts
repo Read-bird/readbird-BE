@@ -303,6 +303,7 @@ const planValidation = async (
     }*/
     try {
         const { userId }: number | any = req.body;
+      
         const result: number = await userService.planValidation(<number>userId);
 
         if (result === undefined) throw new Error();

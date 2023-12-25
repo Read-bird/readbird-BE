@@ -66,7 +66,7 @@ export class Plan extends Model<PlanAttributes> {
     public endDate!: Date;
 
     public userId!: ForeignKey<User["userId"]>;
-    public bookId!: ForeignKey<Plan["planId"]>;
+    public bookId!: ForeignKey<Book["bookId"]>;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;

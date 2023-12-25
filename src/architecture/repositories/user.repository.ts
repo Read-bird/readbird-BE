@@ -1,32 +1,20 @@
 import { Book, Plan, User } from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
-    try {
-        const userSelect = await User.findOne({
-            attributes: ["userId", "email", "nickName", "imageUrl"],
-            where: {
-                email: email,
-            },
-        });
-
-        return userSelect;
-    } catch (error) {
-        return false;
-    }
+    return await User.findOne({
+        attributes: ["userId", "email", "nickName", "imageUrl"],
+        where: {
+            email: email,
+        },
+    });
 };
 
 const signUp = async (email: any, nickName: any, imageUrl: any) => {
-    try {
-        const userInsert = await User.create({
-            email: email,
-            nickName: nickName,
-            imageUrl: imageUrl,
-        });
-
-        return userInsert;
-    } catch (error) {
-        return false;
-    }
+    return await User.create({
+        email: email,
+        nickName: nickName,
+        imageUrl: imageUrl,
+    });
 };
 
 const findUserById = async (userId: number) => {
@@ -146,6 +134,41 @@ const findPlanByDelete = async (userId: number) => {
     });
 };
 
+const userSecession = async (userId: number, email: String | any) => {
+    return User.update(
+        {
+            email: email,
+            nickName: "delete",
+            imageUrl: "delete",
+        },
+        {
+            where: {
+                userId,
+            },
+        },
+    );
+};
+
+const planValidation = async (userId: number) => {
+    const result = await Plan.findAndCountAll({
+        where: {
+            userId: userId,
+            status: "inProgress",
+        },
+    });
+    return result.count;
+};
+
+const bookValidation = async (bookId: number, userId: number) => {
+    return Plan.findOne({
+        where: {
+            bookId: bookId,
+            userId: userId,
+            status: ["inProgress", "Success"],
+        },
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -156,4 +179,7 @@ export default {
     findOnePlanById,
     restorePlan,
     findPlanByDelete,
+    userSecession,
+    planValidation,
+    bookValidation,
 };

@@ -6,4 +6,5 @@ export interface PlanAttributes {
     startDate: Date;
     endDate: Date;
     userId?: number;
+    bookId?: number;
 }

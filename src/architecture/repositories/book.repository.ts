@@ -34,6 +34,25 @@ class BookRepository {
             order: [["createdAt", "DESC"]],
         });
     };
+
+    getBookDetail = async (bookId: number) => {
+        return await this.bookModel.findOne({
+            attributes: [
+                "bookId",
+                "title",
+                "author",
+                "pubDate",
+                "description",
+                "isbn",
+                "publisher",
+                "totalPage",
+                "coverImage",
+            ],
+            where: {
+                bookId: bookId,
+            },
+        });
+    };
 }
 
 export default BookRepository;

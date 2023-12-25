@@ -7,7 +7,7 @@
     },
     "host": "port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
     "basePath": "/",
-    "schemes": ["https"],
+    "schemes": ["http", "https"],
     "securityDefinitions": {
         "bearerAuth": {
             "type": "http",
@@ -63,16 +63,6 @@
                     },
                     "500": {
                         "description": "내부 서버 오류"
-                    }
-                }
-            }
-        },
-        "/api/user/token": {
-            "post": {
-                "description": "",
-                "responses": {
-                    "default": {
-                        "description": ""
                     }
                 }
             }
@@ -712,7 +702,14 @@
                         "type": "string"
                     },
                     {
-                        "name": "title",
+                        "name": "type",
+                        "in": "query",
+                        "description": "검색 타입 = title || author 등 book에 있는 모든 키값",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "value",
                         "in": "query",
                         "description": "검색어",
                         "required": true,
@@ -741,13 +738,21 @@
                         "schema": {
                             "type": "object",
                             "properties": {
+                                "searchType": {
+                                    "type": "string",
+                                    "example": "author"
+                                },
                                 "page": {
                                     "type": "number",
                                     "example": 1
                                 },
                                 "scale": {
                                     "type": "number",
-                                    "example": 2
+                                    "example": 5
+                                },
+                                "totalCount": {
+                                    "type": "number",
+                                    "example": 8
                                 },
                                 "totalPage": {
                                     "type": "number",
@@ -915,21 +920,24 @@
                                     "example": "plan.status = success"
                                 },
                                 "newCharacter": {
-                                    "characterId": {
-                                        "type": "number",
-                                        "example": 1
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "example": "짹짹이"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
-                                    },
-                                    "imageUrl": {
-                                        "type": "string",
-                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                    "type": "object",
+                                    "properties": {
+                                        "characterId": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "베이비버드"
+                                        },
+                                        "content": {
+                                            "type": "string",
+                                            "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                        },
+                                        "imageUrl": {
+                                            "type": "string",
+                                            "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                        }
                                     }
                                 }
                             },

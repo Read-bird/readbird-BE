@@ -13,5 +13,6 @@ userRouter.delete("/plan/delete", authJWT, userController.deleteAllPlan);
 userRouter.put("/plan/delete/:planId", authJWT, userController.restorePlan);
 userRouter.get("/plan/delete", authJWT, userController.findPlanByDelete);
 userRouter.delete("/secession", authJWT, userController.userSecession);
+userRouter.get("/validation", authJWT, userController.planValidation);
 
 export default userRouter;

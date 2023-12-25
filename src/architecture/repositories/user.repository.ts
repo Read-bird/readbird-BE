@@ -161,6 +161,16 @@ const userSecession = async (userId: number) => {
     );
 };
 
+const planValidation = async (userId: number) => {
+    const result = await Plan.findAndCountAll({
+        where: {
+            userId: userId,
+            status: "inProgress",
+        },
+    });
+    return result.count;
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -172,4 +182,5 @@ export default {
     restorePlan,
     findPlanByDelete,
     userSecession,
+    planValidation,
 };

@@ -256,13 +256,62 @@ const userSecession = async (req: Request, res: Response) => {
     const { userId } = req.body;
 
     const result = await userService.userSecession(userId);
-    console.log("\nresult:: " + result);
+
     if (result) {
         res.status(200).send("회원 탈퇴 완료");
     } else {
         res.status(500).send("Server Error: 서버 오류");
     }
 };
+
+const planValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저의 진행 중과 진행 예정인 플팬이 3개가 넘어가는지 검사'
+    //  #swagger.tags = ['Plan']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '플랜이 0~2개인 경우',
+        schema: {
+            "planValidation": true,
+        } 
+    }*/
+    /*  #swagger.responses[200] = {
+        description: '플랜이 3개인 경우',
+        schema: {
+            "planValidation": false,
+        } 
+    }*/
+    /*  #swagger.responses[401, 412] = {
+        description: '유저의 정보가 올바르지 않은 경우',
+    }*/
+    try {
+        let { userId }: number | any = req.body;
+        const result: number = await userService.planValidation(<number>userId);
+
+        if (result === undefined) throw new Error();
+
+        if (0 <= result && result < 3) {
+            res.status(200).json({
+                planValidation: true,
+            });
+        } else if (result === 3) {
+            res.status(200).json({
+                planValidation: false,
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
@@ -271,4 +320,5 @@ export default {
     restorePlan,
     findPlanByDelete,
     userSecession,
+    planValidation,
 };

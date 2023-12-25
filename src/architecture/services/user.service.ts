@@ -135,6 +135,7 @@ const userSecession = async (userId: number) => {
     Remail += userId.toString();
     return await userRepository.userSecession(userId, Remail);
 };
+
 export default {
     signInKakao,
     findGuestData,

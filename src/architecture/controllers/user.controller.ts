@@ -259,9 +259,7 @@ const userSecession = async (
         }*/
     try {
         const { userId } = req.body;
-
         const result = await userService.userSecession(userId);
-        console.log("\nresult:: " + result);
         if (result) {
             res.status(200).send("회원 탈퇴 완료");
         } else {
@@ -271,6 +269,7 @@ const userSecession = async (
         next(error);
     }
 };
+
 export default {
     signInKakao,
     signInGuest,

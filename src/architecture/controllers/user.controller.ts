@@ -241,6 +241,7 @@ const findPlanByDelete = async (
         next(error);
     }
 };
+
 const userSecession = async (
     req: Request,
     res: Response,
@@ -259,7 +260,9 @@ const userSecession = async (
         }*/
     try {
         const { userId } = req.body;
+
         const result = await userService.userSecession(userId);
+
         if (result) {
             res.status(200).send("회원 탈퇴 완료");
         } else {
@@ -299,7 +302,8 @@ const planValidation = async (
         description: '유저의 정보가 올바르지 않은 경우',
     }*/
     try {
-        let { userId }: number | any = req.body;
+        const { userId }: number | any = req.body;
+      
         const result: number = await userService.planValidation(<number>userId);
 
         if (result === undefined) throw new Error();
@@ -318,6 +322,55 @@ const planValidation = async (
     }
 };
 
+const bookValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저가 이미 읽은 책인지 아닌지 검사합니다'
+    //  #swagger.tags = ['Book']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /* #swagger.parameters['bookId'] = {
+        in: "param",                            
+        description: "북 아이디",                   
+        required: true,                     
+        type: "number"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '읽지 않은 책의 경우',
+        schema: {
+            "readStatus": false,
+        } 
+    }*/
+    try {
+        const { bookId }: any = req.params;
+        const { userId } = req.body;
+        if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
+
+        const result = await userService.bookValidation(
+            Number(bookId),
+            Number(userId),
+        );
+
+        if (result) {
+            res.status(200).json({
+                readStatus: true,
+            });
+        } else {
+            res.status(200).json({
+                readStatus: false,
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
@@ -327,4 +380,5 @@ export default {
     findPlanByDelete,
     userSecession,
     planValidation,
+    bookValidation,
 };

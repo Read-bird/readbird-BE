@@ -140,6 +140,10 @@ const planValidation = async (userId: number) => {
     return await userRepository.planValidation(userId);
 };
 
+const bookValidation = async (bookId: number, userId: number) => {
+    return await userRepository.bookValidation(bookId, userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
@@ -149,4 +153,5 @@ export default {
     findPlanByDelete,
     userSecession,
     planValidation,
+    bookValidation,
 };

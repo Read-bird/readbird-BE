@@ -171,6 +171,16 @@ const planValidation = async (userId: number) => {
     return result.count;
 };
 
+const bookValidation = async (bookId: number, userId: number) => {
+    return Plan.findOne({
+        where: {
+            bookId: bookId,
+            userId: userId,
+            status: ["inProgress", "Success"],
+        },
+    });
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -183,4 +193,5 @@ export default {
     findPlanByDelete,
     userSecession,
     planValidation,
+    bookValidation,
 };

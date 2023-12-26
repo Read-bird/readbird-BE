@@ -24,7 +24,7 @@ class RecordService {
         planId: number,
         userId: number,
         status: string,
-        currentPage: number | undefined,
+        currentPage: number,
     ) => {
         const today = getDateFormat(new Date());
 
@@ -44,51 +44,34 @@ class RecordService {
         if (plan.status === "delete")
             throw new Error("Bad Request : 삭제된 플랜입니다.");
 
-        if (plan["records.recordId"] === null) {
-            if (status === "failed")
-                throw new Error(
-                    "Bad Request : 변경 status와 현재 status가 같습니다.",
-                );
-
+        if (plan["records.status"] === null) {
             await this.recordRepository.createRecord(
                 userId,
                 planId,
                 today,
                 status,
             );
-        }
-
-        if (plan["records.recordId"] !== null) {
+        } else {
             if (status === plan["records.status"])
                 throw new Error(
                     "Bad Request : 변경 status와 현재 status가 같습니다.",
                 );
 
-            if (status === "failed") {
-                await this.recordRepository.deleteRecord(
-                    plan["records.recordId"],
-                );
-            } else {
-                await this.recordRepository.updateRecord(
-                    plan["records.recordId"],
-                    status,
-                );
-            }
+            await this.recordRepository.updateRecord(
+                plan["records.recordId"],
+                status,
+            );
         }
 
-        const newPage =
-            plan.currentPage + currentPage > plan.totalPage
-                ? plan.totalPage
-                : plan.currentPage + currentPage;
-
-        const updatePlanCurrentPage = status === "failed" ? 0 : newPage;
+        const updateCurrentPage =
+            currentPage >= plan.totalPage ? plan.totalPage : currentPage;
 
         const planStatus =
-            plan.totalPage === updatePlanCurrentPage ? "success" : plan.status;
+            currentPage >= plan.totalPage ? "success" : plan.status;
 
         await this.recordRepository.updatePlan(
             planId,
-            updatePlanCurrentPage,
+            updateCurrentPage,
             planStatus,
         );
 
@@ -101,10 +84,13 @@ class RecordService {
         let newCharacter = {};
         let returnMessage = false;
 
-        if (updatedPlan.currentPage >= updatedPlan.totalPage) {
+        if (updatedPlan.status === "success") {
             const NUMBER_CHARACTERS = 16;
+            const NORMAL_CHARACTERS = 12;
+
             const userCollection =
                 await this.recordRepository.findOneCollectionByUserId(userId);
+
             if (userCollection === null)
                 throw new Error(
                     "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
@@ -113,39 +99,40 @@ class RecordService {
             let characterId = 0;
             let collectionContents = JSON.parse(userCollection.contents);
 
-            if (collectionContents.length >= 16)
-                throw new Error(
-                    "Bad Request : 더이상 새로운 캐릭터를 얻을 수 없습니다.",
-                );
+            if (collectionContents.length >= NORMAL_CHARACTERS) {
+                newCharacter = {
+                    message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
+                };
+            } else {
+                while (true) {
+                    const randomNum = Math.floor(
+                        Math.random() * NUMBER_CHARACTERS + 1,
+                    );
 
-            while (true) {
-                const randomNum = Math.floor(
-                    Math.random() * NUMBER_CHARACTERS + 1,
-                );
+                    const validation = collectionContents.findIndex(
+                        (content: any) => content.characterId === randomNum,
+                    );
 
-                const validation = collectionContents.findIndex(
-                    (content: any) => content.characterId === randomNum,
-                );
-
-                if (validation === -1) {
-                    characterId = randomNum;
-                    break;
+                    if (validation === -1) {
+                        characterId = randomNum;
+                        break;
+                    }
                 }
+
+                newCharacter =
+                    await this.recordRepository.findNewCharacter(characterId);
+
+                const updateCollection =
+                    await this.recordRepository.updateCollection(
+                        userId,
+                        JSON.stringify([...collectionContents, newCharacter]),
+                    );
+
+                if (!updateCollection)
+                    throw new Error(
+                        "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
+                    );
             }
-
-            newCharacter =
-                await this.recordRepository.findNewCharacter(characterId);
-
-            const updateCollection =
-                await this.recordRepository.updateCollection(
-                    userId,
-                    JSON.stringify([...collectionContents, newCharacter]),
-                );
-
-            if (!updateCollection)
-                throw new Error(
-                    "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
-                );
 
             returnMessage = true;
         }
@@ -184,14 +171,18 @@ class RecordService {
 
             if (
                 dateRecord.indexOf("success") !== -1 &&
-                dateRecord.indexOf(null) !== -1
+                (dateRecord.indexOf(null) !== -1 ||
+                    dateRecord.indexOf("failed") !== -1)
             ) {
-                achievementStatus = "unTable";
+                achievementStatus = "unstable";
             } else if (
                 dateRecord.indexOf("success") !== -1 &&
-                !dateRecord.indexOf(null)
+                !dateRecord.indexOf(null) &&
+                !dateRecord.indexOf("failed")
             ) {
                 achievementStatus = "success";
+            } else if (!dateRecord.indexOf("success")) {
+                achievementStatus = "failed";
             } else if (new Date() < monthDateArr[i]) {
                 achievementStatus = null;
             }

@@ -122,6 +122,15 @@ class PlanService {
                         Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
                 );
 
+                let recordStatus = plan["records.status"];
+
+                if (plan["records.status"] === null) {
+                    recordStatus =
+                        today.toISOString().split("T")[0] <= date
+                            ? "inProgress"
+                            : "failed";
+                }
+
                 return {
                     planId: plan.planId,
                     title: plan["Book.title"],
@@ -134,10 +143,7 @@ class PlanService {
                     startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
-                    recordStatus:
-                        plan["records.status"] === null
-                            ? "failed"
-                            : plan["records.status"],
+                    recordStatus,
                 };
             },
         );

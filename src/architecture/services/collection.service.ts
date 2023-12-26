@@ -44,7 +44,8 @@ class BookService {
     };
 
     updateCollection = async (userId: number) => {
-        const NUMBER_CHARACTERS = 16;
+        let EVENT_CHARACTER_ID = 16;
+
         const userCollection =
             await this.collectionRepository.findOneCollectionByUserId(userId);
 
@@ -53,34 +54,26 @@ class BookService {
                 "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
             );
 
-        let characterId = 0;
         let collectionContents = JSON.parse(userCollection.contents);
 
-        if (collectionContents.length >= 16)
+        const validation = collectionContents.findIndex(
+            (content: any) => content.characterId === EVENT_CHARACTER_ID,
+        );
+
+        if (validation !== -1)
             throw new Error(
-                "Bad Request : 더이상 새로운 캐릭터를 얻을 수 없습니다.",
+                "Bad Request : 이미 이벤트 캐릭터를 획득하였습니다.",
             );
 
-        while (true) {
-            const randomNum = Math.floor(Math.random() * NUMBER_CHARACTERS + 1);
-
-            const validation = collectionContents.findIndex(
-                (content: any) => content.characterId === randomNum,
+        const eventCharacter =
+            await this.collectionRepository.findNewCharacter(
+                EVENT_CHARACTER_ID,
             );
-
-            if (validation === -1) {
-                characterId = randomNum;
-                break;
-            }
-        }
-
-        const newCharacter =
-            await this.collectionRepository.findNewCharacter(characterId);
 
         const updateCollection =
             await this.collectionRepository.updateCollection(
                 userId,
-                JSON.stringify([...collectionContents, newCharacter]),
+                JSON.stringify([...collectionContents, eventCharacter]),
             );
 
         if (!updateCollection)
@@ -88,7 +81,7 @@ class BookService {
                 "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
             );
 
-        return newCharacter;
+        return eventCharacter;
     };
 }
 

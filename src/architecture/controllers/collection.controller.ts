@@ -77,12 +77,12 @@ class CollectionController {
         }
     };
 
-    updateCollection = async (
+    getEventCharacter = async (
         request: Request,
         response: Response,
         next: NextFunction,
     ) => {
-        //  #swagger.description = '새로운 캐릭터를 추가 할 수 있습니다.'
+        //  #swagger.description = '이벤트 캐릭터를 추가 할 수 있습니다.'
         //  #swagger.tags = ['Collection']
         /* #swagger.parameters['Authorization'] = {
             in: "header",                            
@@ -91,7 +91,7 @@ class CollectionController {
             type: "string"         
         } */
         /*  #swagger.responses[200] = {
-            description: '캐릭터 추가 성공',
+            description: '이벤트 캐릭터 추가 성공',
             schema: 
                     {
                         "characterId":1,"name":"베이비버드",

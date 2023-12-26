@@ -311,7 +311,7 @@ const planValidation = async (
     }*/
     try {
         const { userId }: number | any = req.body;
-      
+
         const result: number = await userService.planValidation(<number>userId);
 
         if (result === undefined) throw new Error();
@@ -379,6 +379,39 @@ const bookValidation = async (
     }
 };
 
+const getUserInfo = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저 정보 조회'
+    //  #swagger.tags = ['User']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '유저 정보',
+        schema: {
+            "userId": 1,
+            "email": "guest@readbird.com",
+            "nickName": "guest",
+            "imageUrl": ""
+        } 
+    }*/
+    try {
+        const { userId } = request.body;
+
+        const userInfo = await userService.getUserInfo(userId);
+
+        response.status(200).json(userInfo);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
@@ -389,4 +422,5 @@ export default {
     userSecession,
     planValidation,
     bookValidation,
+    getUserInfo,
 };

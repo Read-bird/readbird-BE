@@ -154,6 +154,7 @@ class RecordService {
         }
 
         let monthRecord = [];
+        let recordTrophy = 0;
         const monthDateArr = makeMonthArr(new Date(baseDate));
 
         for (let i = 0; i < monthDateArr.length; i++) {
@@ -166,6 +167,7 @@ class RecordService {
                 );
 
             const dateRecord = findAllPlansByDate.map((plan: any) => {
+                if (plan["records.status"] === "success") recordTrophy += 1;
                 return plan["records.status"];
             });
 
@@ -193,7 +195,11 @@ class RecordService {
             });
         }
 
-        return monthRecord;
+        return { recordTrophy, monthRecord };
+    };
+
+    countSuccessPlan = async (userId: number, date: string) => {
+        return this.recordRepository.findAllPlanSuccess(userId, date);
     };
 }
 

@@ -20,7 +20,7 @@
         "/api/user/login": {
             "post": {
                 "tags": ["Login"],
-                "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
+                "description": "카카오 소셜 로그인을 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "authorization",
@@ -369,6 +369,50 @@
                     },
                     "401, 412": {
                         "description": "유저의 정보가 올바르지 않은 경우"
+                    }
+                }
+            }
+        },
+        "/api/user/info": {
+            "get": {
+                "tags": ["User"],
+                "description": "유저 정보 조회",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "유저 정보",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "guest@readbird.com"
+                                },
+                                "nickName": {
+                                    "type": "string",
+                                    "example": "guest"
+                                },
+                                "imageUrl": {
+                                    "type": "string",
+                                    "example": ""
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
                     }
                 }
             }
@@ -800,7 +844,8 @@
                         "in": "query",
                         "description": "검색 타입 = title || author 등 book에 있는 모든 키값",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+                        "default": "all"
                     },
                     {
                         "name": "value",
@@ -997,16 +1042,6 @@
                         "description": "YYYY-MM",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "description",
-                        "in": "query",
-                        "type": "string"
-                    },
-                    {
-                        "name": "schema",
-                        "in": "query",
-                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1015,16 +1050,32 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "record": {
+                                "trophy": {
                                     "type": "object",
                                     "properties": {
-                                        "date": {
-                                            "type": "string",
-                                            "example": "2023-12-25"
+                                        "recordTrophy": {
+                                            "type": "number",
+                                            "example": 1
                                         },
-                                        "achievementStatus": {
-                                            "type": "string",
-                                            "example": "failed"
+                                        "planTrophy": {
+                                            "type": "number",
+                                            "example": 3
+                                        }
+                                    }
+                                },
+                                "record": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date": {
+                                                "type": "string",
+                                                "example": "2023-12-25"
+                                            },
+                                            "achievementStatus": {
+                                                "type": "string",
+                                                "example": "failed"
+                                            }
                                         }
                                     }
                                 }
@@ -1124,51 +1175,6 @@
             }
         },
         "/api/collection/": {
-            "post": {
-                "tags": ["Collection"],
-                "description": "플랜 생성 축하 캐릭터가 추가됩니다.",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Authorization",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "첫 캐릭터 등록 성공",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "characterId": {
-                                        "type": "number",
-                                        "example": 1
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "example": "베이비버드"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
-                                    },
-                                    "imageUrl": {
-                                        "type": "string",
-                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
-                                    }
-                                }
-                            },
-                            "xml": {
-                                "name": "main"
-                            }
-                        }
-                    }
-                }
-            },
             "get": {
                 "tags": ["Collection"],
                 "description": "도감을 조회할 수 있습니다.",
@@ -1213,10 +1219,12 @@
                         }
                     }
                 }
-            },
-            "put": {
+            }
+        },
+        "/api/collection/event": {
+            "get": {
                 "tags": ["Collection"],
-                "description": "새로운 캐릭터를 추가 할 수 있습니다.",
+                "description": "이벤트 캐릭터를 추가 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -1228,7 +1236,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "캐릭터 추가 성공",
+                        "description": "이벤트 캐릭터 추가 성공",
                         "schema": {
                             "type": "object",
                             "properties": {

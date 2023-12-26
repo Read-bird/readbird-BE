@@ -80,7 +80,11 @@ class RecordRepository {
         status: string,
     ) => {
         return this.planModel.update(
-            { currentPage, status },
+            {
+                currentPage,
+                status,
+                endDate: new Date().toISOString().split("T"),
+            },
             {
                 where: { planId },
                 raw: true,
@@ -144,6 +148,22 @@ class RecordRepository {
                 },
             },
         );
+    };
+
+    findAllPlanSuccess = async (userId: number, date: string) => {
+        const year = Number(date.split("-")[0]);
+        const month = Number(date.split("-")[1]);
+
+        const firstDay = new Date(year, month - 1, 1);
+        const lastDay = new Date(year, month, 0);
+
+        return this.planModel.count({
+            where: {
+                userId,
+                status: "success",
+                endDate: { [Op.gte]: firstDay, [Op.lte]: lastDay },
+            },
+        });
     };
 }
 

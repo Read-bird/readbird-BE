@@ -1,4 +1,9 @@
-import { Plan, Record } from "../../db/models/domain/Tables";
+import {
+    Character,
+    Collection,
+    Plan,
+    Record,
+} from "../../db/models/domain/Tables";
 import makeMonthArr from "../../util/makeMonthArr";
 import getDateFormat from "../../util/setDateFormat";
 import RecordRepository from "../repositories/record.repository";
@@ -7,7 +12,12 @@ class RecordService {
     recordRepository: RecordRepository;
 
     constructor() {
-        this.recordRepository = new RecordRepository(Record, Plan);
+        this.recordRepository = new RecordRepository(
+            Record,
+            Plan,
+            Collection,
+            Character,
+        );
     }
 
     changeRecord = async (
@@ -88,10 +98,59 @@ class RecordService {
             today,
         );
 
-        const returnMessage =
-            updatedPlan.currentPage >= updatedPlan.totalPage ? true : false;
+        let newCharacter = {};
+        let returnMessage = false;
 
-        return returnMessage;
+        if (updatedPlan.currentPage >= updatedPlan.totalPage) {
+            const NUMBER_CHARACTERS = 16;
+            const userCollection =
+                await this.recordRepository.findOneCollectionByUserId(userId);
+            if (userCollection === null)
+                throw new Error(
+                    "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
+                );
+
+            let characterId = 0;
+            let collectionContents = JSON.parse(userCollection.contents);
+
+            if (collectionContents.length >= 16)
+                throw new Error(
+                    "Bad Request : 더이상 새로운 캐릭터를 얻을 수 없습니다.",
+                );
+
+            while (true) {
+                const randomNum = Math.floor(
+                    Math.random() * NUMBER_CHARACTERS + 1,
+                );
+
+                const validation = collectionContents.findIndex(
+                    (content: any) => content.characterId === randomNum,
+                );
+
+                if (validation === -1) {
+                    characterId = randomNum;
+                    break;
+                }
+            }
+
+            newCharacter =
+                await this.recordRepository.findNewCharacter(characterId);
+
+            const updateCollection =
+                await this.recordRepository.updateCollection(
+                    userId,
+                    JSON.stringify([...collectionContents, newCharacter]),
+                );
+
+            if (!updateCollection)
+                throw new Error(
+                    "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
+                );
+
+            returnMessage = true;
+        }
+
+        return { returnMessage, newCharacter };
     };
 
     getRecordByMonth = async (userId: number, date: string) => {

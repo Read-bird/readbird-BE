@@ -3,35 +3,31 @@ import UserRepository from "../repositories/user.repository";
 import userRepository from "../repositories/user.repository";
 
 const signInKakao = async (kakaoToken: String) => {
-    try {
-        const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
-            headers: {
-                Authorization: `Bearer ${kakaoToken}`,
-            },
-        });
+    const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
+        headers: {
+            Authorization: `Bearer ${kakaoToken}`,
+        },
+    });
 
-        const { data } = result;
+    const { data } = result;
 
-        const email: String = data.kakao_account.email;
-        const nickName: String = data.properties.nickname;
-        const imageUrl: String = data.properties.profile_image;
+    let email: String = data.kakao_account.email;
+    const nickName: String = data.properties.nickname;
+    const imageUrl: String = data.properties.profile_image;
 
-        if (!email || !nickName) throw new Error("KEY_ERROR");
+    if (!email || !nickName) throw new Error("KEY_ERROR");
 
-        //DB 유저 정보 찾기
+    //DB 유저 정보 찾기
+    const userData = await UserRepository.getUserByEmail(email);
+
+    //DB에 유저 정보가 없을 경우 유저 정보 등록
+    if (!userData) {
+        await UserRepository.signUp(email, nickName, imageUrl);
         const userData = await UserRepository.getUserByEmail(email);
-
-        //DB에 유저 정보가 없을 경우 유저 정보 등록
-        if (!userData) {
-            await UserRepository.signUp(email, nickName, imageUrl);
-            const userData = await UserRepository.getUserByEmail(email);
-            return userData;
-        }
-
         return userData;
-    } catch (error) {
-        console.log("\nerror ::: " + error);
     }
+
+    return userData;
 };
 
 const findGuestData = async () => {
@@ -119,6 +115,31 @@ const findPlanByDelete = async (userId: number) => {
     });
 };
 
+const userSecession = async (userId: number) => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    //삭제할 계정의 이메일 명 랜덤으로 생성하여 넣을 변수
+    let Remail: String = "";
+    const charactersLength = characters.length;
+    let num: number = 5;
+    //A~z까지 랜덤한 문자 5개를 Remail에 담는다
+    for (let i = 0; i < num; i++) {
+        Remail += characters.charAt(
+            Math.floor(Math.random() * charactersLength),
+        );
+    }
+    //랜덤한 문자 + userId (혹시 모를 중복값을 대비하여 추가)
+    Remail += userId.toString();
+    return await userRepository.userSecession(userId, Remail);
+};
+
+const planValidation = async (userId: number) => {
+    return await userRepository.planValidation(userId);
+};
+
+const bookValidation = async (bookId: number, userId: number) => {
+    return await userRepository.bookValidation(bookId, userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
@@ -126,4 +147,7 @@ export default {
     deleteAllPlan,
     restorePlan,
     findPlanByDelete,
+    userSecession,
+    planValidation,
+    bookValidation,
 };

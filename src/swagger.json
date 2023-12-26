@@ -7,7 +7,7 @@
     },
     "host": "port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
     "basePath": "/",
-    "schemes": ["https"],
+    "schemes": ["http", "https"],
     "securityDefinitions": {
         "bearerAuth": {
             "type": "http",
@@ -60,19 +60,6 @@
                     },
                     "401": {
                         "description": "권한 없음"
-                    },
-                    "500": {
-                        "description": "내부 서버 오류"
-                    }
-                }
-            }
-        },
-        "/api/user/token": {
-            "post": {
-                "description": "",
-                "responses": {
-                    "default": {
-                        "description": ""
                     }
                 }
             }
@@ -324,6 +311,103 @@
                     },
                     "404": {
                         "description": "플랜을 찾을 수 없는 경우"
+                    }
+                }
+            }
+        },
+        "/api/user/secession": {
+            "delete": {
+                "tags": ["User"],
+                "description": "유저의 회원 탈퇴",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "description": "authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "회원 탈퇴 완료"
+                    },
+                    "500": {
+                        "description": "내부 서버 오류"
+                    }
+                }
+            }
+        },
+        "/api/user/validation": {
+            "get": {
+                "tags": ["Plan"],
+                "description": "유저의 진행 중과 진행 예정인 플팬이 3개가 넘어가는지 검사",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "플랜이 3개인 경우",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "planValidation": {
+                                    "type": "boolean",
+                                    "example": false
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "401, 412": {
+                        "description": "유저의 정보가 올바르지 않은 경우"
+                    }
+                }
+            }
+        },
+        "/api/user/{bookId}": {
+            "get": {
+                "tags": ["Book"],
+                "description": "유저가 이미 읽은 책인지 아닌지 검사합니다",
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "param",
+                        "required": true,
+                        "type": "number",
+                        "description": "북 아이디"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "읽지 않은 책의 경우",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "readStatus": {
+                                    "type": "boolean",
+                                    "example": false
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
                     }
                 }
             }
@@ -712,7 +796,14 @@
                         "type": "string"
                     },
                     {
-                        "name": "title",
+                        "name": "type",
+                        "in": "query",
+                        "description": "검색 타입 = title || author 등 book에 있는 모든 키값",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "value",
                         "in": "query",
                         "description": "검색어",
                         "required": true,
@@ -741,13 +832,21 @@
                         "schema": {
                             "type": "object",
                             "properties": {
+                                "searchType": {
+                                    "type": "string",
+                                    "example": "author"
+                                },
                                 "page": {
                                     "type": "number",
                                     "example": 1
                                 },
                                 "scale": {
                                     "type": "number",
-                                    "example": 2
+                                    "example": 5
+                                },
+                                "totalCount": {
+                                    "type": "number",
+                                    "example": 8
                                 },
                                 "totalPage": {
                                     "type": "number",
@@ -802,6 +901,80 @@
                                 "name": "main"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/book/{bookId}": {
+            "get": {
+                "tags": ["Book"],
+                "description": "bookId에 해당하는 도서의 상세 데이터를 보여줍니다",
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "param",
+                        "required": true,
+                        "type": "number",
+                        "description": "북 아이디"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "도서 검색 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "bookId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "title"
+                                },
+                                "author": {
+                                    "type": "string",
+                                    "example": "author"
+                                },
+                                "pubDate": {
+                                    "type": "string",
+                                    "example": "2023-12-23"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "description"
+                                },
+                                "isbn": {
+                                    "type": "number",
+                                    "example": 222222
+                                },
+                                "publisher": {
+                                    "type": "string",
+                                    "example": "출판사"
+                                },
+                                "totalPage": {
+                                    "type": "number",
+                                    "example": 233
+                                },
+                                "coverImage": {
+                                    "type": "string",
+                                    "example": "url"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "잘못된 요청"
                     }
                 }
             }
@@ -913,6 +1086,27 @@
                                 "message": {
                                     "type": "string",
                                     "example": "plan.status = success"
+                                },
+                                "newCharacter": {
+                                    "type": "object",
+                                    "properties": {
+                                        "characterId": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "베이비버드"
+                                        },
+                                        "content": {
+                                            "type": "string",
+                                            "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                        },
+                                        "imageUrl": {
+                                            "type": "string",
+                                            "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                        }
+                                    }
                                 }
                             },
                             "xml": {

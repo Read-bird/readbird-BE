@@ -3,10 +3,14 @@ import { Op } from "sequelize";
 class RecordRepository {
     recordModel: any;
     planModel: any;
+    collectionModel: any;
+    characterModel: any;
 
-    constructor(Record: any, Plan: any) {
+    constructor(Record: any, Plan: any, Collection: any, Character: any) {
         this.recordModel = Record;
         this.planModel = Plan;
+        this.collectionModel = Collection;
+        this.characterModel = Character;
     }
 
     findOnePlanById = async (planId: number, userId: number, today: string) => {
@@ -111,6 +115,35 @@ class RecordRepository {
             },
             raw: true,
         });
+    };
+
+    findOneCollectionByUserId = async (userId: number) => {
+        return this.collectionModel.findOne({
+            where: { UserUserId: userId },
+            attributes: ["collectionId", "contents"],
+            raw: true,
+        });
+    };
+
+    findNewCharacter = async (characterId: number) => {
+        return this.characterModel.findOne({
+            where: characterId,
+            attributes: ["characterId", "name", "content", "imageUrl"],
+            raw: true,
+        });
+    };
+
+    updateCollection = async (userId: number, contents: string) => {
+        return this.collectionModel.update(
+            {
+                contents,
+            },
+            {
+                where: {
+                    UserUserId: userId,
+                },
+            },
+        );
     };
 }
 

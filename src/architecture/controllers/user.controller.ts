@@ -3,7 +3,7 @@ import userService from "../services/user.service";
 import jwtUtil from "../../jwt/jwt-util";
 import redis from "../../redis";
 
-const signInKakao = async (req: Request, res: Response) => {
+const signInKakao = async (req: Request, res: Response, next: NextFunction) => {
     //  #swagger.description = '게스트로 로그인 해 서비스를 체험해볼 수 있습니다.'
     //  #swagger.tags = ['Login']
     /* #swagger.parameters['authorization'] = {
@@ -21,41 +21,49 @@ const signInKakao = async (req: Request, res: Response) => {
                 imageUrl: "",
             }
         }*/
-    const headers = req.headers["authorization"];
-    const kakaoToken: any = headers?.split("Bearer ")[1];
+    try {
+        const headers = req.headers["authorization"];
+        const kakaoToken: any = headers?.split("Bearer ")[1];
 
-    if (!kakaoToken) {
+        if (!kakaoToken) {
+            return res
+                .status(401)
+                .send("Unauthorized: 유저의 토큰이 유효하지 않습니다.");
+        }
+        const userData: any = await userService.signInKakao(kakaoToken);
+
+        //userData에서 받오는 값이 없을 경우
+        if (userData == undefined) {
+            return res
+                .status(401)
+                .send("Unauthorized: 유저의 토큰이 유효하지 않습니다.");
+        }
+
+        //사용자 정보를 받아 토큰 발급
+        const accesstoken = jwtUtil.sign(userData);
+        const refreshToken = jwtUtil.refresh();
+
+        //redis key값은 String 값만 넣을 수 있음, userId는 Number 값이기 때문에 형 변환
+        const userId: String = userData.userId.toString();
+
+        //redis DB에 refreshToken을 저장
+        await redis.redisCli.set(userId, refreshToken);
+
         return res
-            .status(401)
-            .send("Unauthorized: 유저의 토큰이 유효하지 않습니다.");
+            .header({
+                Authorization: "Bearer " + accesstoken,
+                RefreshToken: "Bearer " + refreshToken,
+            })
+            .status(200)
+            .json({
+                userId: userData.userId,
+                email: userData.email,
+                nickName: userData.nickName,
+                imageUrl: userData.imageUrl,
+            });
+    } catch (error) {
+        next(error);
     }
-    const userData: any = await userService.signInKakao(kakaoToken);
-
-    //userData에서 받오는 값이 false일 경우
-    if (!userData) res.status(500).send("Server Error: 서버 오류");
-
-    //사용자 정보를 받아 토큰 발급
-    const accesstoken = jwtUtil.sign(userData);
-    const refreshToken = jwtUtil.refresh();
-
-    //redis key값은 String 값만 넣을 수 있음, userId는 Number 값이기 때문에 형 변환
-    const userId: String = userData.userId.toString();
-
-    //redis DB에 refreshToken을 저장
-    await redis.redisCli.set(userId, refreshToken);
-
-    return res
-        .header({
-            Authorization: "Bearer " + accesstoken,
-            RefreshToken: "Bearer " + refreshToken,
-        })
-        .status(200)
-        .json({
-            userId: userData.userId,
-            email: userData.email,
-            nickName: userData.nickName,
-            imageUrl: userData.imageUrl,
-        });
 };
 
 const signInGuest = async (
@@ -242,6 +250,135 @@ const findPlanByDelete = async (
     }
 };
 
+const userSecession = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저의 회원 탈퇴'
+    //  #swagger.tags = ['User']
+    /* #swagger.parameters['authorization'] = {
+            in: "header",                            
+            description: "authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+    /*  #swagger.responses[200] = {
+            description: '회원 탈퇴 완료',
+        }*/
+    try {
+        const { userId } = req.body;
+
+        const result = await userService.userSecession(userId);
+
+        if (result) {
+            res.status(200).send("회원 탈퇴 완료");
+        } else {
+            res.status(500).send("Server Error: 서버 오류");
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const planValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저의 진행 중과 진행 예정인 플팬이 3개가 넘어가는지 검사'
+    //  #swagger.tags = ['Plan']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '플랜이 0~2개인 경우',
+        schema: {
+            "planValidation": true,
+        } 
+    }*/
+    /*  #swagger.responses[200] = {
+        description: '플랜이 3개인 경우',
+        schema: {
+            "planValidation": false,
+        } 
+    }*/
+    /*  #swagger.responses[401, 412] = {
+        description: '유저의 정보가 올바르지 않은 경우',
+    }*/
+    try {
+        const { userId }: number | any = req.body;
+      
+        const result: number = await userService.planValidation(<number>userId);
+
+        if (result === undefined) throw new Error();
+
+        if (0 <= result && result < 3) {
+            res.status(200).json({
+                planValidation: true,
+            });
+        } else if (result === 3) {
+            res.status(200).json({
+                planValidation: false,
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const bookValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저가 이미 읽은 책인지 아닌지 검사합니다'
+    //  #swagger.tags = ['Book']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /* #swagger.parameters['bookId'] = {
+        in: "param",                            
+        description: "북 아이디",                   
+        required: true,                     
+        type: "number"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '읽지 않은 책의 경우',
+        schema: {
+            "readStatus": false,
+        } 
+    }*/
+    try {
+        const { bookId }: any = req.params;
+        const { userId } = req.body;
+        if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
+
+        const result = await userService.bookValidation(
+            Number(bookId),
+            Number(userId),
+        );
+
+        if (result) {
+            res.status(200).json({
+                readStatus: true,
+            });
+        } else {
+            res.status(200).json({
+                readStatus: false,
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
     signInKakao,
     signInGuest,
@@ -249,4 +386,7 @@ export default {
     deleteAllPlan,
     restorePlan,
     findPlanByDelete,
+    userSecession,
+    planValidation,
+    bookValidation,
 };

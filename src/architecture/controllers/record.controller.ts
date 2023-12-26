@@ -28,7 +28,13 @@ class RecordController {
         /*  #swagger.responses[200] = {
             description: '목표 달성 성공, 플랜 달성 성공여부',
             schema: {
-                "message": "plan.status = success"
+                "message": "plan.status = success",
+                "newCharacter" : {
+                        "characterId":1,
+                        "name":"베이비버드",
+                        "content":"플랜을 처음 등록하면 개방되는 짹짹이",
+                        "imageUrl":"https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                    }
             }
         }*/
         /*  #swagger.responses[404] = {
@@ -49,9 +55,10 @@ class RecordController {
             );
 
             response.status(200).json({
-                message: changeRecord
+                message: changeRecord.returnMessage
                     ? "plan.status = success"
                     : "plan.status = inProgress",
+                newCharacter: changeRecord.newCharacter,
             });
         } catch (error) {
             next(error);
@@ -99,12 +106,10 @@ class RecordController {
                 String(date),
             );
 
-            response
-                .status(200)
-                .json({
-                    trophy: "확정 되면 수정하겠습니다.",
-                    record: getRecordByMonth,
-                });
+            response.status(200).json({
+                trophy: "확정 되면 수정하겠습니다.",
+                record: getRecordByMonth,
+            });
         } catch (error) {
             next(error);
         }

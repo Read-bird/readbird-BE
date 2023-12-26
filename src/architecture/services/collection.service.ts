@@ -38,6 +38,8 @@ class BookService {
         const userCollection =
             await this.collectionRepository.findOneCollectionByUserId(userId);
 
+        if (userCollection === null) return [];
+
         return JSON.parse(userCollection.contents);
     };
 

@@ -8,19 +8,33 @@ class BookService {
         this.bookRepository = new BookRepository(Book);
     }
 
-    searchAllBooks = async (title: string, page: number, scale: number) => {
-        const searchValue: string = `%${title.replace(
+    searchAllBooks = async (
+        value: string,
+        page: number,
+        scale: number,
+        type: string,
+    ) => {
+        const searchValue: string = `%${value.replace(
             /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ ]/g,
             "",
         )}%`;
 
-        const dd = await this.bookRepository.searchAllBooks(
+        const getBookList = await this.bookRepository.searchAllBooks(
+            type,
             searchValue,
             page,
             scale,
         );
 
-        return dd;
+        return {
+            totalCount: getBookList.count,
+            totalPage: Math.ceil(getBookList.count / scale),
+            bookList: getBookList.rows,
+        };
+    };
+
+    getBookDetail = async (bookId: number) => {
+        return await this.bookRepository.getBookDetail(bookId);
     };
 }
 

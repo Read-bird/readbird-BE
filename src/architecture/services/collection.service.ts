@@ -44,7 +44,7 @@ class BookService {
     };
 
     updateCollection = async (userId: number) => {
-        let EVENT_CHARACTER_ID = 16;
+        let EVENT_CHARACTER_ID = 13;
 
         const userCollection =
             await this.collectionRepository.findOneCollectionByUserId(userId);
@@ -73,7 +73,7 @@ class BookService {
         const updateCollection =
             await this.collectionRepository.updateCollection(
                 userId,
-                JSON.stringify([...collectionContents, eventCharacter]),
+                JSON.stringify([...collectionContents, ...eventCharacter]),
             );
 
         if (!updateCollection)

@@ -140,6 +140,10 @@ const bookValidation = async (bookId: number, userId: number) => {
     return await userRepository.bookValidation(bookId, userId);
 };
 
+const getUserInfo = async (userId: number) => {
+    return userRepository.findUserById(userId);
+};
+
 export default {
     signInKakao,
     findGuestData,
@@ -150,4 +154,5 @@ export default {
     userSecession,
     planValidation,
     bookValidation,
+    getUserInfo,
 };

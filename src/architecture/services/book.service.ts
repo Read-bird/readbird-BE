@@ -16,7 +16,7 @@ class BookService {
     ) => {
         const searchValue: string = `%${value.replace(
             /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ ]/g,
-            "",
+            "%",
         )}%`;
 
         const getBookList = await this.bookRepository.searchAllBooks(

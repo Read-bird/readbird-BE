@@ -32,12 +32,12 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
-        const bookData = await this.planRepository.findOneBook(newBookId);
+        let bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
             const { title, author, totalPage, publisher } = body;
 
-            const newBook = {
+            bookData = {
                 title,
                 author,
                 totalPage,
@@ -48,7 +48,7 @@ class PlanService {
                 pubDate: null,
             };
 
-            const newBookData = await this.planRepository.createBook(newBook);
+            const newBookData = await this.planRepository.createBook(bookData);
 
             newBookId = newBookData.bookId;
             newTotalPage = totalPage;
@@ -56,7 +56,7 @@ class PlanService {
             newTotalPage = bookData.totalPage;
         }
 
-        return this.planRepository.createPlan(
+        const newPlan = await this.planRepository.createPlan(
             newTotalPage,
             newStartDate,
             newEndDate,
@@ -64,6 +64,24 @@ class PlanService {
             newBookId,
             currentPage,
         );
+
+        const today: any = new Date();
+        const masDate: any = new Date(newPlan.endDate);
+
+        const target = Math.floor(
+            (newPlan.totalPage - newPlan.currentPage) /
+                Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+        );
+
+        return {
+            planId: newPlan.planId,
+            title: bookData.title,
+            author: bookData.author,
+            coverImage: bookData.coverImage,
+            totalPage: bookData.totalPage,
+            target,
+            status: newPlan.status,
+        };
     };
 
     findAllPlansByDate = async (userId: number, date: string) => {
@@ -104,6 +122,15 @@ class PlanService {
                         Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
                 );
 
+                let recordStatus = plan["records.status"];
+
+                if (plan["records.status"] === null) {
+                    recordStatus =
+                        today.toISOString().split("T")[0] <= date
+                            ? "inProgress"
+                            : "failed";
+                }
+
                 return {
                     planId: plan.planId,
                     title: plan["Book.title"],
@@ -116,10 +143,7 @@ class PlanService {
                     startDate: plan.startDate,
                     endDate: plan.endDate,
                     planStatus: plan.status,
-                    recordStatus:
-                        plan["records.status"] === null
-                            ? "failed"
-                            : plan["records.status"],
+                    recordStatus,
                 };
             },
         );

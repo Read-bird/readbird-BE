@@ -74,7 +74,7 @@ class BookController {
 
             if (!page || page === null) page = 1;
             if (!scale || scale === null) scale = 10;
-            if (!type || type === null) type = "title";
+            if (!type || type === null) type = "all";
 
             const searchBookList = await this.bookService.searchAllBooks(
                 value,

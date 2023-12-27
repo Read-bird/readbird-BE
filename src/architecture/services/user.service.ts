@@ -34,22 +34,39 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
-const getPlanBySuccess = async (userId: number) => {
-    const getPlanBySuccess = await userRepository.getPlanBySuccess(userId);
+const getPlanBySuccess = async (
+    userId: number,
+    page: number,
+    scale: number,
+) => {
+    const getPlanBySuccess = await userRepository.getPlanBySuccess(
+        userId,
+        page,
+        scale,
+    );
 
-    return getPlanBySuccess.map((plan: any) => {
+    const bookList = getPlanBySuccess.rows.map((plan: any) => {
         return {
             planId: plan.planId,
             startDate: plan.startDate,
             endDate: plan.endDate,
-            "Book.bookId": plan["Book.bookId"],
-            "Book.title": plan["Book.title"],
-            "Book.author": plan["Book.author"],
-            "Book.description": plan["Book.description"],
-            "Book.coverImage": plan["Book.coverImage"],
-            "Book.isbn": plan["Book.isbn"],
+            bookId: plan["Book.bookId"],
+            title: plan["Book.title"],
+            author: plan["Book.author"],
+            pubDate: plan["Book.pubDate"],
+            description: plan["Book.description"],
+            coverImage: plan["Book.coverImage"],
+            isbn: plan["Book.isbn"],
+            publisher: plan["Book.publisher"],
+            totalPage: plan["Book.totalPage"],
         };
     });
+
+    return {
+        totalCount: getPlanBySuccess.count,
+        totalPage: Math.ceil(getPlanBySuccess.count / scale),
+        bookList,
+    };
 };
 
 const deleteAllPlan = async (userId: number) => {

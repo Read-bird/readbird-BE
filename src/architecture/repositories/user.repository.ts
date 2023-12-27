@@ -27,20 +27,14 @@ const findUserById = async (userId: number) => {
     });
 };
 
-const getPlanBySuccess = async (userId: number) => {
-    return Plan.findAll({
+const getPlanBySuccess = async (
+    userId: number,
+    page: number,
+    scale: number,
+) => {
+    return Plan.findAndCountAll({
         include: {
             model: Book,
-            attributes: [
-                "bookId",
-                "title",
-                "author",
-                "description",
-                "coverImage",
-                "isbn",
-                "publisher",
-                "totalPage",
-            ],
             required: false,
         },
         where: {
@@ -48,6 +42,8 @@ const getPlanBySuccess = async (userId: number) => {
             status: "success",
         },
         raw: true,
+        offset: (page - 1) * scale,
+        limit: Number(scale),
         attributes: ["planId", "startDate", "endDate"],
         order: [["planId", "desc"]],
     });

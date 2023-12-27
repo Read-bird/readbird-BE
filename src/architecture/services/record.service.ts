@@ -178,6 +178,7 @@ class RecordService {
 
             const dateRecord = findAllPlansByDate.map((plan: any) => {
                 if (plan["records.status"] === "success") recordTrophy += 1;
+
                 return plan["records.status"];
             });
 
@@ -189,14 +190,14 @@ class RecordService {
                 achievementStatus = "unstable";
             } else if (
                 dateRecord.indexOf("success") !== -1 &&
-                !dateRecord.indexOf(null) &&
-                !dateRecord.indexOf("failed")
+                dateRecord.indexOf(null) === -1 &&
+                dateRecord.indexOf("failed") === -1
             ) {
                 achievementStatus = "success";
-            } else if (!dateRecord.indexOf("success")) {
-                achievementStatus = "failed";
             } else if (new Date() < monthDateArr[i]) {
                 achievementStatus = null;
+            } else if (dateRecord.indexOf("success") === -1) {
+                achievementStatus = "failed";
             }
 
             monthRecord.push({

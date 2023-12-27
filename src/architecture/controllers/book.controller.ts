@@ -126,8 +126,8 @@ class BookController {
             } 
         }*/
         try {
-            let { bookId }: any = req.params;
-            bookId = 4652;
+            const { bookId }: any = req.params;
+
             if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
             const book = await this.bookService.getBookDetail(Number(bookId));
 

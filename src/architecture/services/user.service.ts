@@ -22,9 +22,23 @@ const signInKakao = async (kakaoToken: String) => {
 
     //DB에 유저 정보가 없을 경우 유저 정보 등록
     if (!userData) {
+        //회원 가입
         await UserRepository.signUp(email, nickName, imageUrl);
-        const userData = await UserRepository.getUserByEmail(email);
-        return userData;
+        //DB 유저 정보 찾기
+        let userData = await UserRepository.getUserByEmail(email);
+
+        const collection: object | any = await userRepository.getCollection(
+            <number>userData?.userId,
+        );
+
+        let obj = {
+            userId: userData?.userId,
+            email: userData?.email,
+            nickName: userData?.nickName,
+            imageUrl: userData?.imageUrl,
+            character: collection,
+        };
+        return obj;
     }
 
     return userData;

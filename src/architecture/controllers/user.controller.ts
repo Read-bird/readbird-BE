@@ -48,19 +48,30 @@ const signInKakao = async (req: Request, res: Response, next: NextFunction) => {
 
         //redis DB에 refreshToken을 저장
         await redis.redisCli.set(userId, refreshToken);
-
-        return res
-            .header({
-                Authorization: "Bearer " + accesstoken,
-                RefreshToken: "Bearer " + refreshToken,
-            })
-            .status(200)
-            .json({
-                userId: userData.userId,
-                email: userData.email,
-                nickName: userData.nickName,
-                imageUrl: userData.imageUrl,
-            });
+        if (!userData.character) {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    userId: userData.userId,
+                    email: userData.email,
+                    nickName: userData.nickName,
+                    imageUrl: userData.imageUrl,
+                });
+        } else {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    ...userData,
+                });
+        }
     } catch (error) {
         next(error);
     }
@@ -311,7 +322,7 @@ const planValidation = async (
     }*/
     try {
         const { userId }: number | any = req.body;
-      
+
         const result: number = await userService.planValidation(<number>userId);
 
         if (result === undefined) throw new Error();

@@ -1,4 +1,10 @@
-import { Book, Plan, User } from "../../db/models/domain/Tables";
+import {
+    Book,
+    Collection,
+    Plan,
+    User,
+    Character,
+} from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
     return await User.findOne({
@@ -14,6 +20,30 @@ const signUp = async (email: any, nickName: any, imageUrl: any) => {
         email: email,
         nickName: nickName,
         imageUrl: imageUrl,
+    });
+};
+
+const getCollection = async (userId: number) => {
+    const character1: any = await Character.findOne({
+        attributes: ["characterId", "name", "content", "imageUrl"],
+        where: {
+            characterId: 1,
+        },
+    });
+
+    const strCharacter1: String | any = JSON.stringify(character1);
+
+    //컬렉션에 첫 가입 캐릭터 생성
+    await Collection.create({
+        contents: strCharacter1,
+        UserUserId: userId,
+    });
+
+    return await Character.findOne({
+        attributes: ["characterId", "name", "content", "imageUrl"],
+        where: {
+            characterId: 1,
+        },
     });
 };
 
@@ -172,6 +202,7 @@ const bookValidation = async (bookId: number, userId: number) => {
 export default {
     getUserByEmail,
     signUp,
+    getCollection,
     findUserById,
     getPlanBySuccess,
     findAllPlanByUserId,

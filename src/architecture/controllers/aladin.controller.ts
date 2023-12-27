@@ -121,33 +121,39 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
         for (const sublist of bookListData.item) {
-            let { data } = await axios.get(
+            let { data: ItemLookUpData } = await axios.get(
                 "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" +
                     ttbkey +
                     "&ItemId=" +
                     sublist.isbn +
                     "&output=JS",
             );
+            console.log("\nItemLookUpData::: " + typeof ItemLookUpData);
+            if (typeof ItemLookUpData === "string") {
+                console.log("\n여기1::: ");
+                //data가 String값으로 반환
+                let pageStr = ItemLookUpData.slice(
+                    ItemLookUpData.indexOf("itemPage") + 10,
+                    ItemLookUpData.indexOf("itemPage") + 14,
+                );
+                console.log("\n여기2::: ");
+                let totalPage: any = pageStr.split(",").filter(Boolean);
 
-            //data가 String값으로 반환
-            let pageStr = data.slice(
-                data.indexOf("itemPage") + 10,
-                data.indexOf("itemPage") + 14,
-            );
-
-            let totalPage = pageStr.split(",").filter(Boolean);
-            if (<number>totalPage > 1) {
-                const obj = {
-                    title: sublist.title,
-                    author: sublist.author,
-                    pubDate: sublist.pubDate,
-                    description: sublist.description,
-                    isbn: sublist.isbn,
-                    coverImage: sublist.cover,
-                    publisher: sublist.publisher,
-                    totalPage: totalPage.join(", "),
-                };
-                list.push(obj);
+                if (<number>totalPage > 1) {
+                    const obj = {
+                        title: sublist.title,
+                        author: sublist.author,
+                        pubDate: sublist.pubDate,
+                        description: sublist.description,
+                        isbn: sublist.isbn,
+                        coverImage: sublist.cover,
+                        publisher: sublist.publisher,
+                        totalPage: totalPage.join(", "),
+                    };
+                    list.push(obj);
+                }
+            } else {
+                console.error("itemLookUpData is not a string:");
             }
         }
         //db에 존재하지 않을 경우 db에 책 정보를 저장

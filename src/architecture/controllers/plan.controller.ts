@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import PlanService from "../services/plan.service";
 
-//dummy data
-const userId = 1;
-
 class PlanController {
     planService = new PlanService();
 
@@ -12,35 +9,48 @@ class PlanController {
         response: Response,
         next: NextFunction,
     ) => {
-        //  #swagger.description = '플랜 등록'
-        //  #swagger.tags = ['Plans']
-        /*  #swagger.parameters[''] = {
-                        in: 'body',
-                        schema: {
-                            "bookId" : 7,
-                            "startDate" : "2023-12-12",
-                            "endDate" : "2023-12-30",
-                            "title" : "title",
-                            "author" : "author",
-                            "totalPage" : 100
-                        }
+        //  #swagger.description = '플랜을 등록 할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters['data'] = {
+            in: "body",                            
+            description: "등록 할 플랜의 정보",                   
+            required: true,                     
+            type: "object",
+            schema : {
+                planId : 1,
+                title : 'title' || null,
+                author : 'author' || null,
+                totalPage : 100 || null,
+                currentPage : 100,
+                publisher : 'publisher',
+                startDate : '2023-12-12',
+                endDate : '2023-12-30'
+            }
         } */
         /*  #swagger.responses[201] = {
-                    description: '플랜 등록 성공',
-                    schema: {
-                        planId : 1,
-                        title : 'title',
-                        author : 'author',
-                        coverImage : 'url' || null,
-                        totalPage : 100,
-                        target : 30,
-                        status : 'inProgress'
-                    }
-        } */
+            description: '플랜 등록 성공',
+            schema: {
+                planId : 1,
+                title : 'title',
+                author : 'author',
+                coverImage : 'url' || null,
+                totalPage : 100,
+                target : 30,
+                status : 'inProgress'
+            }
+        }*/
         /*  #swagger.responses[400] = {
-                    description: 'body 또는 params를 입력받지 못한 경우',
-        } */
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
         try {
+            const { userId } = request.body;
+
             const createPlan = await this.planService.createPlan({
                 userId,
                 body: request.body,
@@ -57,57 +67,66 @@ class PlanController {
         response: Response,
         next: NextFunction,
     ) => {
-        //  #swagger.description = 플랜 조회'
-        //  #swagger.tags = ['Plans']
-        /*  #swagger.parameters[''] = {
-                        in: 'body',
-                        schema: {
-                            "date" : "2023-12-12"
-                        }
+        //  #swagger.description = '해당 일자의 플랜 리스트를 조회 할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters['date'] = {
+            in: "query",                            
+            description: "조회 할 일자",                   
+            required: true,                     
+            type: "string",
+            example : "2023-12-15"
         } */
         /*  #swagger.responses[200] = {
-                    description: '플랜 조회 성공',
-                    schema: {
-                        "weedRecord": [
-                            {
-                                "date": "2023-12-10",
-                                "achievementStatus": "failed"
-                            }
-                        ],
-                        "planData": [
-                            {
-                                "planId": 1,
-                                "title": 1,
-                                "author": "베르나르 베르베르 지음, 이세욱 옮김",
-                                "coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg",
-                                "totalPage": 100,
-                                "currentPage": 60,
-                                "target": 30,
-                                "endDate": "2023-12-29T15:00:00.000Z",
-                                "planStatus": "failed",
-                                "recordStatus": "success"
-                            }
-                        ],
-                        "previouslyFailedPlan": [
-                            {
-                                "planId": 5,
-                                "totalPage": 900,
-                                "currentPage": 0,
-                                "status": "inProgress",
-                                "startDate": "2023-12-09T00:00:00.000Z",
-                                "endDate": "2023-12-11T00:00:00.000Z",
-                                "createdAt": "2023-12-13T19:00:19.000Z",
-                                "updatedAt": "2023-12-13T19:00:19.000Z",
-                                "userId": 1,
-                                "bookId": 1
-                            }
-                        ]
+            description: '일자별 플랜 리스트 조회 성공',
+            schema: {
+                weedRecord : [
+                    { 
+                        date : '2023-12-12',
+                        achievementStatus : 'success'
                     }
-        } */
+                ],
+                planData : [
+                    { 
+                        planId : 1,
+                        title : 'title',
+                        author : 'author',
+                        coverImage : 'url',
+                        publisher : 'publisher',
+                        totalPage : 100,
+                        currentPage : 60,
+                        target : 30,
+                        startDate : '2023-12-10',
+                        endDate : '2023-12-30',
+                        planStatus : 'success',
+                        recordStatus : 'success',
+                    }
+                ],
+                previouslyFailedPlan : [
+                    { 
+                        planId : 1,
+                        title : 'title',
+                        author : 'author',
+                        coverImage : 'url',
+                        totalPage : 100,
+                        currentPage : 60,
+                        endDate : '2023-12-30'
+                    }
+                ]
+            }
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
         try {
-            const userId = 1;
+            const { userId } = request.body;
 
-            const { date }: { date: string } = request.body;
+            const { date }: any = request.query;
 
             const weedRecord = await this.planService.weedRecord(userId, date);
 
@@ -126,6 +145,97 @@ class PlanController {
             });
         } catch (error) {
             console.error(error);
+            next(error);
+        }
+    };
+
+    updatePlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '플랜의 종료일을 수정할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters[""] = {
+            in: "body",                            
+            description: "변경할 종료일",    
+            schema : { endDate : "2023-12-25"}
+        } */
+        /*  #swagger.responses[200] = {
+            description: '플랜 수정 완료',
+            schema: {    
+                "planId": 5,
+                "totalPage": 900,
+                "currentPage": 0,
+                "status": "inProgress",
+                "startDate": "2023-12-09T00:00:00.000Z",
+                "endDate": "2023-12-17T00:00:00.000Z",
+                "createdAt": "2023-12-15T11:19:58.000Z",
+                "updatedAt": "2023-12-15T11:30:15.000Z",
+                "userId": 1,
+                "bookId": 1
+            }
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        /*  #swagger.responses[404] = {
+            description: '플랜을 찾을 수 없는 경우',
+        }*/
+        try {
+            const { userId, endDate }: { userId: number; endDate: string } =
+                request.body;
+            const { planId } = request.params;
+
+            const updatePlan = await this.planService.updatePlan(
+                userId,
+                planId,
+                endDate,
+            );
+            response.status(200).json(updatePlan);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    deletePlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '플랜을 삭제할 수 있습니다..'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /*  #swagger.responses[200] = {
+            description: '플랜 삭제 완료'
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        /*  #swagger.responses[404] = {
+            description: '플랜을 찾을 수 없는 경우',
+        }*/
+        try {
+            const { userId }: { userId: number } = request.body;
+            const { planId } = request.params;
+
+            await this.planService.deletePlan(userId, planId);
+
+            response
+                .status(200)
+                .json({ message: "플랜 삭제에 성공하였습니다." });
+        } catch (error) {
             next(error);
         }
     };

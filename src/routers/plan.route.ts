@@ -6,5 +6,7 @@ const planController = new PlanController();
 
 router.post("/", planController.createPlan);
 router.get("/", planController.findAllPlansByDate);
+router.put("/:planId", planController.updatePlan);
+router.delete("/:planId", planController.deletePlan);
 
 export default router;

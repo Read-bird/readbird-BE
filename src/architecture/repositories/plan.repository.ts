@@ -17,6 +17,7 @@ class PlanRepository {
         endDate: Date,
         userId: number,
         bookId: number,
+        currentPage: number,
     ) => {
         return this.planModel.create({
             totalPage,
@@ -24,7 +25,7 @@ class PlanRepository {
             endDate,
             userId,
             bookId,
-            currentPage: 0,
+            currentPage,
             status: "inProgress",
         });
     };
@@ -68,6 +69,7 @@ class PlanRepository {
                         "bookId",
                         "title",
                         "author",
+                        "publisher",
                         "description",
                         "coverImage",
                         "isbn",
@@ -82,6 +84,9 @@ class PlanRepository {
                 },
                 endDate: {
                     [Op.gte]: date,
+                },
+                status: {
+                    [Op.notLike]: "delete",
                 },
             },
             raw: true,
@@ -115,6 +120,32 @@ class PlanRepository {
                 },
                 raw: true,
             },
+        );
+    };
+
+    updatePlan = async (userId: number, planId: number, endDate: string) => {
+        return this.planModel.update(
+            {
+                endDate,
+            },
+            {
+                where: {
+                    planId,
+                    userId,
+                },
+                raw: true,
+            },
+        );
+    };
+
+    findOnePlanById = async (planId: any) => {
+        return this.planModel.findOne({ where: { planId }, raw: true });
+    };
+
+    deletePlan = async (userId: number, planId: number) => {
+        return this.planModel.update(
+            { status: "delete" },
+            { where: { userId, planId }, raw: true },
         );
     };
 }

@@ -66,7 +66,7 @@ export class Plan extends Model<PlanAttributes> {
     public endDate!: Date;
 
     public userId!: ForeignKey<User["userId"]>;
-    public bookId!: ForeignKey<Plan["planId"]>;
+    public bookId!: ForeignKey<Book["bookId"]>;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;
@@ -251,7 +251,7 @@ Record.init(
         status: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            defaultValue: "실패",
+            defaultValue: "success",
         },
         successAt: {
             type: DataTypes.STRING(50),
@@ -303,9 +303,8 @@ Collection.init(
             primaryKey: true,
         },
         contents: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT("long"),
             allowNull: false,
-            defaultValue: "{}",
         },
     },
     {

@@ -181,16 +181,20 @@ class PlanService {
 
             if (
                 dateRecord.indexOf("success") !== -1 &&
-                dateRecord.indexOf(null) !== -1
+                (dateRecord.indexOf(null) !== -1 ||
+                    dateRecord.indexOf("failed") !== -1)
             ) {
-                achievementStatus = "unTable";
+                achievementStatus = "unstable";
             } else if (
                 dateRecord.indexOf("success") !== -1 &&
-                !dateRecord.indexOf(null)
+                dateRecord.indexOf(null) === -1 &&
+                dateRecord.indexOf("failed") === -1
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < weekDateArr[i]) {
+            } else if (new Date() < weekDateArr[i] || dateRecord.length === 0) {
                 achievementStatus = null;
+            } else if (dateRecord.indexOf("success") === -1) {
+                achievementStatus = "failed";
             }
 
             weedPlans.push({

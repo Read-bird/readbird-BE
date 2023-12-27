@@ -26,9 +26,9 @@ const signInKakao = async (kakaoToken: String) => {
         //회원 가입
         await UserRepository.signUp(email, nickName, imageUrl);
         //DB 유저 정보 찾기
-        let userData = await UserRepository.getUserByEmail(email);
+        const userData = await UserRepository.getUserByEmail(email);
 
-        let collection: object | any = await userRepository.getCollection(
+        const collection: object | any = await userRepository.getCollection(
             <number>userData?.userId,
         );
 

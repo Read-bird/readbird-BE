@@ -24,7 +24,7 @@ const signUp = async (email: any, nickName: any, imageUrl: any) => {
 };
 
 const getCollection = async (userId: number) => {
-    let character1: string | any = await Character.findOne({
+    const character1: string | any = await Character.findOne({
         attributes: ["characterId", "name", "content", "imageUrl"],
         where: {
             characterId: 1,

@@ -1,7 +1,7 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
 import userRepository from "../repositories/user.repository";
-import { col } from "sequelize";
+import getDateFormat from "../../util/setDateFormat";
 
 const signInKakao = async (kakaoToken: String) => {
     const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -89,10 +89,12 @@ const deleteAllPlan = async (userId: number) => {
         await userRepository.findAllPlanByUserId(userId);
 
     for (let i = 0; i < findAllPlanByUserId.length; i++) {
-        await userRepository.deletePlan(
-            userId,
-            Number(findAllPlanByUserId[i].planId),
-        );
+        if (findAllPlanByUserId[i].status === "inProgress") {
+            await userRepository.deletePlan(
+                userId,
+                Number(findAllPlanByUserId[i].planId),
+            );
+        }
     }
 };
 
@@ -107,15 +109,10 @@ const restorePlan = async (userId: number, planId: number) => {
     if (findOnePlanById.status !== "delete")
         throw new Error("Bad Request : 삭제 되지 않은 플랜입니다.");
 
-    let status = "success";
+    let status = "inProgress";
 
-    if ((findOnePlanById.currentPage || 0) < findOnePlanById.totalPage) {
-        if (findOnePlanById.endDate < new Date()) {
-            status = "failed";
-        } else {
-            status = "inProgress";
-        }
-    }
+    if (findOnePlanById.endDate < new Date(getDateFormat(new Date())))
+        status = "failed";
 
     const restorePlan = await userRepository.restorePlan(
         userId,
@@ -137,6 +134,8 @@ const findPlanByDelete = async (userId: number) => {
             planId: plan.planId,
             startDate: plan.startDate,
             endDate: plan.endDate,
+            currentPage: plan.currentPage,
+            totalPage: plan.totalPage,
             bookId: plan["Book.bookId"],
             title: plan["Book.title"],
             author: plan["Book.author"],

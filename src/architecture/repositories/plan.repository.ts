@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import getDateFormat from "../../util/setDateFormat";
 
 class PlanRepository {
     planModel: any;
@@ -57,7 +58,7 @@ class PlanRepository {
                 {
                     model: this.recordModel,
                     where: {
-                        successAt: date.toISOString().split("T")[0],
+                        successAt: getDateFormat(date),
                     },
                     attributes: ["status", "successAt"],
                     required: false,
@@ -139,7 +140,23 @@ class PlanRepository {
     };
 
     findOnePlanById = async (planId: any) => {
-        return this.planModel.findOne({ where: { planId }, raw: true });
+        return this.planModel.findOne({
+            include: {
+                model: this.bookModel,
+                attributes: [
+                    "bookId",
+                    "title",
+                    "author",
+                    "publisher",
+                    "description",
+                    "coverImage",
+                    "isbn",
+                ],
+                required: false,
+            },
+            where: { planId },
+            raw: true,
+        });
     };
 
     deletePlan = async (userId: number, planId: number) => {

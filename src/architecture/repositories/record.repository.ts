@@ -78,12 +78,13 @@ class RecordRepository {
         planId: number,
         currentPage: number,
         status: string,
+        endDate: any,
     ) => {
         return this.planModel.update(
             {
                 currentPage,
                 status,
-                endDate: new Date().toISOString().split("T"),
+                endDate,
             },
             {
                 where: { planId },

@@ -78,6 +78,7 @@ class PlanService {
             title: bookData.title,
             author: bookData.author,
             coverImage: bookData.coverImage,
+            publisher: bookData.publisher,
             totalPage: bookData.totalPage,
             target,
             status: newPlan.status,
@@ -126,9 +127,7 @@ class PlanService {
 
                 if (plan["records.status"] === null) {
                     recordStatus =
-                        today.toISOString().split("T")[0] <= date
-                            ? "inProgress"
-                            : "failed";
+                        getDateFormat(today) <= date ? "inProgress" : "failed";
                 }
 
                 return {
@@ -198,7 +197,7 @@ class PlanService {
             }
 
             weedPlans.push({
-                date: weekDateArr[i].toISOString().split("T")[0],
+                date: getDateFormat(weekDateArr[i]),
                 achievementStatus,
             });
         }
@@ -223,10 +222,36 @@ class PlanService {
             throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
         if (plan.status === "failed")
             throw new Error("Bad Request : 실패한 플랜은 수정할 수 없습니다.");
+        if (plan.status === "success")
+            throw new Error("Bad Request : 성공한 플랜은 수정할 수 없습니다.");
+        if (plan.status === "delete")
+            throw new Error("Bad Request : 이미 삭제한 플랜입니다.");
 
         await this.planRepository.updatePlan(userId, plan.planId, endDate);
 
-        return this.planRepository.findOnePlanById(planId);
+        const newPlan = await this.planRepository.findOnePlanById(planId);
+
+        const today: any = new Date();
+        const masDate: any = new Date(plan.endDate);
+
+        const target = Math.floor(
+            (plan.totalPage - plan.currentPage) /
+                Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+        );
+
+        return {
+            planId: newPlan.planId,
+            title: newPlan["Book.title"],
+            author: newPlan["Book.author"],
+            coverImage: newPlan["Book.coverImage"],
+            publisher: newPlan["Book.publisher"],
+            totalPage: newPlan.totalPage,
+            currentPage: newPlan.currentPage,
+            target: newPlan.status === "inProgress" ? target : 0,
+            startDate: newPlan.startDate,
+            endDate: newPlan.endDate,
+            planStatus: newPlan.status,
+        };
     };
 
     deletePlan = async (userId: number, planId: any) => {
@@ -236,10 +261,12 @@ class PlanService {
             throw new Error("Not Found : 플랜을 찾을 수 없습니다.");
         if (plan.status === "delete")
             throw new Error("Bad Request :이미 삭제 된 플랜입니다.");
+        if (plan.status === "failed")
+            throw new Error("Bad Request : 실패한 플랜은 삭제할 수 없습니다.");
+        if (plan.status === "success")
+            throw new Error("Bad Request : 성공한 플랜은 할 수 없습니다.");
 
         const deletePlan = await this.planRepository.deletePlan(userId, planId);
-
-        console.log(deletePlan);
 
         return deletePlan;
     };

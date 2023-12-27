@@ -44,24 +44,10 @@ class RecordService {
         if (plan.status === "delete")
             throw new Error("Bad Request : 삭제된 플랜입니다.");
 
-        if (plan["records.status"] === null) {
-            await this.recordRepository.createRecord(
-                userId,
-                planId,
-                today,
-                status,
-            );
-        } else {
-            if (status === plan["records.status"])
-                throw new Error(
-                    "Bad Request : 변경 status와 현재 status가 같습니다.",
-                );
+        if (plan["records.status"] !== null)
+            throw new Error("Bad Request : 이미 오늘의 달성을 등록하였습니다.");
 
-            await this.recordRepository.updateRecord(
-                plan["records.recordId"],
-                status,
-            );
-        }
+        await this.recordRepository.createRecord(userId, planId, today, status);
 
         const updateCurrentPage =
             currentPage >= plan.totalPage ? plan.totalPage : currentPage;
@@ -69,10 +55,16 @@ class RecordService {
         const planStatus =
             currentPage >= plan.totalPage ? "success" : plan.status;
 
+        const endDate =
+            currentPage >= plan.totalPage
+                ? getDateFormat(new Date())
+                : plan.endDate;
+
         await this.recordRepository.updatePlan(
             planId,
             updateCurrentPage,
             planStatus,
+            endDate,
         );
 
         const updatedPlan = await this.recordRepository.findOnePlanById(

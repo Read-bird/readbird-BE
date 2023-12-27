@@ -87,6 +87,9 @@ class RecordService {
         if (updatedPlan.status === "success") {
             const NUMBER_CHARACTERS = 16;
             const NORMAL_CHARACTERS = 12;
+            const EVENT_CHARACTERS = 18;
+
+            const isEvent = new Date() < new Date("2024-02-29");
 
             const userCollection =
                 await this.recordRepository.findOneCollectionByUserId(userId);
@@ -99,23 +102,30 @@ class RecordService {
             let characterId = 0;
             let collectionContents = JSON.parse(userCollection.contents);
 
-            if (collectionContents.length >= NORMAL_CHARACTERS) {
+            if (
+                collectionContents.length >=
+                (isEvent ? EVENT_CHARACTERS : NORMAL_CHARACTERS)
+            ) {
                 newCharacter = {
                     message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
                 };
             } else {
                 while (true) {
                     const randomNum = Math.floor(
-                        Math.random() * NUMBER_CHARACTERS + 1,
+                        Math.random() *
+                            (isEvent ? EVENT_CHARACTERS : NUMBER_CHARACTERS) +
+                            1,
                     );
 
-                    const validation = collectionContents.findIndex(
-                        (content: any) => content.characterId === randomNum,
-                    );
+                    if (randomNum < 12 || randomNum > 16) {
+                        const validation = collectionContents.findIndex(
+                            (content: any) => content.characterId === randomNum,
+                        );
 
-                    if (validation === -1) {
-                        characterId = randomNum;
-                        break;
+                        if (validation === -1) {
+                            characterId = randomNum;
+                            break;
+                        }
                     }
                 }
 
@@ -168,6 +178,7 @@ class RecordService {
 
             const dateRecord = findAllPlansByDate.map((plan: any) => {
                 if (plan["records.status"] === "success") recordTrophy += 1;
+
                 return plan["records.status"];
             });
 
@@ -179,14 +190,14 @@ class RecordService {
                 achievementStatus = "unstable";
             } else if (
                 dateRecord.indexOf("success") !== -1 &&
-                !dateRecord.indexOf(null) &&
-                !dateRecord.indexOf("failed")
+                dateRecord.indexOf(null) === -1 &&
+                dateRecord.indexOf("failed") === -1
             ) {
                 achievementStatus = "success";
-            } else if (!dateRecord.indexOf("success")) {
-                achievementStatus = "failed";
             } else if (new Date() < monthDateArr[i]) {
                 achievementStatus = null;
+            } else if (dateRecord.indexOf("success") === -1) {
+                achievementStatus = "failed";
             }
 
             monthRecord.push({

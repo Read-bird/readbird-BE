@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+
 class CollectionRepository {
     collectionModel: any;
     characterModel: any;
@@ -41,6 +43,19 @@ class CollectionRepository {
                 },
             },
         );
+    };
+
+    findEventCharacter = async (characterId: number) => {
+        return this.characterModel.findAll({
+            where: {
+                characterId: {
+                    [Op.gte]: characterId,
+                    [Op.lte]: characterId + 2,
+                },
+            },
+            attributes: ["characterId", "name", "content", "imageUrl"],
+            raw: true,
+        });
     };
 }
 

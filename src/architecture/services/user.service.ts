@@ -1,6 +1,7 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
 import userRepository from "../repositories/user.repository";
+import { col } from "sequelize";
 
 const signInKakao = async (kakaoToken: String) => {
     const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -27,7 +28,7 @@ const signInKakao = async (kakaoToken: String) => {
         //DB 유저 정보 찾기
         let userData = await UserRepository.getUserByEmail(email);
 
-        const collection: object | any = await userRepository.getCollection(
+        let collection: object | any = await userRepository.getCollection(
             <number>userData?.userId,
         );
 

@@ -309,6 +309,10 @@ const userSecession = async (
     try {
         const { userId } = req.body;
 
+        if (<number>userId === 1)
+            res.status(400).send(
+                "Bad Request: 게스트 로그인은 탈퇴 할 수 없습니다",
+            );
         const result = await userService.userSecession(userId);
 
         if (result) {

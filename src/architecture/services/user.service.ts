@@ -105,12 +105,12 @@ const findPlanByDelete = async (userId: number) => {
             planId: plan.planId,
             startDate: plan.startDate,
             endDate: plan.endDate,
-            "Book.bookId": plan["Book.bookId"],
-            "Book.title": plan["Book.title"],
-            "Book.author": plan["Book.author"],
-            "Book.description": plan["Book.description"],
-            "Book.coverImage": plan["Book.coverImage"],
-            "Book.isbn": plan["Book.isbn"],
+            bookId: plan["Book.bookId"],
+            title: plan["Book.title"],
+            author: plan["Book.author"],
+            description: plan["Book.description"],
+            coverImage: plan["Book.coverImage"],
+            isbn: plan["Book.isbn"],
         };
     });
 };

@@ -81,7 +81,7 @@ class RecordService {
             today,
         );
 
-        let newCharacter = {};
+        let newCharacter;
         let returnMessage = false;
 
         if (updatedPlan.status === "success") {
@@ -135,7 +135,16 @@ class RecordService {
                 const updateCollection =
                     await this.recordRepository.updateCollection(
                         userId,
-                        JSON.stringify([...collectionContents, newCharacter]),
+                        JSON.stringify([
+                            ...collectionContents,
+                            {
+                                characterId: newCharacter.characterId,
+                                name: newCharacter.name,
+                                imageUrl: newCharacter.imageUrl,
+                                content: newCharacter.content,
+                                getDate: new Date().toISOString().split("T")[0],
+                            },
+                        ]),
                     );
 
                 if (!updateCollection)

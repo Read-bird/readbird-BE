@@ -70,10 +70,17 @@ class BookService {
                 EVENT_CHARACTER_ID,
             );
 
+        const today = new Date().toISOString().split("T")[0];
+
+        const updateCharacter = eventCharacter.map((character: any) => {
+            character.getDate = today;
+            return character;
+        });
+
         const updateCollection =
             await this.collectionRepository.updateCollection(
                 userId,
-                JSON.stringify([...collectionContents, ...eventCharacter]),
+                JSON.stringify([...collectionContents, ...updateCharacter]),
             );
 
         if (!updateCollection)

@@ -29,6 +29,7 @@ class PlanService {
                 "Bad Request : 올바르지않은 날짜 형식입니다. 형식은 yyyy-mm-dd 입니다.",
             );
         }
+
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
@@ -54,6 +55,12 @@ class PlanService {
             newTotalPage = totalPage;
         } else {
             newTotalPage = bookData.totalPage;
+        }
+
+        const { planId } = body;
+
+        if (planId) {
+            await this.planRepository.restorePlan(planId);
         }
 
         const newPlan = await this.planRepository.createPlan(
@@ -269,6 +276,62 @@ class PlanService {
         const deletePlan = await this.planRepository.deletePlan(userId, planId);
 
         return deletePlan;
+    };
+
+    extendPlan = async (userId: number, extendData: any) => {
+        if (extendData.length === 0)
+            throw new Error("Bad Request : 연장할 플랜 데이터가 없습니다.");
+
+        let extendPlans: any = [];
+
+        for (let i = 0; i < extendData.length; i++) {
+            const oldPlan = await this.planRepository.findOnePlanById(
+                extendData[i].planId,
+            );
+
+            if (oldPlan === null)
+                extendPlans.push = {
+                    planId: extendData[i].planId,
+                    message: "플랜을 찾을 수 없습니다.",
+                };
+
+            const newPlan = await this.planRepository.createPlan(
+                oldPlan.totalPage,
+                oldPlan.startDate,
+                extendData[i].endDate,
+                userId,
+                oldPlan.bookId,
+                oldPlan.currentPage,
+            );
+
+            const bookData = await this.planRepository.findOneBook(
+                newPlan.bookId,
+            );
+
+            const today: any = new Date();
+            const masDate: any = new Date(newPlan.endDate);
+
+            const target = Math.floor(
+                (newPlan.totalPage - newPlan.currentPage) /
+                    Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+            );
+
+            extendData.push = {
+                planId: newPlan.planId,
+                startDate: newPlan.startDate,
+                endDate: newPlan.endDate,
+                title: bookData.title,
+                author: bookData.author,
+                coverImage: bookData.coverImage,
+                publisher: bookData.publisher,
+                currentPage: newPlan.currentPage,
+                totalPage: newPlan.totalPage,
+                target,
+                status: newPlan.status,
+            };
+        }
+
+        return extendPlans;
     };
 }
 

@@ -239,6 +239,74 @@ class PlanController {
             next(error);
         }
     };
+
+    extendPlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '플랜을 연장 할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters['data'] = {
+            in: "body",                            
+            description: "등록 할 플랜의 정보",                   
+            required: true,                     
+            type: "object",
+            schema : 
+                [
+                    {
+                        planId : 1,
+                        endDate : '2023-12-28'
+                    }
+                ]
+            
+        } */
+        /*  #swagger.responses[201] = {
+            description: '플랜 연장 성공',
+            schema: 
+                [
+                    {
+                        planId : 1,
+                        title : 'title',
+                        author : 'author',
+                        coverImage : 'url',
+                        publisher : 'publisher',
+                        startDate : '2023-12-29',
+                        endDate : '2023-12-29',
+                        currentPage : 200,
+                        totalPage : 300,
+                        target : 3,
+                        status : 'inProgress'
+                    },
+                    {
+                        planId: 2,
+                        message: "플랜을 찾을 수 없습니다.",
+                    }
+                ]
+            
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        try {
+            const { userId, extendData } = request.body;
+
+            const extendPlans = await this.planService.extendPlan(
+                userId,
+                extendData,
+            );
+
+            response.status(201).json(extendPlans);
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default PlanController;

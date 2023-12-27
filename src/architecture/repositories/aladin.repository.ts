@@ -24,17 +24,19 @@ const bookUpload = (list: any) => {
     return result;
 };
 
-const bookFind = (list: any) => {
-    list.map(async (bookData: any) => {
-        if (bookData != undefined) {
-            //db에 베스트 셀러 top 10을 조회
+// db에서 찾은 도서 리스트 반환 데이터
+let booklist: string | any = [];
+const popularBook = async (list: any) => {
+    for (const bookData of list) {
+        if (bookData !== undefined) {
+            // 데이터베이스에서 도서 조회
             let isbn = await Book.findOne({
                 where: {
                     isbn: bookData.isbn,
                 },
             });
 
-            //db에 도서가 없을 경우 db에 새로운 도서 저장
+            // 도서가 없으면 데이터베이스에 추가
             if (!isbn) {
                 await Book.create({
                     title: bookData.title,
@@ -47,11 +49,32 @@ const bookFind = (list: any) => {
                     totalPage: bookData.totalPage,
                 });
             }
+
+            // 데이터베이스에서 도서 조회
+            let bookObj = await Book.findOne({
+                attributes: [
+                    "bookId",
+                    "title",
+                    "pubDate",
+                    "description",
+                    "isbn",
+                    "coverImage",
+                    "publisher",
+                    "totalPage",
+                ],
+                where: {
+                    isbn: bookData.isbn,
+                },
+            });
+
+            booklist.push(bookObj);
         }
-    });
+    }
+
+    return booklist;
 };
 
 export default {
     bookUpload,
-    bookFind,
+    popularBook,
 };

@@ -28,8 +28,8 @@ const ttbkey: String | undefined = process.env.ttbkey;
 //     return data.item;
 // };
 
+//도서 리스트를 담는 데이터
 const list: any = [];
-const bList: any = [];
 
 const getBookList = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -89,6 +89,9 @@ const getBookList = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+//db에서 불러온 도서 리스트를 담는 데이터
+let bList: any = [];
+
 const popularBook = async (req: Request, res: Response, next: NextFunction) => {
     try {
         let { data } = await axios.get(
@@ -127,10 +130,10 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
             }
         }
         //db에 존재하지 않을 경우 db에 책 정보를 저장
-        await aladinRepository.bookFind(list);
+        bList = await aladinRepository.popularBook(list);
 
         res.status(200).json({
-            list,
+            bList,
         });
     } catch (error) {
         next(error);

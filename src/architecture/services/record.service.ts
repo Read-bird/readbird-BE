@@ -194,7 +194,10 @@ class RecordService {
                 dateRecord.indexOf("failed") === -1
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < monthDateArr[i]) {
+            } else if (
+                new Date() < monthDateArr[i] ||
+                dateRecord.length === 0
+            ) {
                 achievementStatus = null;
             } else if (dateRecord.indexOf("success") === -1) {
                 achievementStatus = "failed";

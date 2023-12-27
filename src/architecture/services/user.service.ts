@@ -132,6 +132,7 @@ const findPlanByDelete = async (userId: number) => {
     return findPlanByDelete.map((plan: any) => {
         return {
             planId: plan.planId,
+            planStatus: plan.status,
             startDate: plan.startDate,
             endDate: plan.endDate,
             currentPage: plan.currentPage,
@@ -139,6 +140,7 @@ const findPlanByDelete = async (userId: number) => {
             bookId: plan["Book.bookId"],
             title: plan["Book.title"],
             author: plan["Book.author"],
+            publisher: plan["Book.publisher"],
             description: plan["Book.description"],
             coverImage: plan["Book.coverImage"],
             isbn: plan["Book.isbn"],

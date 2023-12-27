@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import {
     Book,
     Collection,
@@ -141,6 +142,7 @@ const findPlanByDelete = async (userId: number) => {
                 "bookId",
                 "title",
                 "author",
+                "publisher",
                 "description",
                 "coverImage",
                 "isbn",
@@ -149,11 +151,12 @@ const findPlanByDelete = async (userId: number) => {
         },
         where: {
             userId,
-            status: "delete",
+            status: { [Op.or]: ["delete", "failed"] },
         },
         raw: true,
         attributes: [
             "planId",
+            "status",
             "startDate",
             "endDate",
             "totalPage",

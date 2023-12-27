@@ -20,7 +20,7 @@
         "/api/user/login": {
             "post": {
                 "tags": ["Login"],
-                "description": "카카오 소셜 로그인을 할 수 있습니다.",
+                "description": "게스트로 로그인 해 서비스를 체험해볼 수 있습니다.",
                 "parameters": [
                     {
                         "name": "authorization",
@@ -110,6 +110,22 @@
                         "description": "Authorization",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "검색 할 페이지",
+                        "required": false,
+                        "type": "number",
+                        "default": 1
+                    },
+                    {
+                        "name": "scale",
+                        "in": "query",
+                        "description": "검색 할 도서의 개수",
+                        "required": false,
+                        "type": "number",
+                        "default": 10
                     }
                 ],
                 "responses": {
@@ -332,6 +348,9 @@
                     "200": {
                         "description": "회원 탈퇴 완료"
                     },
+                    "400": {
+                        "description": "잘못된 요청"
+                    },
                     "500": {
                         "description": "내부 서버 오류"
                     }
@@ -452,6 +471,70 @@
                                 "name": "main"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/plan/extend": {
+            "post": {
+                "tags": ["Plan"],
+                "description": "플랜을 연장 할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "등록 할 플랜의 정보",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "planId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "endDate": {
+                                        "type": "string",
+                                        "example": "2023-12-28"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "플랜 연장 성공",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "planId": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "플랜을 찾을 수 없습니다."
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
                     }
                 }
             }
@@ -844,8 +927,7 @@
                         "in": "query",
                         "description": "검색 타입 = title || author 등 book에 있는 모든 키값",
                         "required": true,
-                        "type": "string",
-                        "default": "all"
+                        "type": "string"
                     },
                     {
                         "name": "value",
@@ -1175,6 +1257,51 @@
             }
         },
         "/api/collection/": {
+            "post": {
+                "tags": ["Collection"],
+                "description": "플랜 생성 축하 캐릭터가 추가됩니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "첫 캐릭터 등록 성공",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "characterId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "베이비버드"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "플랜을 처음 등록하면 개방되는 짹짹이"
+                                    },
+                                    "imageUrl": {
+                                        "type": "string",
+                                        "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            },
             "get": {
                 "tags": ["Collection"],
                 "description": "도감을 조회할 수 있습니다.",
@@ -1255,6 +1382,69 @@
                                 "imageUrl": {
                                     "type": "string",
                                     "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/aladin/popular": {
+            "get": {
+                "tags": ["Book"],
+                "description": "인기 도서 Top 10을 불러올 수 있습니다",
+                "responses": {
+                    "200": {
+                        "description": "도서 검색 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "list": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "bookId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "제3인류 1"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 지음, 이세욱 옮김"
+                                            },
+                                            "pubDate": {
+                                                "type": "string",
+                                                "example": "2013-10-21"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…"
+                                            },
+                                            "isbn": {
+                                                "type": "string",
+                                                "example": "8932916373"
+                                            },
+                                            "publisher": {
+                                                "type": "string",
+                                                "example": "열린책들"
+                                            },
+                                            "totalPage": {
+                                                "type": "number",
+                                                "example": 900
+                                            },
+                                            "coverImage": {
+                                                "type": "string",
+                                                "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                                            }
+                                        }
+                                    }
                                 }
                             },
                             "xml": {

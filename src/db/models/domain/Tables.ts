@@ -17,7 +17,7 @@ import { CollectionAttributes } from "../interface/Collection.interface";
 export class User extends Model<UserAttributes> {
     public readonly userId?: number;
     public email!: string;
-    public name!: string;
+    public nickName!: string;
     public imageUrl!: string;
 
     // 생성 날짜, 수정 날짜 자동 생성

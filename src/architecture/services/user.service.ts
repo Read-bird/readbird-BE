@@ -23,9 +23,23 @@ const signInKakao = async (kakaoToken: String) => {
 
     //DB에 유저 정보가 없을 경우 유저 정보 등록
     if (!userData) {
+        //회원 가입
         await UserRepository.signUp(email, nickName, imageUrl);
+        //DB 유저 정보 찾기
         const userData = await UserRepository.getUserByEmail(email);
-        return userData;
+
+        const collection: object | any = await userRepository.getCollection(
+            <number>userData?.userId,
+        );
+
+        let obj = {
+            userId: userData?.userId,
+            email: userData?.email,
+            nickName: userData?.nickName,
+            imageUrl: userData?.imageUrl,
+            character: collection,
+        };
+        return obj;
     }
 
     return userData;
@@ -35,22 +49,39 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
-const getPlanBySuccess = async (userId: number) => {
-    const getPlanBySuccess = await userRepository.getPlanBySuccess(userId);
+const getPlanBySuccess = async (
+    userId: number,
+    page: number,
+    scale: number,
+) => {
+    const getPlanBySuccess = await userRepository.getPlanBySuccess(
+        userId,
+        page,
+        scale,
+    );
 
-    return getPlanBySuccess.map((plan: any) => {
+    const bookList = getPlanBySuccess.rows.map((plan: any) => {
         return {
             planId: plan.planId,
             startDate: plan.startDate,
             endDate: plan.endDate,
-            "Book.bookId": plan["Book.bookId"],
-            "Book.title": plan["Book.title"],
-            "Book.author": plan["Book.author"],
-            "Book.description": plan["Book.description"],
-            "Book.coverImage": plan["Book.coverImage"],
-            "Book.isbn": plan["Book.isbn"],
+            bookId: plan["Book.bookId"],
+            title: plan["Book.title"],
+            author: plan["Book.author"],
+            pubDate: plan["Book.pubDate"],
+            description: plan["Book.description"],
+            coverImage: plan["Book.coverImage"],
+            isbn: plan["Book.isbn"],
+            publisher: plan["Book.publisher"],
+            totalPage: plan["Book.totalPage"],
         };
     });
+
+    return {
+        totalCount: getPlanBySuccess.count,
+        totalPage: Math.ceil(getPlanBySuccess.count / scale),
+        bookList,
+    };
 };
 
 const deleteAllPlan = async (userId: number) => {

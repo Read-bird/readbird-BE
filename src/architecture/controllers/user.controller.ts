@@ -48,19 +48,30 @@ const signInKakao = async (req: Request, res: Response, next: NextFunction) => {
 
         //redis DB에 refreshToken을 저장
         await redis.redisCli.set(userId, refreshToken);
-
-        return res
-            .header({
-                Authorization: "Bearer " + accesstoken,
-                RefreshToken: "Bearer " + refreshToken,
-            })
-            .status(200)
-            .json({
-                userId: userData.userId,
-                email: userData.email,
-                nickName: userData.nickName,
-                imageUrl: userData.imageUrl,
-            });
+        if (!userData.character) {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    userId: userData.userId,
+                    email: userData.email,
+                    nickName: userData.nickName,
+                    imageUrl: userData.imageUrl,
+                });
+        } else {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    ...userData,
+                });
+        }
     } catch (error) {
         next(error);
     }
@@ -118,6 +129,20 @@ const getPlanBySuccess = async (
         required: true,                     
         type: "string"         
     } */
+    /* #swagger.parameters['page'] = {
+            in: "query",                            
+            description: "검색 할 페이지",                   
+            required: false,                     
+            type: "number",
+            default : 1         
+        } */
+    /* #swagger.parameters['scale'] = {
+            in: "query",                            
+            description: "검색 할 도서의 개수",                   
+            required: false,                     
+            type: "number",
+            default : 10    
+        } */
     /*  #swagger.responses[200] = {
             description: '조회 성공',
             schema: [{                
@@ -135,9 +160,24 @@ const getPlanBySuccess = async (
     try {
         const { userId } = request.body;
 
-        const getPlanBySuccess = await userService.getPlanBySuccess(userId);
+        let { page, scale }: any = request.query;
 
-        response.status(200).json(getPlanBySuccess);
+        if (!page || page === null) page = 1;
+        if (!scale || scale === null) scale = 10;
+
+        const getPlanBySuccess = await userService.getPlanBySuccess(
+            userId,
+            page,
+            scale,
+        );
+
+        response.status(200).json({
+            page: Number(page),
+            scale: Number(scale),
+            totalCount: getPlanBySuccess.totalCount,
+            totalPage: getPlanBySuccess.totalPage,
+            bookList: getPlanBySuccess.bookList,
+        });
     } catch (error) {
         next(error);
     }
@@ -269,6 +309,10 @@ const userSecession = async (
     try {
         const { userId } = req.body;
 
+        if (<number>userId === 1)
+            res.status(400).send(
+                "Bad Request: 게스트 로그인은 탈퇴 할 수 없습니다",
+            );
         const result = await userService.userSecession(userId);
 
         if (result) {

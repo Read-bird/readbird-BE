@@ -120,8 +120,8 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
         );
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
-        for (const sublist of bookListData) {
-            let { data: itemLookUpData } = await axios.get(
+        for (const sublist of bookListData.item) {
+            let { data } = await axios.get(
                 "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" +
                     ttbkey +
                     "&ItemId=" +
@@ -130,9 +130,9 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
             );
 
             //data가 String값으로 반환
-            let pageStr = itemLookUpData.slice(
-                itemLookUpData.indexOf("itemPage") + 10,
-                itemLookUpData.indexOf("itemPage") + 14,
+            let pageStr = data.slice(
+                data.indexOf("itemPage") + 10,
+                data.indexOf("itemPage") + 14,
             );
 
             let totalPage = pageStr.split(",").filter(Boolean);

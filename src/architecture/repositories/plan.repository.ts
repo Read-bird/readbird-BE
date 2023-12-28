@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import getDateFormat from "../../util/setDateFormat";
 
 class PlanRepository {
     planModel: any;
@@ -112,7 +113,7 @@ class PlanRepository {
                 userId,
                 status: "inProgress",
                 endDate: {
-                    [Op.lte]: new Date(),
+                    [Op.lt]: new Date(getDateFormat(new Date())),
                 },
             },
             raw: true,

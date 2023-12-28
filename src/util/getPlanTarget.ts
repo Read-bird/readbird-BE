@@ -1,5 +1,3 @@
-import getDateFormat from "./setDateFormat";
-
 const getPlanTarget = (
     endDate: Date,
     totalPage: number,
@@ -9,14 +7,10 @@ const getPlanTarget = (
     const masDate: any = new Date(endDate);
 
     return Math.floor(
-        (totalPage - currentPage) /
-            Math.floor(
-                (masDate.toISOString().split("T")[0] ===
-                today.toISOString().split("T")[0]
-                    ? 1
-                    : masDate - today) /
-                    (1000 * 60 * 60 * 24),
-            ),
+        (totalPage - currentPage) / today.toISOString().split("T")[0] ===
+            masDate.toISOString().split("T")[0]
+            ? 1
+            : Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
     );
 };
 

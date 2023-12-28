@@ -128,15 +128,14 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                     sublist.isbn +
                     "&output=JS",
             );
+
             console.log("\nItemLookUpData::: " + typeof ItemLookUpData);
             if (typeof ItemLookUpData === "string") {
-                console.log("\n여기1::: ");
                 //data가 String값으로 반환
                 let pageStr = ItemLookUpData.slice(
                     ItemLookUpData.indexOf("itemPage") + 10,
                     ItemLookUpData.indexOf("itemPage") + 14,
                 );
-                console.log("\n여기2::: ");
                 let totalPage: any = pageStr.split(",").filter(Boolean);
 
                 if (<number>totalPage > 1) {
@@ -154,6 +153,22 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                 }
             } else {
                 console.error("itemLookUpData is not a string:");
+                let totalPage: number =
+                    ItemLookUpData.item[0].bookinfo.itemPage;
+
+                if (totalPage > 1) {
+                    const obj = {
+                        title: sublist.title,
+                        author: sublist.author,
+                        pubDate: sublist.pubDate,
+                        description: sublist.description,
+                        isbn: sublist.isbn,
+                        coverImage: sublist.cover,
+                        publisher: sublist.publisher,
+                        totalPage: totalPage,
+                    };
+                    list.push(obj);
+                }
             }
         }
         //db에 존재하지 않을 경우 db에 책 정보를 저장

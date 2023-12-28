@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import getDateFormat from "../../util/setDateFormat";
 
 class PlanRepository {
     planModel: any;
@@ -51,13 +52,13 @@ class PlanRepository {
         return this.bookModel.create(newBook);
     };
 
-    getTodayPlans = async (userId: number, date: Date) => {
+    getTodayPlans = async (userId: number, baseDate: Date) => {
         return this.planModel.findAll({
             include: [
                 {
                     model: this.recordModel,
                     where: {
-                        successAt: date.toISOString().split("T")[0],
+                        successAt: baseDate.toISOString().split("T")[0],
                     },
                     attributes: ["status", "successAt"],
                     required: false,
@@ -80,13 +81,13 @@ class PlanRepository {
             where: {
                 userId,
                 startDate: {
-                    [Op.lte]: date,
+                    [Op.lte]: baseDate,
                 },
                 endDate: {
-                    [Op.gte]: date,
+                    [Op.gte]: baseDate,
                 },
                 status: {
-                    [Op.notLike]: "delete",
+                    [Op.or]: ["success", "inProgress", "failed"],
                 },
             },
             raw: true,
@@ -139,13 +140,40 @@ class PlanRepository {
     };
 
     findOnePlanById = async (planId: any) => {
-        return this.planModel.findOne({ where: { planId }, raw: true });
+        return this.planModel.findOne({
+            include: {
+                model: this.bookModel,
+                attributes: [
+                    "bookId",
+                    "title",
+                    "author",
+                    "publisher",
+                    "description",
+                    "coverImage",
+                    "isbn",
+                ],
+                required: false,
+            },
+            where: { planId },
+            raw: true,
+        });
     };
 
     deletePlan = async (userId: number, planId: number) => {
         return this.planModel.update(
             { status: "delete" },
             { where: { userId, planId }, raw: true },
+        );
+    };
+
+    restorePlan = async (planId: number) => {
+        return this.planModel.update(
+            {
+                status: "restore",
+            },
+            {
+                where: planId,
+            },
         );
     };
 }

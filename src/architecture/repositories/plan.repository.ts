@@ -96,6 +96,19 @@ class PlanRepository {
 
     getInProgressPlans = async (userId: number) => {
         return this.planModel.findAll({
+            include: {
+                model: this.bookModel,
+                attributes: [
+                    "bookId",
+                    "title",
+                    "author",
+                    "publisher",
+                    "description",
+                    "coverImage",
+                    "isbn",
+                ],
+                required: false,
+            },
             where: {
                 userId,
                 status: "inProgress",

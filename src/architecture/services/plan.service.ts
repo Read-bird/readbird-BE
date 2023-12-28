@@ -167,7 +167,19 @@ class PlanService {
             );
         }
 
-        return previousPlans;
+        return previousPlans.map((plan: any) => {
+            return {
+                planId: plan.planId,
+                title: plan["Book.title"],
+                author: plan["Book.author"],
+                coverImage: plan["Book.coverImage"],
+                publisher: plan["Book.publisher"],
+                totalPage: plan.totalPage,
+                currentPage: plan.currentPage,
+                startDate: plan.startDate,
+                endDate: plan.endDate,
+            };
+        });
     };
 
     weedRecord = async (userId: number, date: string) => {

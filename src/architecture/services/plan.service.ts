@@ -2,6 +2,7 @@ import PlanRepository from "../repositories/plan.repository";
 import { Book, Plan, Record } from "../../db/models/domain/Tables";
 import getDateFormat from "../../util/setDateFormat";
 import makeWeekArr from "../../util/makeWeekArr";
+import getPlanTarget from "../../util/getPlanTarget";
 
 const dateForm = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
 
@@ -14,6 +15,7 @@ class PlanService {
 
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
         const { bookId, startDate, endDate, currentPage } = body;
+
         let newTotalPage;
         let newBookId = bookId || 0;
 
@@ -72,12 +74,10 @@ class PlanService {
             currentPage,
         );
 
-        const today: any = new Date();
-        const masDate: any = new Date(newPlan.endDate);
-
-        const target = Math.floor(
-            (newPlan.totalPage - newPlan.currentPage) /
-                Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+        const target = getPlanTarget(
+            newPlan.endDate,
+            newPlan.totalPage,
+            newPlan.currentPage,
         );
 
         return {
@@ -93,7 +93,6 @@ class PlanService {
     };
 
     findAllPlansByDate = async (userId: number, date: string) => {
-        const today: any = new Date();
         const baseDate: Date = new Date(date);
 
         const getTodayPlan = await this.planRepository.getTodayPlans(
@@ -107,8 +106,8 @@ class PlanService {
                 totalPage: number;
                 currentPage: number;
                 status: string;
-                startDate: string;
-                endDate: string;
+                startDate: Date;
+                endDate: Date;
                 createdAt: Date;
                 updatedAt: Date;
                 userId: number;
@@ -123,18 +122,19 @@ class PlanService {
                 "Book.bookId": number;
                 "Book.publisher": string;
             }) => {
-                const masDate: any = new Date(plan.endDate);
-
-                const target = Math.floor(
-                    (plan.totalPage - plan.currentPage) /
-                        Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+                const target = getPlanTarget(
+                    plan.endDate,
+                    plan.totalPage,
+                    plan.currentPage,
                 );
 
                 let recordStatus = plan["records.status"];
 
                 if (plan["records.status"] === null) {
                     recordStatus =
-                        getDateFormat(today) <= date ? "inProgress" : "failed";
+                        getDateFormat(new Date()) <= date
+                            ? "inProgress"
+                            : "failed";
                 }
 
                 return {
@@ -238,12 +238,10 @@ class PlanService {
 
         const newPlan = await this.planRepository.findOnePlanById(planId);
 
-        const today: any = new Date();
-        const masDate: any = new Date(newPlan.endDate);
-
-        const target = Math.floor(
-            (newPlan.totalPage - newPlan.currentPage) /
-                Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+        const target = getPlanTarget(
+            newPlan.endDate,
+            newPlan.totalPage,
+            newPlan.currentPage,
         );
 
         return {
@@ -308,12 +306,10 @@ class PlanService {
                 newPlan.bookId,
             );
 
-            const today: any = new Date();
-            const masDate: any = new Date(newPlan.endDate);
-
-            const target = Math.floor(
-                (newPlan.totalPage - newPlan.currentPage) /
-                    Math.floor((masDate - today) / (1000 * 60 * 60 * 24)),
+            const target = getPlanTarget(
+                newPlan.endDate,
+                newPlan.totalPage,
+                newPlan.currentPage,
             );
 
             extendData.push = {

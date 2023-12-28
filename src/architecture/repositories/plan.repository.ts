@@ -184,7 +184,7 @@ class PlanRepository {
                 status: "restore",
             },
             {
-                where: planId,
+                where: { planId },
             },
         );
     };

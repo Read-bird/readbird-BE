@@ -307,7 +307,7 @@ class PlanService {
 
             const newPlan = await this.planRepository.createPlan(
                 oldPlan.totalPage,
-                oldPlan.startDate,
+                new Date(getDateFormat(new Date())),
                 extendData[i].endDate,
                 userId,
                 oldPlan.bookId,

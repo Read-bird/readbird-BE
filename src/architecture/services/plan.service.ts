@@ -35,6 +35,11 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
+        if (newStartDate > newEndDate)
+            throw new Error(
+                "Bad Request : 종료일은 시작일보다 빠를 수 없습니다.",
+            );
+
         let bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {

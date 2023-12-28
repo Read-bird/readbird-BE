@@ -141,7 +141,7 @@ class PlanController {
             return response.status(200).json({
                 weedRecord,
                 planData,
-                previouslyFailedPlan: previouslyFailedPlan,
+                previouslyFailedPlan,
             });
         } catch (error) {
             console.error(error);

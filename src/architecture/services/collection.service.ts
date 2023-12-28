@@ -1,4 +1,5 @@
 import { Character, Collection } from "../../db/models/domain/Tables";
+import getDateFormat from "../../util/setDateFormat";
 import CollectionRepository from "../repositories/collection.repository";
 
 class BookService {
@@ -66,11 +67,11 @@ class BookService {
             );
 
         const eventCharacter =
-            await this.collectionRepository.findNewCharacter(
+            await this.collectionRepository.findEventCharacter(
                 EVENT_CHARACTER_ID,
             );
 
-        const today = new Date().toISOString().split("T")[0];
+        const today = getDateFormat(new Date());
 
         const updateCharacter = eventCharacter.map((character: any) => {
             character.getDate = today;

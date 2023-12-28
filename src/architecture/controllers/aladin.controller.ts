@@ -153,6 +153,8 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                 }
             } else {
                 console.error("itemLookUpData is not a string:");
+                console.log("\nitem:: " + ItemLookUpData.item[0]);
+                console.log("\nbookinfo:: " + ItemLookUpData.item[0].bookinfo);
                 let totalPage: number =
                     ItemLookUpData.item[0].bookinfo.itemPage;
 

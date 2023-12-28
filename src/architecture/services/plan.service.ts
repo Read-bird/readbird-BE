@@ -239,7 +239,7 @@ class PlanService {
         const newPlan = await this.planRepository.findOnePlanById(planId);
 
         const today: any = new Date();
-        const masDate: any = new Date(plan.endDate);
+        const masDate: any = new Date(newPlan.endDate);
 
         const target = Math.floor(
             (newPlan.totalPage - newPlan.currentPage) /

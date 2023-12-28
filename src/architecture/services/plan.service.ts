@@ -35,6 +35,11 @@ class PlanService {
         const newStartDate = new Date(startDate);
         const newEndDate = new Date(endDate);
 
+        if (newStartDate > newEndDate)
+            throw new Error(
+                "Bad Request : 종료일은 시작일보다 빠를 수 없습니다.",
+            );
+
         let bookData = await this.planRepository.findOneBook(newBookId);
 
         if (bookData === null) {
@@ -167,7 +172,19 @@ class PlanService {
             );
         }
 
-        return previousPlans;
+        return previousPlans.map((plan: any) => {
+            return {
+                planId: plan.planId,
+                title: plan["Book.title"],
+                author: plan["Book.author"],
+                coverImage: plan["Book.coverImage"],
+                publisher: plan["Book.publisher"],
+                totalPage: plan.totalPage,
+                currentPage: plan.currentPage,
+                startDate: plan.startDate,
+                endDate: plan.endDate,
+            };
+        });
     };
 
     weedRecord = async (userId: number, date: string) => {
@@ -282,20 +299,31 @@ class PlanService {
 
         let extendPlans: any = [];
 
+        let inProgressCount: number =
+            await this.planRepository.inProgressCount(userId);
+
         for (let i = 0; i < extendData.length; i++) {
+            if (inProgressCount > 2) {
+                extendPlans.push = {
+                    planId: extendData[i].planId,
+                    message: "이미 진행중인 플랜이 3개 이상입니다.",
+                };
+            }
+
             const oldPlan = await this.planRepository.findOnePlanById(
                 extendData[i].planId,
             );
 
-            if (oldPlan === null)
+            if (oldPlan === null) {
                 extendPlans.push = {
                     planId: extendData[i].planId,
                     message: "플랜을 찾을 수 없습니다.",
                 };
+            }
 
             const newPlan = await this.planRepository.createPlan(
                 oldPlan.totalPage,
-                oldPlan.startDate,
+                new Date(getDateFormat(new Date())),
                 extendData[i].endDate,
                 userId,
                 oldPlan.bookId,
@@ -327,7 +355,9 @@ class PlanService {
             };
         }
 
-        return extendPlans;
+        inProgressCount++;
+
+        return extendData;
     };
 }
 

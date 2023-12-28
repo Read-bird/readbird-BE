@@ -1,5 +1,4 @@
 import { Op } from "sequelize";
-import getDateFormat from "../../util/setDateFormat";
 
 class PlanRepository {
     planModel: any;
@@ -96,6 +95,19 @@ class PlanRepository {
 
     getInProgressPlans = async (userId: number) => {
         return this.planModel.findAll({
+            include: {
+                model: this.bookModel,
+                attributes: [
+                    "bookId",
+                    "title",
+                    "author",
+                    "publisher",
+                    "description",
+                    "coverImage",
+                    "isbn",
+                ],
+                required: false,
+            },
             where: {
                 userId,
                 status: "inProgress",
@@ -172,9 +184,18 @@ class PlanRepository {
                 status: "restore",
             },
             {
-                where: planId,
+                where: { planId },
             },
         );
+    };
+
+    inProgressCount = async (userId: number) => {
+        return this.planModel.count({
+            where: {
+                userId,
+                status: "inProgress",
+            },
+        });
     };
 }
 

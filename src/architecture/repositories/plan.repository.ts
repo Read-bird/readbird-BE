@@ -1,5 +1,4 @@
 import { Op } from "sequelize";
-import getDateFormat from "../../util/setDateFormat";
 
 class PlanRepository {
     planModel: any;
@@ -188,6 +187,15 @@ class PlanRepository {
                 where: planId,
             },
         );
+    };
+
+    inProgressCount = async (userId: number) => {
+        return this.planModel.count({
+            where: {
+                userId,
+                status: "inProgress",
+            },
+        });
     };
 }
 

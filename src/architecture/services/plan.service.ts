@@ -299,16 +299,27 @@ class PlanService {
 
         let extendPlans: any = [];
 
+        let inProgressCount: number =
+            await this.planRepository.inProgressCount(userId);
+
         for (let i = 0; i < extendData.length; i++) {
+            if (inProgressCount > 2) {
+                extendPlans.push = {
+                    planId: extendData[i].planId,
+                    message: "이미 진행중인 플랜이 3개 이상입니다.",
+                };
+            }
+
             const oldPlan = await this.planRepository.findOnePlanById(
                 extendData[i].planId,
             );
 
-            if (oldPlan === null)
+            if (oldPlan === null) {
                 extendPlans.push = {
                     planId: extendData[i].planId,
                     message: "플랜을 찾을 수 없습니다.",
                 };
+            }
 
             const newPlan = await this.planRepository.createPlan(
                 oldPlan.totalPage,
@@ -343,6 +354,8 @@ class PlanService {
                 status: newPlan.status,
             };
         }
+
+        inProgressCount++;
 
         return extendData;
     };

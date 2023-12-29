@@ -571,6 +571,26 @@
                                     "type": "string",
                                     "example": "author"
                                 },
+                                "isbn": {
+                                    "type": "string",
+                                    "example": "isbn"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "description"
+                                },
+                                "publisher": {
+                                    "type": "string",
+                                    "example": "publisher"
+                                },
+                                "pubDate": {
+                                    "type": "string",
+                                    "example": "pubDate"
+                                },
+                                "coverImage": {
+                                    "type": "string",
+                                    "example": "url"
+                                },
                                 "totalPage": {
                                     "type": "number",
                                     "example": 100
@@ -578,10 +598,6 @@
                                 "currentPage": {
                                     "type": "number",
                                     "example": 100
-                                },
-                                "publisher": {
-                                    "type": "string",
-                                    "example": "publisher"
                                 },
                                 "startDate": {
                                     "type": "string",
@@ -803,20 +819,6 @@
                         "description": "Authorization",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "",
-                        "in": "body",
-                        "description": "변경할 종료일",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "endDate": {
-                                    "type": "string",
-                                    "example": "2023-12-25"
-                                }
-                            }
-                        }
                     }
                 ],
                 "responses": {
@@ -984,10 +986,6 @@
                                     "items": {
                                         "type": "object",
                                         "properties": {
-                                            "bookId": {
-                                                "type": "number",
-                                                "example": 1
-                                            },
                                             "title": {
                                                 "type": "string",
                                                 "example": "제3인류 1"
@@ -1032,17 +1030,17 @@
                 }
             }
         },
-        "/api/book/{bookId}": {
+        "/api/book/{isbn}": {
             "get": {
                 "tags": ["Book"],
                 "description": "bookId에 해당하는 도서의 상세 데이터를 보여줍니다",
                 "parameters": [
                     {
-                        "name": "bookId",
+                        "name": "isbn",
                         "in": "param",
                         "required": true,
-                        "type": "number",
-                        "description": "북 아이디"
+                        "type": "string",
+                        "description": "북 isbn"
                     },
                     {
                         "name": "Authorization",
@@ -1058,10 +1056,6 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "bookId": {
-                                    "type": "number",
-                                    "example": 1
-                                },
                                 "title": {
                                     "type": "string",
                                     "example": "title"
@@ -1099,9 +1093,6 @@
                                 "name": "main"
                             }
                         }
-                    },
-                    "400": {
-                        "description": "잘못된 요청"
                     }
                 }
             }

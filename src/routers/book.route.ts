@@ -6,6 +6,6 @@ const router: Router = express.Router();
 const bookController = new BookController();
 
 router.get("/", bookController.searchBooks);
-router.get("/:bookId", authJWT, bookController.getBookDetail);
+router.get("/:isbn", authJWT, bookController.getBookDetail);
 
 export default router;

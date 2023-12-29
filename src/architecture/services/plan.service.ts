@@ -14,10 +14,10 @@ class PlanService {
     }
 
     createPlan = async ({ userId, body }: { userId: number; body: any }) => {
-        const { bookId, startDate, endDate, currentPage } = body;
+        const { isbn, startDate, endDate, currentPage } = body;
 
         let newTotalPage;
-        let newBookId = bookId || 0;
+        let newBookId;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
@@ -40,27 +40,38 @@ class PlanService {
                 "Bad Request : 종료일은 시작일보다 빠를 수 없습니다.",
             );
 
-        let bookData = await this.planRepository.findOneBook(newBookId);
+        if (!isbn) throw new Error("Bad Request : isbn이 올바르지 않습니다.");
+
+        let bookData = await this.planRepository.findOneBook(isbn);
 
         if (bookData === null) {
-            const { title, author, totalPage, publisher } = body;
+            const {
+                title,
+                author,
+                description,
+                publisher,
+                pubDate,
+                coverImage,
+                totalPage,
+            } = body;
 
             bookData = {
                 title,
                 author,
                 totalPage,
                 publisher,
-                description: null,
-                isbn: null,
-                coverImage: null,
-                pubDate: null,
+                description,
+                isbn,
+                coverImage,
+                pubDate,
             };
 
             const newBookData = await this.planRepository.createBook(bookData);
 
             newBookId = newBookData.bookId;
-            newTotalPage = totalPage;
+            newTotalPage = newBookData.totalPage;
         } else {
+            newBookId = bookData.bookId;
             newTotalPage = bookData.totalPage;
         }
 

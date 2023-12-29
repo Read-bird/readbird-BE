@@ -115,12 +115,16 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
         }*/
 
     try {
-        const { data: bookListData } = await axios.get(
-            "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbned46701325001&QueryType=Bestseller&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101",
+        let {
+            data: { item },
+        } = await axios.get(
+            "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
+                ttbkey +
+                "&QueryType=Bestseller&MaxResults=10&start=1&Cover=Big&SearchTarget=Book&output=js&Version=20131101",
         );
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
-        for (const sublist of bookListData.item) {
+        for (const sublist of item) {
             const { data: ItemLookUpData } = await axios.get(
                 "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" +
                     ttbkey +

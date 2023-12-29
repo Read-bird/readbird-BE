@@ -389,11 +389,11 @@ const bookValidation = async (
         required: true,                     
         type: "string"         
     } */
-    /* #swagger.parameters['bookId'] = {
+    /* #swagger.parameters['isbn'] = {
         in: "param",                            
-        description: "북 아이디",                   
+        description: "북 isbn",                   
         required: true,                     
-        type: "number"         
+        type: "string"         
     } */
     /*  #swagger.responses[200] = {
         description: '읽지 않은 책의 경우',
@@ -402,24 +402,16 @@ const bookValidation = async (
         } 
     }*/
     try {
-        const { bookId }: any = req.params;
+        const { isbn }: any = req.params;
         const { userId } = req.body;
-        if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
+        if (!isbn) throw new Error("Bad Request : isbn를 입력해주세요");
 
         const result = await userService.bookValidation(
-            Number(bookId),
+            String(isbn),
             Number(userId),
         );
 
-        if (result) {
-            res.status(200).json({
-                readStatus: true,
-            });
-        } else {
-            res.status(200).json({
-                readStatus: false,
-            });
-        }
+        res.status(200).json({ readStatus: result ? true : false });
     } catch (error) {
         next(error);
     }

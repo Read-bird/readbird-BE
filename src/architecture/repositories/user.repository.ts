@@ -197,10 +197,16 @@ const planValidation = async (userId: number) => {
 const bookValidation = async (bookId: number, userId: number) => {
     return Plan.findOne({
         where: {
-            bookId: bookId,
-            userId: userId,
+            bookId,
+            userId,
             status: ["inProgress", "Success"],
         },
+    });
+};
+
+const findBookByIsbn = async (isbn: string) => {
+    return Book.findOne({
+        where: { isbn },
     });
 };
 
@@ -218,4 +224,5 @@ export default {
     userSecession,
     planValidation,
     bookValidation,
+    findBookByIsbn,
 };

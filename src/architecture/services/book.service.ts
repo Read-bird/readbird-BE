@@ -47,7 +47,7 @@ class BookService {
                     pubDate: data.item[i].pubDate,
                     description: data.item[i].description,
                     isbn: data.item[i].isbn,
-                    cover: data.item[i].cover,
+                    coverImage: data.item[i].cover,
                     publisher: data.item[i].publisher,
                     totalPage,
                 });

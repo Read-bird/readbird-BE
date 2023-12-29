@@ -116,7 +116,9 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         let { data } = await axios.get(
-            "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbned46701325001&QueryType=Bestseller&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101",
+            "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
+                ttbkey +
+                "&QueryType=Bestseller&MaxResults=10&start=1&Cover=Big&SearchTarget=Book&output=js&Version=20131101",
         );
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
@@ -136,6 +138,7 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
             );
 
             let totalPage = pageStr.split(",").filter(Boolean);
+
             if (<number>totalPage > 1) {
                 const obj = {
                     title: sublist.title,

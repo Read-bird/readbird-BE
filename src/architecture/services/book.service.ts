@@ -56,7 +56,7 @@ class BookService {
 
         return {
             totalCount: data.totalResults,
-            totalPage: data.itemsPerPage,
+            totalPage: Math.ceil(data.totalResults / scale),
             bookList,
         };
     };

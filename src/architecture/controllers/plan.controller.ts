@@ -29,7 +29,7 @@ class PlanController {
                 isbn : "isbn",
                 description : "description",
                 publisher : "publisher",
-                pubDate : "pubDate"
+                pubDate : "pubDate",
                 coverImage : "url",
                 totalPage : 100,
                 currentPage : 100,

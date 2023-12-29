@@ -28,10 +28,10 @@ const ttbkey: String | undefined = process.env.ttbkey;
 //     return data.item;
 // };
 
-//도서 리스트를 담는 데이터
-const list: any = [];
-
 const getBookList = async (req: Request, res: Response, next: NextFunction) => {
+    //도서 리스트를 담는 데이터
+    const list: any = [];
+    let bList: any = [];
     try {
         for (let start = 1; start <= 1; start++) {
             //도서 리스트, 불러온 데이터: 호출 한번에 출력 개수 30개
@@ -88,17 +88,17 @@ const getBookList = async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 };
-
-//db에서 불러온 도서 리스트를 담는 데이터
-let bList: any = [];
-
 const popularBook = async (req: Request, res: Response, next: NextFunction) => {
+    //도서 리스트를 담는 데이터
+    const list: any = [];
+    //(도서 정보 + 페이지 수) 도서 리스트를 담는 데이터
+    let bList: any = [];
     //  #swagger.description = '인기 도서 Top 10을 불러올 수 있습니다'
     //  #swagger.tags = ['Book']
     /*  #swagger.responses[200] = {
             description: '도서 검색 성공',
             schema: {
-                "list": [
+                "bList": [
                     {
                         "bookId": 1,
                         "title": "제3인류 1",
@@ -115,13 +115,13 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
         }*/
 
     try {
-        let { data: bookListData } = await axios.get(
+        const { data: bookListData } = await axios.get(
             "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbned46701325001&QueryType=Bestseller&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101",
         );
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
         for (const sublist of bookListData.item) {
-            let { data: ItemLookUpData } = await axios.get(
+            const { data: ItemLookUpData } = await axios.get(
                 "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" +
                     ttbkey +
                     "&ItemId=" +

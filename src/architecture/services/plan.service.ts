@@ -18,6 +18,7 @@ class PlanService {
 
         let newTotalPage;
         let newBookId;
+        let bookData = null;
 
         const userInProgressPlan =
             await this.planRepository.getInProgressPlan(userId);
@@ -43,7 +44,8 @@ class PlanService {
         if (isbn === undefined)
             throw new Error("Bad Request : isbn이 올바르지 않습니다.");
 
-        let bookData = await this.planRepository.findOneBook(isbn);
+        if (isbn !== null)
+            bookData = await this.planRepository.findOneBook("isbn", isbn);
 
         if (bookData === null) {
             const {
@@ -76,12 +78,6 @@ class PlanService {
             newTotalPage = bookData.totalPage;
         }
 
-        const { planId } = body;
-
-        if (planId) {
-            await this.planRepository.restorePlan(planId);
-        }
-
         const newPlan = await this.planRepository.createPlan(
             newTotalPage,
             newStartDate,
@@ -96,6 +92,12 @@ class PlanService {
             newPlan.totalPage,
             newPlan.currentPage,
         );
+
+        const { planId } = body;
+
+        if (planId) {
+            await this.planRepository.restorePlan(planId);
+        }
 
         return {
             planId: newPlan.planId,
@@ -343,6 +345,7 @@ class PlanService {
             );
 
             const bookData = await this.planRepository.findOneBook(
+                "bookId",
                 newPlan.bookId,
             );
 

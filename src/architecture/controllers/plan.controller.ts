@@ -24,11 +24,15 @@ class PlanController {
             type: "object",
             schema : {
                 planId : 1,
-                title : 'title' || null,
-                author : 'author' || null,
-                totalPage : 100 || null,
+                title : 'title',
+                author : 'author',
+                isbn : "isbn",
+                description : "description",
+                publisher : "publisher",
+                pubDate : "pubDate"
+                coverImage : "url",
+                totalPage : 100,
                 currentPage : 100,
-                publisher : 'publisher',
                 startDate : '2023-12-12',
                 endDate : '2023-12-30'
             }
@@ -39,7 +43,7 @@ class PlanController {
                 planId : 1,
                 title : 'title',
                 author : 'author',
-                coverImage : 'url' || null,
+                coverImage : 'url',
                 totalPage : 100,
                 target : 30,
                 status : 'inProgress'

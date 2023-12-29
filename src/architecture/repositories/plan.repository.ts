@@ -41,10 +41,10 @@ class PlanRepository {
         });
     };
 
-    findOneBook = async (bookId: number) => {
+    findOneBook = async (isbn: string) => {
         return this.bookModel.findOne({
             raw: true,
-            where: { bookId },
+            where: { isbn },
         });
     };
 

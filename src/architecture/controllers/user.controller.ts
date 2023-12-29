@@ -48,19 +48,30 @@ const signInKakao = async (req: Request, res: Response, next: NextFunction) => {
 
         //redis DB에 refreshToken을 저장
         await redis.redisCli.set(userId, refreshToken);
-
-        return res
-            .header({
-                Authorization: "Bearer " + accesstoken,
-                RefreshToken: "Bearer " + refreshToken,
-            })
-            .status(200)
-            .json({
-                userId: userData.userId,
-                email: userData.email,
-                nickName: userData.nickName,
-                imageUrl: userData.imageUrl,
-            });
+        if (!userData.character) {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    userId: userData.userId,
+                    email: userData.email,
+                    nickName: userData.nickName,
+                    imageUrl: userData.imageUrl,
+                });
+        } else {
+            return res
+                .header({
+                    Authorization: "Bearer " + accesstoken,
+                    RefreshToken: "Bearer " + refreshToken,
+                })
+                .status(200)
+                .json({
+                    ...userData,
+                });
+        }
     } catch (error) {
         next(error);
     }
@@ -118,6 +129,20 @@ const getPlanBySuccess = async (
         required: true,                     
         type: "string"         
     } */
+    /* #swagger.parameters['page'] = {
+            in: "query",                            
+            description: "검색 할 페이지",                   
+            required: false,                     
+            type: "number",
+            default : 1         
+        } */
+    /* #swagger.parameters['scale'] = {
+            in: "query",                            
+            description: "검색 할 도서의 개수",                   
+            required: false,                     
+            type: "number",
+            default : 10    
+        } */
     /*  #swagger.responses[200] = {
             description: '조회 성공',
             schema: [{                
@@ -135,9 +160,24 @@ const getPlanBySuccess = async (
     try {
         const { userId } = request.body;
 
-        const getPlanBySuccess = await userService.getPlanBySuccess(userId);
+        let { page, scale }: any = request.query;
 
-        response.status(200).json(getPlanBySuccess);
+        if (!page || page === null) page = 1;
+        if (!scale || scale === null) scale = 10;
+
+        const getPlanBySuccess = await userService.getPlanBySuccess(
+            userId,
+            page,
+            scale,
+        );
+
+        response.status(200).json({
+            page: Number(page),
+            scale: Number(scale),
+            totalCount: getPlanBySuccess.totalCount,
+            totalPage: getPlanBySuccess.totalPage,
+            bookList: getPlanBySuccess.bookList,
+        });
     } catch (error) {
         next(error);
     }
@@ -269,6 +309,12 @@ const userSecession = async (
     try {
         const { userId } = req.body;
 
+        if (<number>userId === 1) {
+            throw new Error(
+                "Bad Request: 게스트 로그인은 회원 탈퇴를 할 수 없습니다",
+            );
+        }
+
         const result = await userService.userSecession(userId);
 
         if (result) {
@@ -311,7 +357,7 @@ const planValidation = async (
     }*/
     try {
         const { userId }: number | any = req.body;
-      
+
         const result: number = await userService.planValidation(<number>userId);
 
         if (result === undefined) throw new Error();
@@ -343,11 +389,11 @@ const bookValidation = async (
         required: true,                     
         type: "string"         
     } */
-    /* #swagger.parameters['bookId'] = {
+    /* #swagger.parameters['isbn'] = {
         in: "param",                            
-        description: "북 아이디",                   
+        description: "북 isbn",                   
         required: true,                     
-        type: "number"         
+        type: "string"         
     } */
     /*  #swagger.responses[200] = {
         description: '읽지 않은 책의 경우',
@@ -356,24 +402,49 @@ const bookValidation = async (
         } 
     }*/
     try {
-        const { bookId }: any = req.params;
+        const { isbn }: any = req.params;
         const { userId } = req.body;
-        if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
+        if (!isbn) throw new Error("Bad Request : isbn를 입력해주세요");
 
         const result = await userService.bookValidation(
-            Number(bookId),
+            String(isbn),
             Number(userId),
         );
 
-        if (result) {
-            res.status(200).json({
-                readStatus: true,
-            });
-        } else {
-            res.status(200).json({
-                readStatus: false,
-            });
-        }
+        res.status(200).json({ readStatus: result ? true : false });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getUserInfo = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) => {
+    //  #swagger.description = '유저 정보 조회'
+    //  #swagger.tags = ['User']
+    /* #swagger.parameters['Authorization'] = {
+        in: "header",                            
+        description: "Authorization",                   
+        required: true,                     
+        type: "string"         
+    } */
+    /*  #swagger.responses[200] = {
+        description: '유저 정보',
+        schema: {
+            "userId": 1,
+            "email": "guest@readbird.com",
+            "nickName": "guest",
+            "imageUrl": ""
+        } 
+    }*/
+    try {
+        const { userId } = request.body;
+
+        const userInfo = await userService.getUserInfo(userId);
+
+        response.status(200).json(userInfo);
     } catch (error) {
         next(error);
     }
@@ -389,4 +460,5 @@ export default {
     userSecession,
     planValidation,
     bookValidation,
+    getUserInfo,
 };

@@ -86,10 +86,14 @@ class RecordController {
         /*  #swagger.responses[200] = {
             description: '월간 달성률',
             schema: {
-                "record": {
+                "trophy": {
+                    "recordTrophy": 1,
+                    "planTrophy": 3
+                },
+                "record": [{
                     "date": "2023-12-25",
                     "achievementStatus": "failed"                    
-                }
+                }]
             }
         }*/
         /*  #swagger.responses[400] = {
@@ -99,16 +103,22 @@ class RecordController {
             const { userId } = request.body;
             const { date } = request.query;
 
-            console.log(typeof date);
-
             const getRecordByMonth = await this.recordService.getRecordByMonth(
                 userId,
                 String(date),
             );
 
+            const countSuccessPlan = await this.recordService.countSuccessPlan(
+                userId,
+                String(date),
+            );
+
             response.status(200).json({
-                trophy: "확정 되면 수정하겠습니다.",
-                record: getRecordByMonth,
+                trophy: {
+                    recordTrophy: getRecordByMonth.recordTrophy,
+                    planTrophy: countSuccessPlan,
+                },
+                record: getRecordByMonth.monthRecord,
             });
         } catch (error) {
             next(error);

@@ -1,6 +1,7 @@
 import axios from "axios";
 import UserRepository from "../repositories/user.repository";
 import userRepository from "../repositories/user.repository";
+import getDateFormat from "../../util/setDateFormat";
 
 const signInKakao = async (kakaoToken: String) => {
     const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -22,9 +23,23 @@ const signInKakao = async (kakaoToken: String) => {
 
     //DB에 유저 정보가 없을 경우 유저 정보 등록
     if (!userData) {
+        //회원 가입
         await UserRepository.signUp(email, nickName, imageUrl);
+        //DB 유저 정보 찾기
         const userData = await UserRepository.getUserByEmail(email);
-        return userData;
+
+        const collection: object | any = await userRepository.getCollection(
+            <number>userData?.userId,
+        );
+
+        let obj = {
+            userId: userData?.userId,
+            email: userData?.email,
+            nickName: userData?.nickName,
+            imageUrl: userData?.imageUrl,
+            character: collection,
+        };
+        return obj;
     }
 
     return userData;
@@ -34,22 +49,39 @@ const findGuestData = async () => {
     return UserRepository.findUserById(1);
 };
 
-const getPlanBySuccess = async (userId: number) => {
-    const getPlanBySuccess = await userRepository.getPlanBySuccess(userId);
+const getPlanBySuccess = async (
+    userId: number,
+    page: number,
+    scale: number,
+) => {
+    const getPlanBySuccess = await userRepository.getPlanBySuccess(
+        userId,
+        page,
+        scale,
+    );
 
-    return getPlanBySuccess.map((plan: any) => {
+    const bookList = getPlanBySuccess.rows.map((plan: any) => {
         return {
             planId: plan.planId,
             startDate: plan.startDate,
             endDate: plan.endDate,
-            "Book.bookId": plan["Book.bookId"],
-            "Book.title": plan["Book.title"],
-            "Book.author": plan["Book.author"],
-            "Book.description": plan["Book.description"],
-            "Book.coverImage": plan["Book.coverImage"],
-            "Book.isbn": plan["Book.isbn"],
+            bookId: plan["Book.bookId"],
+            title: plan["Book.title"],
+            author: plan["Book.author"],
+            pubDate: plan["Book.pubDate"],
+            description: plan["Book.description"],
+            coverImage: plan["Book.coverImage"],
+            isbn: plan["Book.isbn"],
+            publisher: plan["Book.publisher"],
+            totalPage: plan["Book.totalPage"],
         };
     });
+
+    return {
+        totalCount: getPlanBySuccess.count,
+        totalPage: Math.ceil(getPlanBySuccess.count / scale),
+        bookList,
+    };
 };
 
 const deleteAllPlan = async (userId: number) => {
@@ -57,10 +89,12 @@ const deleteAllPlan = async (userId: number) => {
         await userRepository.findAllPlanByUserId(userId);
 
     for (let i = 0; i < findAllPlanByUserId.length; i++) {
-        await userRepository.deletePlan(
-            userId,
-            Number(findAllPlanByUserId[i].planId),
-        );
+        if (findAllPlanByUserId[i].status === "inProgress") {
+            await userRepository.deletePlan(
+                userId,
+                Number(findAllPlanByUserId[i].planId),
+            );
+        }
     }
 };
 
@@ -75,15 +109,10 @@ const restorePlan = async (userId: number, planId: number) => {
     if (findOnePlanById.status !== "delete")
         throw new Error("Bad Request : 삭제 되지 않은 플랜입니다.");
 
-    let status = "success";
+    let status = "inProgress";
 
-    if ((findOnePlanById.currentPage || 0) < findOnePlanById.totalPage) {
-        if (findOnePlanById.endDate < new Date()) {
-            status = "failed";
-        } else {
-            status = "inProgress";
-        }
-    }
+    if (findOnePlanById.endDate < new Date(getDateFormat(new Date())))
+        status = "failed";
 
     const restorePlan = await userRepository.restorePlan(
         userId,
@@ -103,14 +132,18 @@ const findPlanByDelete = async (userId: number) => {
     return findPlanByDelete.map((plan: any) => {
         return {
             planId: plan.planId,
+            planStatus: plan.status,
             startDate: plan.startDate,
             endDate: plan.endDate,
-            "Book.bookId": plan["Book.bookId"],
-            "Book.title": plan["Book.title"],
-            "Book.author": plan["Book.author"],
-            "Book.description": plan["Book.description"],
-            "Book.coverImage": plan["Book.coverImage"],
-            "Book.isbn": plan["Book.isbn"],
+            currentPage: plan.currentPage,
+            totalPage: plan.totalPage,
+            bookId: plan["Book.bookId"],
+            title: plan["Book.title"],
+            author: plan["Book.author"],
+            publisher: plan["Book.publisher"],
+            description: plan["Book.description"],
+            coverImage: plan["Book.coverImage"],
+            isbn: plan["Book.isbn"],
         };
     });
 };
@@ -136,8 +169,15 @@ const planValidation = async (userId: number) => {
     return await userRepository.planValidation(userId);
 };
 
-const bookValidation = async (bookId: number, userId: number) => {
-    return await userRepository.bookValidation(bookId, userId);
+const bookValidation = async (isbn: string, userId: number) => {
+    const bookData = await userRepository.findBookByIsbn(isbn);
+    if (bookData === null) return false;
+
+    return await userRepository.bookValidation(Number(bookData.bookId), userId);
+};
+
+const getUserInfo = async (userId: number) => {
+    return userRepository.findUserById(userId);
 };
 
 export default {
@@ -150,4 +190,5 @@ export default {
     userSecession,
     planValidation,
     bookValidation,
+    getUserInfo,
 };

@@ -13,6 +13,18 @@ class BookRepository {
         page: number,
         scale: number,
     ) => {
+        let searchType = { [type]: { [Op.like]: searchValue } };
+
+        if (type === "all") {
+            searchType = {
+                [Op.or]: {
+                    title: { [Op.like]: searchValue },
+                    author: { [Op.like]: searchValue },
+                    publisher: { [Op.like]: searchValue },
+                },
+            };
+        }
+
         return this.bookModel.findAndCountAll({
             attributes: [
                 "bookId",
@@ -25,9 +37,7 @@ class BookRepository {
                 "totalPage",
                 "coverImage",
             ],
-            where: {
-                [type]: { [Op.like]: searchValue },
-            },
+            where: searchType,
             raw: true,
             offset: (page - 1) * scale,
             limit: Number(scale),

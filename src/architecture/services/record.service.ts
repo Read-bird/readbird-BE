@@ -24,7 +24,7 @@ class RecordService {
         planId: number,
         userId: number,
         status: string,
-        currentPage: number | undefined,
+        currentPage: number,
     ) => {
         const today = getDateFormat(new Date());
 
@@ -44,52 +44,27 @@ class RecordService {
         if (plan.status === "delete")
             throw new Error("Bad Request : 삭제된 플랜입니다.");
 
-        if (plan["records.recordId"] === null) {
-            if (status === "failed")
-                throw new Error(
-                    "Bad Request : 변경 status와 현재 status가 같습니다.",
-                );
+        if (plan["records.status"] !== null)
+            throw new Error("Bad Request : 이미 오늘의 달성을 등록하였습니다.");
 
-            await this.recordRepository.createRecord(
-                userId,
-                planId,
-                today,
-                status,
-            );
-        }
+        await this.recordRepository.createRecord(userId, planId, today, status);
 
-        if (plan["records.recordId"] !== null) {
-            if (status === plan["records.status"])
-                throw new Error(
-                    "Bad Request : 변경 status와 현재 status가 같습니다.",
-                );
-
-            if (status === "failed") {
-                await this.recordRepository.deleteRecord(
-                    plan["records.recordId"],
-                );
-            } else {
-                await this.recordRepository.updateRecord(
-                    plan["records.recordId"],
-                    status,
-                );
-            }
-        }
-
-        const newPage =
-            plan.currentPage + currentPage > plan.totalPage
-                ? plan.totalPage
-                : plan.currentPage + currentPage;
-
-        const updatePlanCurrentPage = status === "failed" ? 0 : newPage;
+        const updateCurrentPage =
+            currentPage >= plan.totalPage ? plan.totalPage : currentPage;
 
         const planStatus =
-            plan.totalPage === updatePlanCurrentPage ? "success" : plan.status;
+            currentPage >= plan.totalPage ? "success" : plan.status;
+
+        const endDate =
+            currentPage >= plan.totalPage
+                ? getDateFormat(new Date())
+                : plan.endDate;
 
         await this.recordRepository.updatePlan(
             planId,
-            updatePlanCurrentPage,
+            updateCurrentPage,
             planStatus,
+            endDate,
         );
 
         const updatedPlan = await this.recordRepository.findOnePlanById(
@@ -98,13 +73,19 @@ class RecordService {
             today,
         );
 
-        let newCharacter = {};
+        let newCharacter;
         let returnMessage = false;
 
-        if (updatedPlan.currentPage >= updatedPlan.totalPage) {
+        if (updatedPlan.status === "success") {
             const NUMBER_CHARACTERS = 16;
+            const NORMAL_CHARACTERS = 12;
+            const EVENT_CHARACTERS = 18;
+
+            const isEvent = new Date() < new Date("2024-02-29");
+
             const userCollection =
                 await this.recordRepository.findOneCollectionByUserId(userId);
+
             if (userCollection === null)
                 throw new Error(
                     "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
@@ -113,39 +94,56 @@ class RecordService {
             let characterId = 0;
             let collectionContents = JSON.parse(userCollection.contents);
 
-            if (collectionContents.length >= 16)
-                throw new Error(
-                    "Bad Request : 더이상 새로운 캐릭터를 얻을 수 없습니다.",
-                );
+            if (
+                collectionContents.length >=
+                (isEvent ? EVENT_CHARACTERS : NORMAL_CHARACTERS)
+            ) {
+                newCharacter = {
+                    message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
+                };
+            } else {
+                while (true) {
+                    const randomNum = Math.floor(
+                        Math.random() *
+                            (isEvent ? EVENT_CHARACTERS : NUMBER_CHARACTERS) +
+                            1,
+                    );
 
-            while (true) {
-                const randomNum = Math.floor(
-                    Math.random() * NUMBER_CHARACTERS + 1,
-                );
+                    if (randomNum < 12 || randomNum > 16) {
+                        const validation = collectionContents.findIndex(
+                            (content: any) => content.characterId === randomNum,
+                        );
 
-                const validation = collectionContents.findIndex(
-                    (content: any) => content.characterId === randomNum,
-                );
-
-                if (validation === -1) {
-                    characterId = randomNum;
-                    break;
+                        if (validation === -1) {
+                            characterId = randomNum;
+                            break;
+                        }
+                    }
                 }
+
+                newCharacter =
+                    await this.recordRepository.findNewCharacter(characterId);
+
+                const updateCollection =
+                    await this.recordRepository.updateCollection(
+                        userId,
+                        JSON.stringify([
+                            ...collectionContents,
+                            {
+                                characterId: newCharacter.characterId,
+                                name: newCharacter.name,
+                                imageUrl: newCharacter.imageUrl,
+                                content: newCharacter.content,
+                                getDate: new Date().toISOString().split("T")[0],
+                            },
+                        ]),
+                    );
+
+                if (!updateCollection)
+                    throw new Error(
+                        "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
+                    );
             }
-
-            newCharacter =
-                await this.recordRepository.findNewCharacter(characterId);
-
-            const updateCollection =
-                await this.recordRepository.updateCollection(
-                    userId,
-                    JSON.stringify([...collectionContents, newCharacter]),
-                );
-
-            if (!updateCollection)
-                throw new Error(
-                    "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
-                );
 
             returnMessage = true;
         }
@@ -167,6 +165,7 @@ class RecordService {
         }
 
         let monthRecord = [];
+        let recordTrophy = 0;
         const monthDateArr = makeMonthArr(new Date(baseDate));
 
         for (let i = 0; i < monthDateArr.length; i++) {
@@ -179,21 +178,30 @@ class RecordService {
                 );
 
             const dateRecord = findAllPlansByDate.map((plan: any) => {
+                if (plan["records.status"] === "success") recordTrophy += 1;
+
                 return plan["records.status"];
             });
 
             if (
                 dateRecord.indexOf("success") !== -1 &&
-                dateRecord.indexOf(null) !== -1
+                (dateRecord.indexOf(null) !== -1 ||
+                    dateRecord.indexOf("failed") !== -1)
             ) {
-                achievementStatus = "unTable";
+                achievementStatus = "unstable";
             } else if (
                 dateRecord.indexOf("success") !== -1 &&
-                !dateRecord.indexOf(null)
+                dateRecord.indexOf(null) === -1 &&
+                dateRecord.indexOf("failed") === -1
             ) {
                 achievementStatus = "success";
-            } else if (new Date() < monthDateArr[i]) {
+            } else if (
+                new Date() < monthDateArr[i] ||
+                dateRecord.length === 0
+            ) {
                 achievementStatus = null;
+            } else if (dateRecord.indexOf("success") === -1) {
+                achievementStatus = "failed";
             }
 
             monthRecord.push({
@@ -202,7 +210,11 @@ class RecordService {
             });
         }
 
-        return monthRecord;
+        return { recordTrophy, monthRecord };
+    };
+
+    countSuccessPlan = async (userId: number, date: string) => {
+        return this.recordRepository.findAllPlanSuccess(userId, date);
     };
 }
 

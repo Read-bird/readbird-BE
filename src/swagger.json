@@ -110,6 +110,22 @@
                         "description": "Authorization",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "검색 할 페이지",
+                        "required": false,
+                        "type": "number",
+                        "default": 1
+                    },
+                    {
+                        "name": "scale",
+                        "in": "query",
+                        "description": "검색 할 도서의 개수",
+                        "required": false,
+                        "type": "number",
+                        "default": 10
                     }
                 ],
                 "responses": {
@@ -332,6 +348,9 @@
                     "200": {
                         "description": "회원 탈퇴 완료"
                     },
+                    "400": {
+                        "description": "잘못된 요청"
+                    },
                     "500": {
                         "description": "내부 서버 오류"
                     }
@@ -369,6 +388,50 @@
                     },
                     "401, 412": {
                         "description": "유저의 정보가 올바르지 않은 경우"
+                    }
+                }
+            }
+        },
+        "/api/user/info": {
+            "get": {
+                "tags": ["User"],
+                "description": "유저 정보 조회",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "유저 정보",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "guest@readbird.com"
+                                },
+                                "nickName": {
+                                    "type": "string",
+                                    "example": "guest"
+                                },
+                                "imageUrl": {
+                                    "type": "string",
+                                    "example": ""
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
                     }
                 }
             }
@@ -412,6 +475,70 @@
                 }
             }
         },
+        "/api/plan/extend": {
+            "post": {
+                "tags": ["Plan"],
+                "description": "플랜을 연장 할 수 있습니다.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "등록 할 플랜의 정보",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "planId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "endDate": {
+                                        "type": "string",
+                                        "example": "2023-12-28"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "플랜 연장 성공",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "planId": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "플랜을 찾을 수 없습니다."
+                                    }
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "값이 알맞게 들어오지 않을 경우"
+                    }
+                }
+            }
+        },
         "/api/plan/": {
             "post": {
                 "tags": ["Plan"],
@@ -444,6 +571,26 @@
                                     "type": "string",
                                     "example": "author"
                                 },
+                                "isbn": {
+                                    "type": "string",
+                                    "example": "isbn"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "description"
+                                },
+                                "publisher": {
+                                    "type": "string",
+                                    "example": "publisher"
+                                },
+                                "pubDate": {
+                                    "type": "string",
+                                    "example": "pubDate"
+                                },
+                                "coverImage": {
+                                    "type": "string",
+                                    "example": "url"
+                                },
                                 "totalPage": {
                                     "type": "number",
                                     "example": 100
@@ -451,10 +598,6 @@
                                 "currentPage": {
                                     "type": "number",
                                     "example": 100
-                                },
-                                "publisher": {
-                                    "type": "string",
-                                    "example": "publisher"
                                 },
                                 "startDate": {
                                     "type": "string",
@@ -676,20 +819,6 @@
                         "description": "Authorization",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "",
-                        "in": "body",
-                        "description": "변경할 종료일",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "endDate": {
-                                    "type": "string",
-                                    "example": "2023-12-25"
-                                }
-                            }
-                        }
                     }
                 ],
                 "responses": {
@@ -857,10 +986,6 @@
                                     "items": {
                                         "type": "object",
                                         "properties": {
-                                            "bookId": {
-                                                "type": "number",
-                                                "example": 1
-                                            },
                                             "title": {
                                                 "type": "string",
                                                 "example": "제3인류 1"
@@ -905,17 +1030,17 @@
                 }
             }
         },
-        "/api/book/{bookId}": {
+        "/api/book/{isbn}": {
             "get": {
                 "tags": ["Book"],
                 "description": "bookId에 해당하는 도서의 상세 데이터를 보여줍니다",
                 "parameters": [
                     {
-                        "name": "bookId",
+                        "name": "isbn",
                         "in": "param",
                         "required": true,
-                        "type": "number",
-                        "description": "북 아이디"
+                        "type": "string",
+                        "description": "북 isbn"
                     },
                     {
                         "name": "Authorization",
@@ -931,10 +1056,6 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "bookId": {
-                                    "type": "number",
-                                    "example": 1
-                                },
                                 "title": {
                                     "type": "string",
                                     "example": "title"
@@ -972,9 +1093,6 @@
                                 "name": "main"
                             }
                         }
-                    },
-                    "400": {
-                        "description": "잘못된 요청"
                     }
                 }
             }
@@ -997,16 +1115,6 @@
                         "description": "YYYY-MM",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "description",
-                        "in": "query",
-                        "type": "string"
-                    },
-                    {
-                        "name": "schema",
-                        "in": "query",
-                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1015,16 +1123,32 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "record": {
+                                "trophy": {
                                     "type": "object",
                                     "properties": {
-                                        "date": {
-                                            "type": "string",
-                                            "example": "2023-12-25"
+                                        "recordTrophy": {
+                                            "type": "number",
+                                            "example": 1
                                         },
-                                        "achievementStatus": {
-                                            "type": "string",
-                                            "example": "failed"
+                                        "planTrophy": {
+                                            "type": "number",
+                                            "example": 3
+                                        }
+                                    }
+                                },
+                                "record": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date": {
+                                                "type": "string",
+                                                "example": "2023-12-25"
+                                            },
+                                            "achievementStatus": {
+                                                "type": "string",
+                                                "example": "failed"
+                                            }
                                         }
                                     }
                                 }
@@ -1213,10 +1337,12 @@
                         }
                     }
                 }
-            },
-            "put": {
+            }
+        },
+        "/api/collection/event": {
+            "get": {
                 "tags": ["Collection"],
-                "description": "새로운 캐릭터를 추가 할 수 있습니다.",
+                "description": "이벤트 캐릭터를 추가 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -1228,7 +1354,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "캐릭터 추가 성공",
+                        "description": "이벤트 캐릭터 추가 성공",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -1247,6 +1373,69 @@
                                 "imageUrl": {
                                     "type": "string",
                                     "example": "https://readbird.s3.ap-northeast-2.amazonaws.com/도감+캐릭터.png"
+                                }
+                            },
+                            "xml": {
+                                "name": "main"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/aladin/popular": {
+            "get": {
+                "tags": ["Book"],
+                "description": "인기 도서 Top 10을 불러올 수 있습니다",
+                "responses": {
+                    "200": {
+                        "description": "도서 검색 성공",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "list": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "bookId": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "제3인류 1"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 지음, 이세욱 옮김"
+                                            },
+                                            "pubDate": {
+                                                "type": "string",
+                                                "example": "2013-10-21"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "베르나르 베르베르 특유의 상상력으로 축조한 장대한 스케일의 과학 소설. 남극. 저명한 고생물학자 샤를 웰즈의 탐사대가 17미터에 달하는 거인의 유골들을 발굴한다. 그러나 인류사를 다시 쓰게 만들 이 중대한 발견은 발굴 현장의 사고와 함께 곧바로 파묻히고 마는데…"
+                                            },
+                                            "isbn": {
+                                                "type": "string",
+                                                "example": "8932916373"
+                                            },
+                                            "publisher": {
+                                                "type": "string",
+                                                "example": "열린책들"
+                                            },
+                                            "totalPage": {
+                                                "type": "number",
+                                                "example": 900
+                                            },
+                                            "coverImage": {
+                                                "type": "string",
+                                                "example": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                                            }
+                                        }
+                                    }
                                 }
                             },
                             "xml": {

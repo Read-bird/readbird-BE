@@ -24,11 +24,15 @@ class PlanController {
             type: "object",
             schema : {
                 planId : 1,
-                title : 'title' || null,
-                author : 'author' || null,
-                totalPage : 100 || null,
+                title : 'title',
+                author : 'author',
+                isbn : "isbn",
+                description : "description",
+                publisher : "publisher",
+                pubDate : "pubDate",
+                coverImage : "url",
+                totalPage : 100,
                 currentPage : 100,
-                publisher : 'publisher',
                 startDate : '2023-12-12',
                 endDate : '2023-12-30'
             }
@@ -39,7 +43,7 @@ class PlanController {
                 planId : 1,
                 title : 'title',
                 author : 'author',
-                coverImage : 'url' || null,
+                coverImage : 'url',
                 totalPage : 100,
                 target : 30,
                 status : 'inProgress'
@@ -141,7 +145,7 @@ class PlanController {
             return response.status(200).json({
                 weedRecord,
                 planData,
-                previouslyFailedPlan: previouslyFailedPlan,
+                previouslyFailedPlan,
             });
         } catch (error) {
             console.error(error);
@@ -235,6 +239,74 @@ class PlanController {
             response
                 .status(200)
                 .json({ message: "플랜 삭제에 성공하였습니다." });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    extendPlan = async (
+        request: Request,
+        response: Response,
+        next: NextFunction,
+    ) => {
+        //  #swagger.description = '플랜을 연장 할 수 있습니다.'
+        //  #swagger.tags = ['Plan']
+        /* #swagger.parameters['Authorization'] = {
+            in: "header",                            
+            description: "Authorization",                   
+            required: true,                     
+            type: "string"         
+        } */
+        /* #swagger.parameters['data'] = {
+            in: "body",                            
+            description: "등록 할 플랜의 정보",                   
+            required: true,                     
+            type: "object",
+            schema : 
+                [
+                    {
+                        planId : 1,
+                        endDate : '2023-12-28'
+                    }
+                ]
+            
+        } */
+        /*  #swagger.responses[201] = {
+            description: '플랜 연장 성공',
+            schema: 
+                [
+                    {
+                        planId : 1,
+                        title : 'title',
+                        author : 'author',
+                        coverImage : 'url',
+                        publisher : 'publisher',
+                        startDate : '2023-12-29',
+                        endDate : '2023-12-29',
+                        currentPage : 200,
+                        totalPage : 300,
+                        target : 3,
+                        status : 'inProgress'
+                    },
+                    {
+                        planId: 2,
+                        message: "플랜을 찾을 수 없습니다.",
+                    }
+                ]
+            
+        }*/
+        /*  #swagger.responses[400] = {
+            description: '값이 알맞게 들어오지 않을 경우',
+        }*/
+        try {
+            const { userId, extendData } = request.body;
+
+            const extendPlans = await this.planService.extendPlan(
+                userId,
+                extendData,
+            );
+
+            response.status(201).json(extendPlans);
         } catch (error) {
             next(error);
         }

@@ -14,6 +14,7 @@ userRouter.put("/plan/delete/:planId", authJWT, userController.restorePlan);
 userRouter.get("/plan/delete", authJWT, userController.findPlanByDelete);
 userRouter.delete("/secession", authJWT, userController.userSecession);
 userRouter.get("/validation", authJWT, userController.planValidation);
-userRouter.get("/:bookId", authJWT, userController.bookValidation);
+userRouter.get("/info", authJWT, userController.getUserInfo);
+userRouter.get("/:isbn", authJWT, userController.bookValidation);
 
 export default userRouter;

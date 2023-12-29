@@ -53,7 +53,6 @@ class BookController {
                 "totalPage": 2,
                 "bookList": [
                     {
-                        "bookId": 1,
                         "title": "제3인류 1",
                         "author": "베르나르 베르베르 지음, 이세욱 옮김",
                         "pubDate": "2013-10-21",
@@ -74,7 +73,7 @@ class BookController {
 
             if (!page || page === null) page = 1;
             if (!scale || scale === null) scale = 10;
-            if (!type || type === null) type = "title";
+            if (!type || type === null) type = "all";
 
             const searchBookList = await this.bookService.searchAllBooks(
                 value,
@@ -105,16 +104,15 @@ class BookController {
             required: true,                     
             type: "string"         
         } */
-        /* #swagger.parameters['bookId'] = {
+        /* #swagger.parameters['isbn'] = {
             in: "param",                            
-            description: "북 아이디",                   
+            description: "북 isbn",                   
             required: true,                     
-            type: "number"         
+            type: "string"         
         } */
         /*  #swagger.responses[200] = {
             description: '도서 검색 성공',
             schema: {
-                "bookId": 1,
                 "title": "title",
                 "author": "author",
                 "pubDate": "2023-12-23",
@@ -126,28 +124,13 @@ class BookController {
             } 
         }*/
         try {
-            const { bookId }: any = req.params;
+            const { isbn }: any = req.params;
 
-            if (!bookId) throw new Error("Bad Request : BookId를 입력해주세요");
-            const book = await this.bookService.getBookDetail(Number(bookId));
+            if (!isbn) throw new Error("Bad Request : BookId를 입력해주세요");
 
-            if (book) {
-                res.status(200).json({
-                    bookId: book.bookId,
-                    title: book.title,
-                    author: book.author,
-                    pubDate: book.pubDate,
-                    description: book.description,
-                    isbn: book.isbn,
-                    publisher: book.publisher,
-                    totalPage: book.totalPage,
-                    coverImage: book.coverImage,
-                });
-            } else {
-                res.status(400).send(
-                    "Bad Request: 요청하신 BookId가 존재 하지 않습니다",
-                );
-            }
+            const book = await this.bookService.getBookDetail(String(isbn));
+
+            res.status(200).json(book);
         } catch (error) {
             next(error);
         }

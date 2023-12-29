@@ -26,7 +26,7 @@ class BookService {
         if (type === "publisher") searchType = "Publisher";
 
         const { data } = await axios.get(
-            `${ALADIN_URL}/ItemSearch.aspx?&ttbkey=${TTBKEY}&Query=${value}&QueryType=${searchType}&Start=${page}&MaxResults=${scale}&SearchTarget=Book&Output=js&Version=20131101`,
+            `${ALADIN_URL}/ItemSearch.aspx?&ttbkey=${TTBKEY}&Query=${value}&QueryType=${searchType}&Start=${page}&MaxResults=${scale}&SearchTarget=Book&Cover=Big&Output=js&Version=20131101`,
         );
 
         let bookList: any = [];

@@ -40,7 +40,8 @@ class PlanService {
                 "Bad Request : 종료일은 시작일보다 빠를 수 없습니다.",
             );
 
-        if (!isbn) throw new Error("Bad Request : isbn이 올바르지 않습니다.");
+        if (isbn === undefined)
+            throw new Error("Bad Request : isbn이 올바르지 않습니다.");
 
         let bookData = await this.planRepository.findOneBook(isbn);
 

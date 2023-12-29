@@ -169,8 +169,11 @@ const planValidation = async (userId: number) => {
     return await userRepository.planValidation(userId);
 };
 
-const bookValidation = async (bookId: number, userId: number) => {
-    return await userRepository.bookValidation(bookId, userId);
+const bookValidation = async (isbn: string, userId: number) => {
+    const bookData = await userRepository.findBookByIsbn(isbn);
+    if (bookData === null) return false;
+
+    return await userRepository.bookValidation(Number(bookData.bookId), userId);
 };
 
 const getUserInfo = async (userId: number) => {

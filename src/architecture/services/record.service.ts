@@ -56,7 +56,10 @@ class RecordService {
 
         if (status === "success" && currentPage >= plan.totalPage)
             planStatus = "success";
-        if (status === "failed" && today === plan.endDate.split("T")[0])
+        if (
+            status === "failed" &&
+            today === new Date(plan.endDate).toISOString().split("T")[0]
+        )
             planStatus = "failed";
 
         const endDate =

@@ -355,7 +355,7 @@ class PlanService {
                 newPlan.currentPage,
             );
 
-            extendData.push = {
+            extendData.push({
                 planId: newPlan.planId,
                 startDate: newPlan.startDate,
                 endDate: newPlan.endDate,
@@ -367,7 +367,7 @@ class PlanService {
                 totalPage: newPlan.totalPage,
                 target,
                 status: newPlan.status,
-            };
+            });
         }
 
         inProgressCount++;

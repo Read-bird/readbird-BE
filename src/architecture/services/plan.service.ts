@@ -344,6 +344,8 @@ class PlanService {
                 oldPlan.currentPage,
             );
 
+            await this.planRepository.restorePlan(extendData[i].planId);
+
             const bookData = await this.planRepository.findOneBook(
                 "bookId",
                 newPlan.bookId,

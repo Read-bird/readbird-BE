@@ -355,7 +355,7 @@ class PlanService {
                 newPlan.currentPage,
             );
 
-            extendData.push({
+            extendPlans.push({
                 planId: newPlan.planId,
                 startDate: newPlan.startDate,
                 endDate: newPlan.endDate,
@@ -372,7 +372,7 @@ class PlanService {
 
         inProgressCount++;
 
-        return extendData;
+        return extendPlans;
     };
 }
 

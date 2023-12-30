@@ -50,6 +50,7 @@ class BookService {
                     coverImage: data.item[i].cover,
                     publisher: data.item[i].publisher,
                     totalPage,
+                    link: data.item[i].link,
                 });
             }
         }

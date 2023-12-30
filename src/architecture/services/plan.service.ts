@@ -21,7 +21,7 @@ class PlanService {
         let bookData = null;
 
         const userInProgressPlan =
-            await this.planRepository.getInProgressPlan(userId);
+            await this.planRepository.getInProgressPlans(userId);
 
         if (userInProgressPlan.length > 2) {
             throw Error("Bad Request : 지금 진행중인 플랜이 3개 이상입니다.");
@@ -96,7 +96,12 @@ class PlanService {
         const { planId } = body;
 
         if (planId) {
-            await this.planRepository.restorePlan(planId);
+            await this.planRepository.updatePlan(
+                planId,
+                userId,
+                "status",
+                "restore",
+            );
         }
 
         return {
@@ -176,12 +181,13 @@ class PlanService {
 
     previouslyFailedPlans = async (userId: number) => {
         const previousPlans =
-            await this.planRepository.getInProgressPlans(userId);
+            await this.planRepository.getPastInProgressPlans(userId);
 
         for (let i = 0; i < previousPlans.length; i++) {
-            await this.planRepository.updateInProgressPlans(
+            await this.planRepository.updatePlan(
                 previousPlans[i].planId,
                 userId,
+                "status",
                 "failed",
             );
         }
@@ -265,7 +271,12 @@ class PlanService {
         if (plan.status === "delete")
             throw new Error("Bad Request : 이미 삭제한 플랜입니다.");
 
-        await this.planRepository.updatePlan(userId, plan.planId, endDate);
+        await this.planRepository.updatePlan(
+            userId,
+            plan.planId,
+            "endDate",
+            endDate,
+        );
 
         const newPlan = await this.planRepository.findOnePlanById(planId);
 
@@ -314,7 +325,7 @@ class PlanService {
         let extendPlans: any = [];
 
         let inProgressCount: number =
-            await this.planRepository.inProgressCount(userId);
+            await this.planRepository.getInProgressCount(userId);
 
         for (let i = 0; i < extendData.length; i++) {
             if (inProgressCount > 2) {
@@ -344,7 +355,12 @@ class PlanService {
                 oldPlan.currentPage,
             );
 
-            await this.planRepository.restorePlan(extendData[i].planId);
+            await this.planRepository.updatePlan(
+                extendData[i].planId,
+                userId,
+                "status",
+                "restore",
+            );
 
             const bookData = await this.planRepository.findOneBook(
                 "bookId",

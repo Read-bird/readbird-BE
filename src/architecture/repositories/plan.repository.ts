@@ -31,25 +31,24 @@ class PlanRepository {
         });
     };
 
-    getInProgressPlan = async (userId: number) => {
-        return this.planModel.findAll({
-            where: {
-                userId,
-                status: "inProgress",
+    findOnePlanById = async (planId: any) => {
+        return this.planModel.findOne({
+            include: {
+                model: this.bookModel,
+                attributes: [
+                    "bookId",
+                    "title",
+                    "author",
+                    "publisher",
+                    "description",
+                    "coverImage",
+                    "isbn",
+                ],
+                required: false,
             },
+            where: { planId },
             raw: true,
         });
-    };
-
-    findOneBook = async (type: string, value: string | number) => {
-        return this.bookModel.findOne({
-            raw: true,
-            where: { [type]: value },
-        });
-    };
-
-    createBook = async (newBook: any) => {
-        return this.bookModel.create(newBook);
     };
 
     getTodayPlans = async (userId: number, baseDate: Date) => {
@@ -94,7 +93,19 @@ class PlanRepository {
         });
     };
 
+    // 유저가 현재 진행중(plan.status = inProgress)인 플랜의 개수
     getInProgressPlans = async (userId: number) => {
+        return this.planModel.findAll({
+            where: {
+                userId,
+                status: "inProgress",
+            },
+            raw: true,
+        });
+    };
+
+    // 종료일(endDate)이 지나버린 진행중(plan.status = inProgress) 플랜
+    getPastInProgressPlans = async (userId: number) => {
         return this.planModel.findAll({
             include: {
                 model: this.bookModel,
@@ -120,13 +131,23 @@ class PlanRepository {
         });
     };
 
-    updateInProgressPlans = async (
+    getInProgressCount = async (userId: number) => {
+        return this.planModel.count({
+            where: {
+                userId,
+                status: "inProgress",
+            },
+        });
+    };
+
+    updatePlan = async (
         planId: number,
         userId: number,
-        status: string,
+        type: string,
+        value: string,
     ) => {
         return this.planModel.update(
-            { status },
+            { [type]: value },
             {
                 where: {
                     userId,
@@ -135,41 +156,6 @@ class PlanRepository {
                 raw: true,
             },
         );
-    };
-
-    updatePlan = async (userId: number, planId: number, endDate: string) => {
-        return this.planModel.update(
-            {
-                endDate,
-            },
-            {
-                where: {
-                    planId,
-                    userId,
-                },
-                raw: true,
-            },
-        );
-    };
-
-    findOnePlanById = async (planId: any) => {
-        return this.planModel.findOne({
-            include: {
-                model: this.bookModel,
-                attributes: [
-                    "bookId",
-                    "title",
-                    "author",
-                    "publisher",
-                    "description",
-                    "coverImage",
-                    "isbn",
-                ],
-                required: false,
-            },
-            where: { planId },
-            raw: true,
-        });
     };
 
     deletePlan = async (userId: number, planId: number) => {
@@ -179,24 +165,15 @@ class PlanRepository {
         );
     };
 
-    restorePlan = async (planId: number) => {
-        return this.planModel.update(
-            {
-                status: "restore",
-            },
-            {
-                where: { planId },
-            },
-        );
+    findOneBook = async (type: string, value: string | number) => {
+        return this.bookModel.findOne({
+            raw: true,
+            where: { [type]: value },
+        });
     };
 
-    inProgressCount = async (userId: number) => {
-        return this.planModel.count({
-            where: {
-                userId,
-                status: "inProgress",
-            },
-        });
+    createBook = async (newBook: any) => {
+        return this.bookModel.create(newBook);
     };
 }
 

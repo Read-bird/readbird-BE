@@ -25,13 +25,6 @@ class CollectionRepository {
         });
     };
 
-    createCollection = async (userId: number, contents: string) => {
-        return this.collectionModel.create({
-            UserUserId: userId,
-            contents,
-        });
-    };
-
     updateCollection = async (userId: number, contents: string) => {
         return this.collectionModel.update(
             {

@@ -57,23 +57,6 @@ class RecordRepository {
         });
     };
 
-    deleteRecord = async (recordId: number) => {
-        return this.recordModel.destroy({
-            where: { recordId },
-        });
-    };
-
-    updateRecord = async (recordId: number, status: string) => {
-        return this.recordModel.update(
-            {
-                status,
-            },
-            {
-                where: { recordId },
-            },
-        );
-    };
-
     updatePlan = async (
         planId: number,
         currentPage: number,

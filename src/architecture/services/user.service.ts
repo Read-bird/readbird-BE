@@ -84,20 +84,6 @@ const getPlanBySuccess = async (
     };
 };
 
-const deleteAllPlan = async (userId: number) => {
-    const findAllPlanByUserId =
-        await userRepository.findAllPlanByUserId(userId);
-
-    for (let i = 0; i < findAllPlanByUserId.length; i++) {
-        if (findAllPlanByUserId[i].status === "inProgress") {
-            await userRepository.deletePlan(
-                userId,
-                Number(findAllPlanByUserId[i].planId),
-            );
-        }
-    }
-};
-
 const restorePlan = async (userId: number, planId: number) => {
     const findOnePlanById = await userRepository.findOnePlanById(
         userId,
@@ -184,7 +170,6 @@ export default {
     signInKakao,
     findGuestData,
     getPlanBySuccess,
-    deleteAllPlan,
     restorePlan,
     findPlanByDelete,
     userSecession,

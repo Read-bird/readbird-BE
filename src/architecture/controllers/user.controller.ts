@@ -366,7 +366,7 @@ const planValidation = async (
             res.status(200).json({
                 planValidation: true,
             });
-        } else if (result === 3) {
+        } else if (result > 2) {
             res.status(200).json({
                 planValidation: false,
             });

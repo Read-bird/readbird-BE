@@ -84,9 +84,16 @@ class RecordService {
         let returnMessage = false;
 
         if (updatedPlan.status === "success") {
-            const NUMBER_CHARACTERS = 16;
-            const NORMAL_CHARACTERS = 12;
-            const EVENT_CHARACTERS = 18;
+            const NORMAL_CHARACTER_KEY_ARR = [
+                2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+            ];
+            const EVENT_CHARACTERS_KEY_ARR = [
+                ...NORMAL_CHARACTER_KEY_ARR,
+                16,
+                17,
+                18,
+            ];
+            let characterId = 0;
 
             const isEvent = new Date() < new Date("2024-02-29");
 
@@ -98,58 +105,52 @@ class RecordService {
                     "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
                 );
 
-            let characterId = 0;
             let collectionContents = JSON.parse(userCollection.contents);
 
-            if (
-                collectionContents.length >=
-                (isEvent ? EVENT_CHARACTERS : NORMAL_CHARACTERS)
-            ) {
+            const userNotGetCharacterArr = (
+                isEvent ? EVENT_CHARACTERS_KEY_ARR : NORMAL_CHARACTER_KEY_ARR
+            ).filter((characterId) =>
+                collectionContents.findIndex(
+                    (content: any) => content.characterId === characterId,
+                ),
+            );
+
+            if (userNotGetCharacterArr.length) {
                 newCharacter = {
                     message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
                 };
             } else {
                 while (true) {
                     const randomNum = Math.floor(
-                        Math.random() *
-                            (isEvent ? EVENT_CHARACTERS : NUMBER_CHARACTERS) +
-                            1,
+                        Math.random() * userNotGetCharacterArr.length + 1,
                     );
 
-                    if (randomNum < 12 || randomNum > 16) {
-                        const validation = collectionContents.findIndex(
-                            (content: any) => content.characterId === randomNum,
-                        );
+                    const validation = collectionContents.findIndex(
+                        (content: any) => content.characterId === randomNum,
+                    );
 
-                        if (validation === -1) {
-                            characterId = randomNum;
-                            break;
-                        }
+                    if (validation === -1) {
+                        characterId = randomNum;
+                        break;
                     }
                 }
 
                 newCharacter =
                     await this.recordRepository.findNewCharacter(characterId);
 
-                const updateCollection =
-                    await this.recordRepository.updateCollection(
-                        userId,
-                        JSON.stringify([
-                            ...collectionContents,
-                            {
-                                characterId: newCharacter.characterId,
-                                name: newCharacter.name,
-                                imageUrl: newCharacter.imageUrl,
-                                content: newCharacter.content,
-                                getDate: new Date().toISOString().split("T")[0],
-                            },
-                        ]),
-                    );
-
-                if (!updateCollection)
-                    throw new Error(
-                        "Server Error : 업데이트에 실패하였습니다. 다시 시도해주세요.",
-                    );
+                await this.recordRepository.updateCollection(
+                    userId,
+                    JSON.stringify([
+                        ...collectionContents,
+                        {
+                            characterId: newCharacter.characterId,
+                            name: newCharacter.name,
+                            imageUrl: newCharacter.imageUrl,
+                            content: newCharacter.content,
+                            getDate: new Date().toISOString().split("T")[0],
+                        },
+                    ]),
+                );
             }
 
             returnMessage = true;

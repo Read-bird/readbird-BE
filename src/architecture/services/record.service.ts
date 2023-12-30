@@ -52,8 +52,12 @@ class RecordService {
         const updateCurrentPage =
             currentPage >= plan.totalPage ? plan.totalPage : currentPage;
 
-        const planStatus =
-            currentPage >= plan.totalPage ? "success" : plan.status;
+        let planStatus = plan.status;
+
+        if (status === "success" && currentPage >= plan.totalPage)
+            planStatus = "success";
+        if (status === "failed" && today === plan.endDate.split("T")[0])
+            planStatus = "failed";
 
         const endDate =
             currentPage >= plan.totalPage

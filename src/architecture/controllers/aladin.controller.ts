@@ -160,10 +160,9 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
             }
         }
         //db에 존재하지 않을 경우 db에 책 정보를 저장
-        bList = await aladinRepository.popularBook(list);
 
         res.status(200).json({
-            bList,
+            blist: list,
         });
     } catch (error) {
         next(error);

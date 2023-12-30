@@ -2,8 +2,9 @@ import axios from "axios";
 import { Book } from "../../db/models/domain/Tables";
 import BookRepository from "../repositories/book.repository";
 
-const ALADIN_URL: String | undefined = process.env.ALADIN_URL;
-const TTBKEY: String | undefined = process.env.TTBKEY;
+const env = process.env;
+const ALADIN_URL: String | undefined = env.ALADIN_URL;
+const TTBKEY = [env.TTBKEY1, env.TTBKEY2, env.TTBKEY3, env.TTBKEY4];
 
 class BookService {
     bookRepository: BookRepository;
@@ -25,16 +26,21 @@ class BookService {
         if (type === "author") searchType = "Author";
         if (type === "publisher") searchType = "Publisher";
 
+        const keyNum = Math.floor(Math.random() * 4);
+
         const { data } = await axios.get(
-            `${ALADIN_URL}/ItemSearch.aspx?&ttbkey=${TTBKEY}&Query=${value}&QueryType=${searchType}&Start=${page}&MaxResults=${scale}&SearchTarget=Book&Cover=Big&Output=js&Version=20131101`,
+            `${ALADIN_URL}/ItemSearch.aspx?&ttbkey=${TTBKEY[keyNum]}&Query=${value}&QueryType=${searchType}&Start=${page}&MaxResults=${scale}&SearchTarget=Book&Cover=Big&Output=js&Version=20131101`,
         );
 
         let bookList: any = [];
 
+        if (data.errorCode)
+            throw new Error("Aladin Error : 다시 한번 시도해주세요!");
+
         if (data.item) {
             for (let i = 0; i < data.item.length; i++) {
                 const bookData = await axios.get(
-                    `${ALADIN_URL}/ItemLookUp.aspx?ttbkey=${TTBKEY}&ItemId=${data.item[i].isbn}&output=js`,
+                    `${ALADIN_URL}/ItemLookUp.aspx?ttbkey=${TTBKEY[keyNum]}&ItemId=${data.item[i].isbn}&output=js`,
                 );
 
                 const totalPage = bookData.data
@@ -63,9 +69,14 @@ class BookService {
     };
 
     getBookDetail = async (isbn: string) => {
+        const keyNum = Math.floor(Math.random() * 4);
+
         const { data } = await axios.get(
-            `${ALADIN_URL}/ItemLookUp.aspx?ttbkey=${TTBKEY}&ItemId=${isbn}&output=js`,
+            `${ALADIN_URL}/ItemLookUp.aspx?ttbkey=${TTBKEY[keyNum]}&ItemId=${isbn}&output=js`,
         );
+
+        if (data.errorCode)
+            throw new Error("Aladin Error : 다시 한번 시도해주세요!");
 
         const title = data.split(`알라딘 상품정보 - `)[1].split(`\"`)[0];
         const author = data.split(`author\" : \"`)[1].split(`\"`)[0];

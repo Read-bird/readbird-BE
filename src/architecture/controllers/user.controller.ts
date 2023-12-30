@@ -183,36 +183,6 @@ const getPlanBySuccess = async (
     }
 };
 
-const deleteAllPlan = async (
-    request: Request,
-    response: Response,
-    next: NextFunction,
-) => {
-    //  #swagger.description = '모든 플랜을 삭제합니다.'
-    //  #swagger.tags = ['MyPage']
-    /* #swagger.parameters['Authorization'] = {
-        in: "header",                            
-        description: "Authorization",                   
-        required: true,                     
-        type: "string"         
-    } */
-    /*  #swagger.responses[200] = {
-        description: '삭제 성공 여부',
-        schema: {
-            "message": "모든 플랜을 삭제하였습니다."
-        }
-    }*/
-    try {
-        const { userId } = request.body;
-
-        await userService.deleteAllPlan(userId);
-
-        response.status(200).json({ message: "모든 플랜을 삭제하였습니다." });
-    } catch (error) {
-        next(error);
-    }
-};
-
 const restorePlan = async (
     request: Request,
     response: Response,
@@ -454,7 +424,6 @@ export default {
     signInKakao,
     signInGuest,
     getPlanBySuccess,
-    deleteAllPlan,
     restorePlan,
     findPlanByDelete,
     userSecession,

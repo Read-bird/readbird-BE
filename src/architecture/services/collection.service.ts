@@ -12,29 +12,6 @@ class BookService {
         );
     }
 
-    createCollection = async (userId: number) => {
-        const NEW_CHARACTER_ID = 1;
-
-        const currentCollection =
-            await this.collectionRepository.findOneCollectionByUserId(userId);
-
-        if (currentCollection)
-            throw new Error(
-                "Bad Request : 이미 첫번째 캐릭터를 얻은 유저입니다.",
-            );
-
-        const newCollection =
-            await this.collectionRepository.findNewCharacter(NEW_CHARACTER_ID);
-
-        const createCollection =
-            await this.collectionRepository.createCollection(
-                userId,
-                JSON.stringify([newCollection]),
-            );
-
-        return JSON.parse(createCollection.contents);
-    };
-
     getCollection = async (userId: number) => {
         const userCollection =
             await this.collectionRepository.findOneCollectionByUserId(userId);

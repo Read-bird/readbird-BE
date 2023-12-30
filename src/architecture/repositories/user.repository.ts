@@ -95,20 +95,6 @@ const findAllPlanByUserId = async (userId: number) => {
     });
 };
 
-const deletePlan = async (userId: number, planId: number) => {
-    return Plan.update(
-        {
-            status: "delete",
-        },
-        {
-            where: {
-                userId,
-                planId,
-            },
-        },
-    );
-};
-
 const findOnePlanById = async (userId: number, planId: number) => {
     return Plan.findOne({
         where: {
@@ -217,7 +203,6 @@ export default {
     findUserById,
     getPlanBySuccess,
     findAllPlanByUserId,
-    deletePlan,
     findOnePlanById,
     restorePlan,
     findPlanByDelete,

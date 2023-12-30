@@ -60,7 +60,8 @@ class BookController {
                         "isbn": "8932916373",
                         "publisher": "열린책들",
                         "totalPage": 900,
-                        "coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg"
+                        "coverImage": "http://image.aladin.co.kr/product/3213/68/coversum/8932916373_2.jpg",
+                        "list": "url"
                     }
                 ]
             } 

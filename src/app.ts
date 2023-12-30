@@ -1,6 +1,7 @@
 require("dotenv").config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import helmet from "helmet";
 import sequelize from "./db/models";
 import router from "./routers/index";
 
@@ -18,6 +19,8 @@ const corsOption = {
 app.use(cors(corsOption));
 
 app.use(express.json());
+
+app.use(helmet({ contentSecurityPolicy: false }));
 
 app.listen(PORT, async () => {
     console.log(`App is listening on port ${PORT}!`);
@@ -58,6 +61,8 @@ app.use(
             response.status(400).json({ message: error.message });
         } else if (error.message.includes("Not Found")) {
             response.status(404).json({ message: error.message });
+        } else if (error.message.includes("Aladin Error")) {
+            response.status(500).json({ message: error.message });
         } else {
             console.error(error);
             response.status(500).json({ message: "Server Error" });

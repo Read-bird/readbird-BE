@@ -367,6 +367,7 @@ class PlanService {
                 totalPage: newPlan.totalPage,
                 target,
                 status: newPlan.status,
+                recordStatus: "inProgress",
             });
         }
 

@@ -120,7 +120,8 @@ class RecordService {
                     message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
                 };
             } else {
-                while (true) {
+                let i = 0;
+                while (i === 1000) {
                     const randomNum = Math.floor(
                         Math.random() * userNotGetCharacterArr.length + 1,
                     );
@@ -133,7 +134,14 @@ class RecordService {
                         characterId = randomNum;
                         break;
                     }
+
+                    i++;
                 }
+
+                if (i > 999)
+                    throw new Error(
+                        "While Error : 캐릭터 등록에 실패했습니다. 다시 한번 시도해주세요!",
+                    );
 
                 newCharacter =
                     await this.recordRepository.findNewCharacter(characterId);

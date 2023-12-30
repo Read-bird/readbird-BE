@@ -56,6 +56,7 @@ const popularBook = async (list: any) => {
                 attributes: [
                     "bookId",
                     "title",
+                    "author",
                     "pubDate",
                     "description",
                     "isbn",

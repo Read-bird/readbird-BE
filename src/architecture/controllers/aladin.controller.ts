@@ -151,6 +151,7 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                         coverImage: sublist.cover,
                         publisher: sublist.publisher,
                         totalPage: totalPage.join(", "),
+                        link: sublist.link,
                     };
                     list.push(obj);
                 }

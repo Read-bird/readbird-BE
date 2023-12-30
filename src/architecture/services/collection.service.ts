@@ -106,28 +106,11 @@ class BookService {
                 message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
             };
         } else {
-            let i = 0;
-            while (i === 1000) {
-                const randomNum = Math.floor(
-                    Math.random() * userNotGetCharacterArr.length + 1,
-                );
+            const randomNum = Math.floor(
+                Math.random() * userNotGetCharacterArr.length + 1,
+            );
 
-                const validation = collectionContents.findIndex(
-                    (content: any) => content.characterId === randomNum,
-                );
-
-                if (validation === -1) {
-                    characterId = randomNum;
-                    break;
-                }
-
-                i++;
-            }
-
-            if (i > 999)
-                throw new Error(
-                    "While Error : 캐릭터 등록에 실패했습니다. 다시 한번 시도해주세요!",
-                );
+            characterId = userNotGetCharacterArr[randomNum - 1];
 
             newCharacter =
                 await this.collectionRepository.findNewCharacter(characterId);

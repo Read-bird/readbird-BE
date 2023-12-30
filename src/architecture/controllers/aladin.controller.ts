@@ -123,7 +123,7 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                 "&QueryType=Bestseller&MaxResults=10&start=1&Cover=Big&SearchTarget=Book&output=js&Version=20131101",
         );
 
-        let blist = [];
+        let bookList = [];
 
         //불러온 책 10개를 순회하여 각 책의 페이지 수를 조회함
         for (const sublist of item) {
@@ -155,7 +155,7 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
                         totalPage: totalPage.join(", "),
                         link: sublist.link,
                     };
-                    blist.push(obj);
+                    bookList.push(obj);
                 }
             } else {
                 console.error("itemLookUpData is not a string:");
@@ -163,9 +163,7 @@ const popularBook = async (req: Request, res: Response, next: NextFunction) => {
         }
         //db에 존재하지 않을 경우 db에 책 정보를 저장
 
-        res.status(200).json({
-            blist,
-        });
+        res.status(200).json(bookList);
     } catch (error) {
         next(error);
     }

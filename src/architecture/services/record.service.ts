@@ -62,10 +62,7 @@ class RecordService {
         )
             planStatus = "failed";
 
-        const endDate =
-            currentPage >= plan.totalPage
-                ? getDateFormat(new Date())
-                : plan.endDate;
+        const endDate = currentPage >= plan.totalPage ? today : plan.endDate;
 
         await this.recordRepository.updatePlan(
             planId,
@@ -81,7 +78,6 @@ class RecordService {
         );
 
         let newCharacter;
-        let returnMessage = false;
 
         if (updatedPlan.status === "success") {
             const NORMAL_CHARACTER_KEY_ARR = [
@@ -143,11 +139,9 @@ class RecordService {
                     ]),
                 );
             }
-
-            returnMessage = true;
         }
 
-        return { returnMessage, newCharacter };
+        return { planStatus: updatedPlan.status, newCharacter };
     };
 
     getRecordByMonth = async (userId: number, date: string) => {

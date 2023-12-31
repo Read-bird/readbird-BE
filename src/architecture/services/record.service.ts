@@ -80,7 +80,18 @@ class RecordService {
             today,
         );
 
-        if (updatedPlan.status === "success") {
+        const thisBookPlans =
+            await this.recordRepository.findAllPlanByUserIdAndbookId(
+                userId,
+                updatedPlan.bookId,
+            );
+
+        if (thisBookPlans.length > 1)
+            newCharacter = {
+                message: "이미 읽은 책이라 새가 부화하지 않았네요!",
+            };
+
+        if (updatedPlan.status === "success" && thisBookPlans.length === 1) {
             const NORMAL_CHARACTER_KEY_ARR = [
                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
             ];

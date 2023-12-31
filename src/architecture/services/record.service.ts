@@ -119,7 +119,7 @@ class RecordService {
             } else {
                 let i = 0;
 
-                while (i === 10000) {
+                while (true) {
                     const randomNum = Math.floor(
                         Math.random() * userNotGetCharacterArr.length,
                     );
@@ -150,6 +150,10 @@ class RecordService {
 
                         break;
                     }
+
+                    if (i === 1000) break;
+
+                    i++;
                 }
             }
         }

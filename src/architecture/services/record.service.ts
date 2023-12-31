@@ -90,6 +90,7 @@ class RecordService {
                 18,
             ];
             let characterId = 0;
+            let newCharacter;
 
             const isEvent = new Date() < new Date("2024-02-29");
 

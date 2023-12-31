@@ -116,28 +116,40 @@ class RecordService {
                     message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
                 };
             } else {
-                const randomNum = Math.floor(
-                    Math.random() * userNotGetCharacterArr.length,
-                );
+                let i = 0;
 
-                characterId = userNotGetCharacterArr[randomNum - 1];
+                while (i === 10000) {
+                    const randomNum = Math.floor(
+                        Math.random() * userNotGetCharacterArr.length,
+                    );
 
-                newCharacter =
-                    await this.recordRepository.findNewCharacter(characterId);
+                    characterId = userNotGetCharacterArr[randomNum];
 
-                await this.recordRepository.updateCollection(
-                    userId,
-                    JSON.stringify([
-                        ...collectionContents,
-                        {
-                            characterId: newCharacter.characterId,
-                            name: newCharacter.name,
-                            imageUrl: newCharacter.imageUrl,
-                            content: newCharacter.content,
-                            getDate: new Date().toISOString().split("T")[0],
-                        },
-                    ]),
-                );
+                    if (characterId !== 1) {
+                        newCharacter =
+                            await this.recordRepository.findNewCharacter(
+                                characterId,
+                            );
+
+                        await this.recordRepository.updateCollection(
+                            userId,
+                            JSON.stringify([
+                                ...collectionContents,
+                                {
+                                    characterId: newCharacter.characterId,
+                                    name: newCharacter.name,
+                                    imageUrl: newCharacter.imageUrl,
+                                    content: newCharacter.content,
+                                    getDate: new Date()
+                                        .toISOString()
+                                        .split("T")[0],
+                                },
+                            ]),
+                        );
+
+                        break;
+                    }
+                }
             }
         }
 

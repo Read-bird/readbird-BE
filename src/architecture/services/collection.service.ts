@@ -68,6 +68,70 @@ class BookService {
 
         return eventCharacter;
     };
+
+    getNewCharacter = async (userId: number) => {
+        let newCharacter;
+
+        const NORMAL_CHARACTER_KEY_ARR = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        const EVENT_CHARACTERS_KEY_ARR = [
+            ...NORMAL_CHARACTER_KEY_ARR,
+            16,
+            17,
+            18,
+        ];
+        let characterId = 0;
+
+        const isEvent = new Date() < new Date("2024-02-29");
+
+        const userCollection =
+            await this.collectionRepository.findOneCollectionByUserId(userId);
+
+        if (userCollection === null)
+            throw new Error(
+                "Bad Request : 아직 첫 캐릭터를 얻지 않았습니다. 확인이 필요합니다.",
+            );
+
+        let collectionContents = JSON.parse(userCollection.contents);
+
+        const userNotGetCharacterArr = (
+            isEvent ? EVENT_CHARACTERS_KEY_ARR : NORMAL_CHARACTER_KEY_ARR
+        ).filter((characterId) =>
+            collectionContents.findIndex(
+                (content: any) => content.characterId === characterId,
+            ),
+        );
+
+        if (userNotGetCharacterArr.length) {
+            newCharacter = {
+                message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
+            };
+        } else {
+            const randomNum = Math.floor(
+                Math.random() * userNotGetCharacterArr.length + 1,
+            );
+
+            characterId = userNotGetCharacterArr[randomNum - 1];
+
+            newCharacter =
+                await this.collectionRepository.findNewCharacter(characterId);
+
+            await this.collectionRepository.updateCollection(
+                userId,
+                JSON.stringify([
+                    ...collectionContents,
+                    {
+                        characterId: newCharacter.characterId,
+                        name: newCharacter.name,
+                        imageUrl: newCharacter.imageUrl,
+                        content: newCharacter.content,
+                        getDate: new Date().toISOString().split("T")[0],
+                    },
+                ]),
+            );
+        }
+
+        return newCharacter;
+    };
 }
 
 export default BookService;

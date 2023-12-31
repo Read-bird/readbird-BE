@@ -28,6 +28,9 @@ class RecordService {
     ) => {
         const today = getDateFormat(new Date());
 
+        let newCharacter;
+        let characterId = 0;
+
         const plan = await this.recordRepository.findOnePlanById(
             planId,
             userId,
@@ -77,8 +80,6 @@ class RecordService {
             today,
         );
 
-        let newCharacter;
-
         if (updatedPlan.status === "success") {
             const NORMAL_CHARACTER_KEY_ARR = [
                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
@@ -89,8 +90,6 @@ class RecordService {
                 17,
                 18,
             ];
-            let characterId = 0;
-            let newCharacter;
 
             const isEvent = new Date() < new Date("2024-02-29");
 

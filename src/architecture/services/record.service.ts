@@ -81,7 +81,7 @@ class RecordService {
         );
 
         const thisBookPlans =
-            await this.recordRepository.findAllPlanByUserIdAndbookId(
+            await this.recordRepository.findAllPlanByUserIdAndBookId(
                 userId,
                 updatedPlan.bookId,
             );

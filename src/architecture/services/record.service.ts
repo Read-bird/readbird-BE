@@ -111,13 +111,13 @@ class RecordService {
                 ),
             );
 
-            if (userNotGetCharacterArr.length) {
+            if (!userNotGetCharacterArr.length) {
                 newCharacter = {
                     message: "더이상 새로운 캐릭터를 얻을 수 없습니다.",
                 };
             } else {
                 const randomNum = Math.floor(
-                    Math.random() * userNotGetCharacterArr.length + 1,
+                    Math.random() * userNotGetCharacterArr.length,
                 );
 
                 characterId = userNotGetCharacterArr[randomNum - 1];

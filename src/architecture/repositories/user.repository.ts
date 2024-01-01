@@ -210,6 +210,14 @@ const findBookByIsbn = async (isbn: string) => {
     });
 };
 
+const getUserByImageUrl = async (userId: any) => {
+    return await User.findOne({
+        attributes: ["imageUrl"],
+        where: {
+            userId: userId,
+        },
+    });
+};
 export default {
     getUserByEmail,
     signUp,
@@ -225,4 +233,5 @@ export default {
     planValidation,
     bookValidation,
     findBookByIsbn,
+    getUserByImageUrl,
 };

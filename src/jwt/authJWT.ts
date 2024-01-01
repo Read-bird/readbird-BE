@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwtUtil from "./jwt-util";
+import userRepository from "../architecture/repositories/user.repository";
 
-export const authJWT = (req: Request, res: Response, next: NextFunction) => {
+export const authJWT = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split("Bearer ")[1];
 
@@ -14,6 +19,13 @@ export const authJWT = (req: Request, res: Response, next: NextFunction) => {
 
         //accessToken 검증
         const result = jwtUtil.verify(token);
+
+        //userId로 imageUrl 조회하여 탈퇴한 회원인지 확인
+        const data: any = await userRepository.getUserByImageUrl(result.userId);
+
+        if (data.imageUrl === "delete") {
+            return res.status(401).send("Unauthorized: 탈퇴한 회원 입니다.");
+        }
 
         //accessToken이 유효하면 result:{"ok":true, "userId": userId} 반환
         if (result.ok) {

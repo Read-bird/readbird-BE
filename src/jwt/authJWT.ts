@@ -14,7 +14,7 @@ export const authJWT = async (
         if (!token) {
             return res
                 .status(401)
-                .send("Unauthorized: 유저의 토큰이 유효하지 않습니다.");
+                .send("Unauthorized: 유저의 토큰이 유효하지 않습니다");
         }
 
         //accessToken 검증

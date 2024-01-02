@@ -6,8 +6,8 @@ import sequelize from "./db/models";
 import router from "./routers/index";
 import swaggerUi from "swagger-ui-express";
 import swaggerJson from "./swagger.json";
-import logger from "./util/winston";
-import morganMiddleware from "./util/morgan";
+import logger from "./util/logger/winston";
+import morganMiddleware from "./util/logger/morgan";
 
 const app: Application = express();
 

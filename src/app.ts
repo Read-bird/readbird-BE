@@ -38,6 +38,8 @@ app.listen(PORT, async () => {
         });
 });
 
+app.use(morgan("combined", { stream }));
+
 app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
 });

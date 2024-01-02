@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import { Options } from "sequelize/types";
+import winston from "winston";
 
 dotenv.config();
 const env = process.env;
@@ -11,7 +12,7 @@ const development: Options = {
     host: env.MYSQL_HOST,
     dialect: "mysql",
     port: 3306,
-    logging: false,
+    logging: winston.debug,
 };
 
 module.exports = development;

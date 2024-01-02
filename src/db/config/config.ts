@@ -11,6 +11,7 @@ const development: Options = {
     host: env.MYSQL_HOST,
     dialect: "mysql",
     port: 3306,
+    logging: false,
 };
 
 module.exports = development;

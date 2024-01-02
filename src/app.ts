@@ -4,6 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import sequelize from "./db/models";
 import router from "./routers/index";
+import morgan from "morgan";
+import { stream } from "./util/winston";
 
 const app: Application = express();
 

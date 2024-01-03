@@ -8,9 +8,9 @@ export const authJWT = async (
     next: NextFunction,
 ) => {
     try {
-        if (req.headers.authorization) {
-            const token = req.headers.authorization.split("Bearer ")[1];
-
+        if (req.headers.Authorization) {
+            const auth: any = req.headers.Authorization;
+            const token = auth.split("Bearer ")[1];
             //"Bearer "가 포함되지 않았을 때
             if (!token) {
                 return res
@@ -20,6 +20,14 @@ export const authJWT = async (
 
             //accessToken 검증
             const result = jwtUtil.verify(token);
+
+            if (!result.ok) {
+                return res
+                    .status(412)
+                    .send(
+                        "Precondition Failed: accessToken이 만료 되었습니다. 토큰 갱신이 필요합니다.",
+                    );
+            }
 
             if (result.userId != 1) {
                 //userId로 imageUrl 조회하여 탈퇴한 회원인지 확인
@@ -35,17 +43,9 @@ export const authJWT = async (
             }
 
             //accessToken이 유효하면 result:{"ok":true, "userId": userId} 반환
-            if (result.ok) {
-                req.body.userId = result.userId;
-                next();
-            } else {
-                return res
-                    .status(412)
-                    .send(
-                        "Precondition Failed: accessToken이 만료 되었습니다. 토큰 갱신이 필요합니다.",
-                    );
-            }
-        } else if (req.headers.authorization == null) {
+            req.body.userId = result.userId;
+            next();
+        } else if (req.headers.Authorization == null) {
             return res
                 .status(400)
                 .send("Bad Request: 토큰이 존재하지 않습니다.");

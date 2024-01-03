@@ -22,8 +22,8 @@ const signInKakao = async (req: Request, res: Response, next: NextFunction) => {
             }
         }*/
     try {
-        const headers = req.headers["authorization"];
-        const kakaoToken: any = headers?.split("Bearer ")[1];
+        const headers: any = req.headers["Authorization"];
+        const kakaoToken = headers?.split("Bearer ")[1];
 
         if (!kakaoToken) {
             return res

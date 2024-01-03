@@ -46,7 +46,6 @@ export const authJWT = async (
             req.body.userId = result.userId;
             next();
         } else if (!req.headers.authorization) {
-            console.log("\n여기::");
             return res
                 .status(400)
                 .send("Bad Request: 토큰이 존재하지 않습니다.");

@@ -4,6 +4,10 @@ import cors from "cors";
 import helmet from "helmet";
 import sequelize from "./db/models";
 import router from "./routers/index";
+import swaggerUi from "swagger-ui-express";
+import swaggerJson from "./swagger.json";
+import logger from "./util/logger/winston";
+import morganMiddleware from "./util/logger/morgan";
 
 const app: Application = express();
 
@@ -40,13 +44,12 @@ app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
 });
 
+//morgan middleware
+app.use(morganMiddleware);
 //index 라우터
 app.use(router);
 
-//swagger
-import swaggerUi from "swagger-ui-express";
-import swaggerJson from "./swagger.json";
-
+// swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 // 서버측 에러 핸들링 부분
@@ -57,6 +60,7 @@ app.use(
         response: Response,
         next: NextFunction,
     ): void => {
+        logger.error(error);
         if (error.message.includes("Bad Request")) {
             response.status(400).json({ message: error.message });
         } else if (error.message.includes("Not Found")) {

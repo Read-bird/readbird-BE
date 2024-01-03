@@ -8,9 +8,9 @@ export const authJWT = async (
     next: NextFunction,
 ) => {
     try {
-        if (req.headers.Authorization) {
-            const auth: any = req.headers.Authorization;
-            const token = auth.split("Bearer ")[1];
+        if (req.headers.authorization) {
+            const token = req.headers.authorization.split("Bearer ")[1];
+
             //"Bearer "가 포함되지 않았을 때
             if (!token) {
                 return res
@@ -45,7 +45,8 @@ export const authJWT = async (
             //accessToken이 유효하면 result:{"ok":true, "userId": userId} 반환
             req.body.userId = result.userId;
             next();
-        } else if (req.headers.Authorization == null) {
+        } else if (!req.headers.authorization) {
+            console.log("\n여기::");
             return res
                 .status(400)
                 .send("Bad Request: 토큰이 존재하지 않습니다.");

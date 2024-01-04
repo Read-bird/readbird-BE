@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "start": "npx tsc && node --max-old-space-size=10000 build/app.js",
         "test": "jest",
         "test:coverage": "jest --coverage",
         "dev": "nodemon",

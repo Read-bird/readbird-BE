@@ -8,6 +8,8 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJson from "./swagger.json";
 import logger from "./util/logger/winston";
 import morganMiddleware from "./util/logger/morgan";
+import cron from "node-cron";
+import googleSheet from "./util/googleSheet/google_sheets";
 
 const app: Application = express();
 
@@ -73,3 +75,8 @@ app.use(
         }
     },
 );
+
+//데이터 업데이트 스케줄링
+cron.schedule("0 2 * * *", async () => {
+    googleSheet();
+});

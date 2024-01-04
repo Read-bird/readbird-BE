@@ -5,7 +5,7 @@ import winston from "winston";
 import winstonDaily from "winston-daily-rotate-file";
 
 // 로그 저장 위치
-const logDir = __dirname + "/../logs";
+const logDir = __dirname + "/../../logs";
 
 if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir);

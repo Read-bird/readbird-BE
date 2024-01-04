@@ -1,0 +1,67 @@
+{
+    "config": {
+        "target": "https://port-0-readbird-be-jvpb2alnj9kv7q.sel5.cloudtype.app",
+        "phases": [
+            {
+                "duration": 30,
+                "arrivalRate": 10
+            }
+        ],
+        "payload": {
+            "path": "./data.csv",
+            "fields": ["date"]
+        }
+    },
+    "scenarios": [
+        {
+            "flow": [
+                {
+                    "post": {
+                        "url": "/api/user/login-guest",
+                        "capture": {
+                            "header": "authorization",
+                            "as": "authorization"
+                        }
+                    }
+                },
+                {
+                    "get": {
+                        "url": "/api/plan?date=2024-01-02",
+                        "herders": {
+                            "authorization": "{{authorization}}"
+                        }
+                    }
+                },
+                {
+                    "post": {
+                        "url": "/api/plan",
+                        "herders": {
+                            "authorization": "{{authorization}}"
+                        },
+                        "json": {
+                            "title": "title",
+                            "author": "author",
+                            "totalPage": 100,
+                            "currentPage": 0,
+                            "publisher": "publisher",
+                            "startDate": "2024-01-04",
+                            "endDate": "2024-12-30"
+                        },
+                        "capture": {
+                            "json": "$.data.planId",
+                            "as": "planId"
+                        }
+                    }
+                },
+                {
+                    "delete": {
+                        "url": "/api/plan/{{planId}}",
+                        "herders": {
+                            "authorization": "Bearer {{authorization}}"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

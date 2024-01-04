@@ -155,6 +155,7 @@ class RecordRepository {
             where: {
                 userId,
                 bookId,
+                status: "success",
             },
             raw: true,
         });

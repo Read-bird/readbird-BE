@@ -16,7 +16,10 @@ const app: Application = express();
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
 const corsOption = {
-    origin: true, //출처 허용 옵션
+    origin: [
+        "https://readbird.swygbro.com/",
+        "https://web-readbird-fe-1gksli2alptgl8rg.sel4.cloudtype.app/",
+    ],
     credentials: true, //사용자 인증이 필요한 리소스 접근
     withCredential: true,
     optionsSuccessStatus: 200,

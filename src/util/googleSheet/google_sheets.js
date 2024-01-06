@@ -56,5 +56,6 @@ export default async function data() {
         };
 
         await sheets.spreadsheets.values.append(request);
+        return;
     }
 }

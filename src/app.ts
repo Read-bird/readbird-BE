@@ -45,6 +45,11 @@ app.listen(PORT, async () => {
         });
 });
 
+//데이터 업데이트 스케줄링
+cron.schedule("0 1 * * *", async () => {
+    googleSheet();
+});
+
 app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
 });
@@ -78,8 +83,3 @@ app.use(
         }
     },
 );
-
-//데이터 업데이트 스케줄링
-cron.schedule("0 2 * * *", async () => {
-    googleSheet();
-});

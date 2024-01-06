@@ -17,8 +17,8 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
 const corsOption = {
     origin: [
-        "https://readbird.swygbro.com/",
-        "https://web-readbird-fe-1gksli2alptgl8rg.sel4.cloudtype.app/",
+        "https://readbird.swygbro.com",
+        "https://web-readbird-fe-1gksli2alptgl8rg.sel4.cloudtype.app",
     ],
     credentials: true, //사용자 인증이 필요한 리소스 접근
     withCredential: true,

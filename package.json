@@ -7,7 +7,7 @@
         "start": "export NODE_OPTIONS=--max-old-space-size=4096 && tsc && node build/app.js",
         "test": "jest",
         "test:coverage": "jest --coverage",
-        "dev": "nodemon",
+        "dev": "export NODE_OPTIONS=--max-old-space-size=4096 && nodemon",
         "db:create": "npx sequelize db:create",
         "db:drop": "npx sequelize db:drop",
         "db:migrate": "./node_modules/.bin/ts-node ./src/db/migrations/migration-all-table.ts",

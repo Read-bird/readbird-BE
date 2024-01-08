@@ -22,15 +22,27 @@
 
 <h1>📚 Skill</h1>
 	<div>
-  	<img src="https://img.shields.io/badge/typescript-3178C6?style=flat&logo=typescript&logoColor=white" />
-  	<img src="https://img.shields.io/badge/nodejs-339933?style=flat&logo=nodedotjs&logoColor=white" />
-  	<img src="https://img.shields.io/badge/express-000000?style=flat&logo=express&logoColor=white" />
-    <img src="https://img.shields.io/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white" />
-    <img src="https://img.shields.io/badge/sequelize-52B0E7?style=flat&logo=sequelize&logoColor=white" />
-    <img src="https://img.shields.io/badge/amazon rds-527FFF?style=flat&logo=amazonrds&logoColor=white" />
-    <img src="https://img.shields.io/badge/jest-C21325?style=flat&logo=jest&logoColor=white" />
-    <img src="https://img.shields.io/badge/swagger-85EA2D?style=flat&logo=swagger&logoColor=white" />
-  </div>
+		<img src="https://img.shields.io/badge/typescript-3178C6?style=flat&logo=typescript&logoColor=white" />
+		<img src="https://img.shields.io/badge/nodejs-339933?style=flat&logo=nodedotjs&logoColor=white" />
+		<img src="https://img.shields.io/badge/express-000000?style=flat&logo=express&logoColor=white" />
+		<img src="https://img.shields.io/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white" />
+		<img src="https://img.shields.io/badge/sequelize-52B0E7?style=flat&logo=sequelize&logoColor=white" />
+		<img src="https://img.shields.io/badge/amazon rds-527FFF?style=flat&logo=amazonrds&logoColor=white" />
+		<img src="https://img.shields.io/badge/redis-DC382D?style=flat&logo=redis&logoColor=white" />
+		<img src="https://img.shields.io/badge/jest-C21325?style=flat&logo=jest&logoColor=white" />
+		<img src="https://img.shields.io/badge/json web tokens-000000?style=flat&logo=jsonwebtokens&logoColor=white" />
+		<img src="https://img.shields.io/badge/axios-5A29E4?style=flat&logo=axios&logoColor=white" />
+		<img src="https://img.shields.io/badge/swagger-85EA2D?style=flat&logo=swagger&logoColor=white" />
+		<img src="https://img.shields.io/badge/eslint-4B32C3?style=flat&logo=eslint&logoColor=white" />
+		<img src="https://img.shields.io/badge/prettier-F7B93E?style=flat&logo=prettier&logoColor=white" />
+		<img src="https://img.shields.io/badge/dotenv-ECD53F?style=flat&logo=dotenv&logoColor=white" />
+		<img src="https://img.shields.io/badge/google apis-4285F4?style=flat&logoColor=white" />
+		<img src="https://img.shields.io/badge/helmet-0F1689?style=flat&logoColor=white" />
+		<img src="https://img.shields.io/badge/morgan-E7157B?style=flat&logoColor=white" />
+		<img src="https://img.shields.io/badge/winston-231F20?style=flat&logoColor=white" />
+		<img src="https://img.shields.io/badge/node-cron-76D04B?style=flat&logoColor=white" />
+		<img src="https://img.shields.io/badge/artillery-E61414?style=flat&logoColor=white" />
+	</div>
   
 <h1>🛠️ Tools</h1>
   <div>
@@ -39,6 +51,15 @@
   	<img src="https://img.shields.io/badge/discord-5865F2?style=flat&logo=discord&logoColor=white" />
     <img src="https://img.shields.io/badge/google sheets-34A853?style=flat&logo=googlesheets&logoColor=white" />
   </div>
+
+<h1>ERD</h1>
+
+![read-bird](https://github.com/Read-bird/readbird-be/assets/77827700/f5ae97c8-850b-497c-adfd-fab305413e11)
+
+<h1>api 명세서</h1>
+
+![스크린샷 2024-01-08 205740](https://github.com/Read-bird/readbird-be/assets/77827700/b3053d7a-55df-4822-ba84-fb0168f3c734)
+![스크린샷 2024-01-08 205919](https://github.com/Read-bird/readbird-be/assets/77827700/a60f1889-afae-4a07-b125-228b94338fb9)
 
 <h1>Trouble Shooting</h1>
 

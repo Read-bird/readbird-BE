@@ -149,6 +149,17 @@ class RecordRepository {
             },
         });
     };
+
+    findAllPlanByUserIdAndBookId = async (userId: number, bookId: number) => {
+        return this.planModel.findAll({
+            where: {
+                userId,
+                bookId,
+                status: "success",
+            },
+            raw: true,
+        });
+    };
 }
 
 export default RecordRepository;

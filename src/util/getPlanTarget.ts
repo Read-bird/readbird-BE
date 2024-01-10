@@ -8,8 +8,8 @@ const getPlanTarget = (
     const today: any = new Date(getDateFormat(new Date()));
 
     if (
-        today.getDate() === endDate.getDate() ||
-        today.getMonth() === endDate.getMonth() ||
+        today.getDate() === endDate.getDate() &&
+        today.getMonth() === endDate.getMonth() &&
         today.getYear() === endDate.getYear()
     ) {
         return totalPage - currentPage;

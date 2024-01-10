@@ -55,9 +55,7 @@ class RecordController {
             );
 
             response.status(200).json({
-                message: changeRecord.returnMessage
-                    ? "plan.status = success"
-                    : "plan.status = inProgress",
+                message: `plan.status = ${changeRecord.planStatus}`,
                 newCharacter: changeRecord.newCharacter,
             });
         } catch (error) {

@@ -4,13 +4,22 @@ import cors from "cors";
 import helmet from "helmet";
 import sequelize from "./db/models";
 import router from "./routers/index";
+import swaggerUi from "swagger-ui-express";
+import swaggerJson from "./swagger.json";
+import logger from "./util/logger/winston";
+import morganMiddleware from "./util/logger/morgan";
+import cron from "node-cron";
+import googleSheet from "./util/googleSheet/google_sheets";
 
 const app: Application = express();
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
 const corsOption = {
-    origin: true, //출처 허용 옵션
+    origin: [
+        "https://readbird.swygbro.com",
+        "https://web-readbird-fe-1gksli2alptgl8rg.sel4.cloudtype.app",
+    ],
     credentials: true, //사용자 인증이 필요한 리소스 접근
     withCredential: true,
     optionsSuccessStatus: 200,
@@ -36,17 +45,21 @@ app.listen(PORT, async () => {
         });
 });
 
+//데이터 업데이트 스케줄링
+cron.schedule("0 1 * * *", async () => {
+    googleSheet();
+});
+
 app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
 });
 
+//morgan middleware
+app.use(morganMiddleware);
 //index 라우터
 app.use(router);
 
-//swagger
-import swaggerUi from "swagger-ui-express";
-import swaggerJson from "./swagger.json";
-
+// swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 // 서버측 에러 핸들링 부분
@@ -57,6 +70,7 @@ app.use(
         response: Response,
         next: NextFunction,
     ): void => {
+        logger.error(error);
         if (error.message.includes("Bad Request")) {
             response.status(400).json({ message: error.message });
         } else if (error.message.includes("Not Found")) {

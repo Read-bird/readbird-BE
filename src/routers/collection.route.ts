@@ -5,6 +5,7 @@ const router: Router = express.Router();
 const collectionController = new CollectionController();
 
 router.get("/", collectionController.getCollection);
+router.get("/new", collectionController.getNewCharacter);
 router.get("/event", collectionController.getEventCharacter);
 
 export default router;

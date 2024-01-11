@@ -1,14 +1,8 @@
 import { Op } from "sequelize";
 import { Plan, Record, User } from "../../db/models/domain/Tables";
-import getDateFormat from "../setDateFormat";
-
-const newDate = new Date();
-export const today = getDateFormat(
-    new Date(newDate.setDate(newDate.getDate() - 1)),
-);
 
 //일간 신규 유입
-export const getTodayNewUser = async () => {
+export const getTodayNewUser = async (today) => {
     return User.count({
         where: {
             createdAt: { [Op.like]: today },
@@ -30,7 +24,7 @@ export const getPlanSuccessPerPlanCreate = async () => {
 };
 
 //(달성 체크한 플랜 개수 / 전체 유저의 진행중 플랜 개수)
-export const getRecordPerInProgressPlan = async () => {
+export const getRecordPerInProgressPlan = async (today) => {
     const inProgressPlan = await Plan.count({
         where: {
             status: "inProgress",

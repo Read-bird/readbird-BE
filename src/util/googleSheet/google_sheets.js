@@ -4,8 +4,8 @@ import {
     getPlanSuccessPerPlanCreate,
     getRecordPerInProgressPlan,
     getTodayNewUser,
-    today,
 } from "./getData";
+import getDateFormat from "../setDateFormat";
 
 export default async function data() {
     const client = new google.auth.JWT(
@@ -22,15 +22,20 @@ export default async function data() {
             updateData(client);
         }
     });
+    const newDate = new Date();
+    const today = getDateFormat(
+        new Date(newDate.setDate(newDate.getDate() - 1)),
+    );
+
     async function updateData(client) {
         const sheets = google.sheets({ version: "v4", auth: client });
         const getToday = today;
-        const todayNewUser = await getTodayNewUser();
+        const todayNewUser = await getTodayNewUser(today);
         const planSuccessPerPlanCreate =
             (await getPlanSuccessPerPlanCreate()) + "%";
         const recordPerInProgressPlan =
             (await getRecordPerInProgressPlan()) + "%";
-        const failedPlanPerPlan = (await getFailedPlanPerPlan()) + "%";
+        const failedPlanPerPlan = (await getFailedPlanPerPlan(today)) + "%";
         const todayData = new Array(
             getToday,
             "개발중",

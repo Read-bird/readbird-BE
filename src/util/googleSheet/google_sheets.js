@@ -3,7 +3,9 @@ import {
     getFailedPlanPerPlan,
     getPlanSuccessPerPlanCreate,
     getRecordPerInProgressPlan,
+    getTodayDAU,
     getTodayNewUser,
+    getTodayTouchPerCreatePlan,
 } from "./getData";
 import getDateFormat from "../setDateFormat";
 
@@ -36,10 +38,14 @@ export default async function data() {
         const recordPerInProgressPlan =
             (await getRecordPerInProgressPlan()) + "%";
         const failedPlanPerPlan = (await getFailedPlanPerPlan(today)) + "%";
+        const getDAU = await getTodayDAU(today);
+        const getTouchPerCreatePlan =
+            (await getTodayTouchPerCreatePlan(today)) + "%";
+
         const todayData = new Array(
             getToday,
-            "개발중",
-            "개발중",
+            getDAU,
+            getTouchPerCreatePlan,
             recordPerInProgressPlan,
             failedPlanPerPlan,
             planSuccessPerPlanCreate,
@@ -52,6 +58,7 @@ export default async function data() {
             insertDataOption: "OVERWRITE",
             resource: { values: new Array(todayData) },
         };
+
         await sheets.spreadsheets.values.append(request);
         return;
     }

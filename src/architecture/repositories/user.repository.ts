@@ -5,6 +5,7 @@ import {
     Plan,
     User,
     Character,
+    DailyData,
 } from "../../db/models/domain/Tables";
 
 const getUserByEmail = async (email: any) => {
@@ -204,6 +205,36 @@ const getUserByImageUrl = async (userId: any) => {
         },
     });
 };
+
+const findOneDailyData = async (today: string) => {
+    return DailyData.findOne({
+        where: {
+            today,
+        },
+    });
+};
+
+const createDailyData = async (today: string) => {
+    return DailyData.create({
+        today,
+        touchedPlanButton: 1,
+        dailyLoginUserList: "[]",
+    });
+};
+
+const updateDailyData = async (today: string, baseValue: number) => {
+    return DailyData.update(
+        {
+            touchedPlanButton: baseValue + 1,
+        },
+        {
+            where: {
+                today,
+            },
+        },
+    );
+};
+
 export default {
     getUserByEmail,
     signUp,
@@ -219,4 +250,7 @@ export default {
     bookValidation,
     findBookByIsbn,
     getUserByImageUrl,
+    findOneDailyData,
+    createDailyData,
+    updateDailyData,
 };

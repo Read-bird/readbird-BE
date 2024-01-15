@@ -332,6 +332,8 @@ const planValidation = async (
 
         if (result === undefined) throw new Error();
 
+        await userService.updateDailyData();
+
         if (0 <= result && result < 3) {
             res.status(200).json({
                 planValidation: true,

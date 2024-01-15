@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwtUtil from "./jwt-util";
 import userRepository from "../architecture/repositories/user.repository";
+import { DailyData } from "../db/models/domain/Tables";
+import getDateFormat from "../util/setDateFormat";
 
 export const authJWT = async (
     req: Request,
@@ -44,6 +46,39 @@ export const authJWT = async (
 
             //accessToken이 유효하면 result:{"ok":true, "userId": userId} 반환
             req.body.userId = result.userId;
+
+            // DAU 체크
+            const todayUserData = await DailyData.findOne({
+                where: {
+                    today: getDateFormat(new Date()),
+                },
+            });
+
+            if (!todayUserData) {
+                await DailyData.create({
+                    today: getDateFormat(new Date()),
+                    touchedPlanButton: 0,
+                    dailyLoginUserList: `[${result.userId}]`,
+                });
+            } else {
+                const userList = JSON.parse(todayUserData.dailyLoginUserList);
+
+                if (userList.indexOf(result.userId) === -1) {
+                    const newDailyLoginUserList = userList.push(result.userId);
+
+                    await DailyData.update(
+                        {
+                            dailyLoginUserList: newDailyLoginUserList,
+                        },
+                        {
+                            where: {
+                                dailyDataId: todayUserData.dailyDataId,
+                            },
+                        },
+                    );
+                }
+            }
+
             next();
         } else if (!req.headers.authorization) {
             return res

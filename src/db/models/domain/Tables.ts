@@ -12,6 +12,7 @@ import { PlanAttributes } from "../interface/Plan.interface";
 import { CharacterAttributes } from "../interface/Character.interface";
 import { RecordAttributes } from "../interface/Record.interface";
 import { CollectionAttributes } from "../interface/Collection.interface";
+import { DailyDataAttributes } from "../interface/DailyData.interface";
 
 // User Class 정의
 export class User extends Model<UserAttributes> {
@@ -116,6 +117,19 @@ export class Collection extends Model<CollectionAttributes> {
     public contents!: string;
 
     public userId!: ForeignKey<User["userId"]>;
+
+    // 생성 날짜, 수정 날짜 자동 생성
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+
+    public static associations: {};
+}
+
+export class DailyData extends Model<DailyDataAttributes> {
+    public readonly dailyDataId?: number;
+    public today!: string;
+    public dailyLoginUserList!: string;
+    public touchedPlanButton!: number;
 
     // 생성 날짜, 수정 날짜 자동 생성
     public readonly createdAt!: Date;
@@ -311,6 +325,34 @@ Collection.init(
         sequelize,
         modelName: "Collection",
         tableName: "Collections",
+        freezeTableName: true,
+    },
+);
+
+DailyData.init(
+    {
+        today: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+        dailyDataId: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        dailyLoginUserList: {
+            type: DataTypes.TEXT("long"),
+            allowNull: true,
+        },
+        touchedPlanButton: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+    },
+    {
+        sequelize,
+        modelName: "DailyData",
+        tableName: "DailyData",
         freezeTableName: true,
     },
 );

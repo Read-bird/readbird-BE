@@ -166,6 +166,21 @@ const getUserInfo = async (userId: number) => {
     return userRepository.findUserById(userId);
 };
 
+const updateDailyData = async () => {
+    const today = getDateFormat(new Date());
+
+    const dailyData = await userRepository.findOneDailyData(today);
+
+    if (!dailyData) {
+        await userRepository.createDailyData(today);
+    } else {
+        await userRepository.updateDailyData(
+            today,
+            dailyData.touchedPlanButton,
+        );
+    }
+};
+
 export default {
     signInKakao,
     findGuestData,
@@ -176,4 +191,5 @@ export default {
     planValidation,
     bookValidation,
     getUserInfo,
+    updateDailyData,
 };

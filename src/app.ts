@@ -43,7 +43,7 @@ app.listen(PORT, async () => {
 });
 
 //데이터 업데이트 스케줄링
-cron.schedule("0 1 * * *", async () => {
+cron.schedule("10 0 * * *", async () => {
     googleSheet();
 });
 

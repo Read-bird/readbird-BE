@@ -58,9 +58,13 @@ export const authJWT = async (
                 await DailyData.create({
                     today: getDateFormat(new Date()),
                     touchedPlanButton: 0,
-                    dailyLoginUserList: `{"list" : [${result.userId}]}`,
+                    dailyLoginUserList: JSON.stringify({
+                        list: [result.userId],
+                    }),
                 });
             } else {
+                console.log(todayUserData.dailyLoginUserList);
+
                 const userList = JSON.parse(
                     todayUserData.dailyLoginUserList,
                 ).list;

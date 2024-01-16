@@ -66,7 +66,7 @@ export const authJWT = async (
                 ).list;
 
                 if (userList.indexOf(result.userId) === -1) {
-                    const newDailyLoginUserList = userList.push(result.userId);
+                    const newDailyLoginUserList = [...userList, result.userId];
 
                     await DailyData.update(
                         {

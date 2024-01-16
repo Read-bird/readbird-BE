@@ -58,19 +58,21 @@ export const authJWT = async (
                 await DailyData.create({
                     today: getDateFormat(new Date()),
                     touchedPlanButton: 0,
-                    dailyLoginUserList: `[${result.userId}]`,
+                    dailyLoginUserList: `{list : [${result.userId}]}`,
                 });
             } else {
-                const userList = JSON.parse(todayUserData.dailyLoginUserList);
+                const userList = JSON.parse(
+                    todayUserData.dailyLoginUserList,
+                ).list;
 
                 if (userList.indexOf(result.userId) === -1) {
                     const newDailyLoginUserList = userList.push(result.userId);
 
                     await DailyData.update(
                         {
-                            dailyLoginUserList: JSON.stringify(
-                                newDailyLoginUserList,
-                            ),
+                            dailyLoginUserList: JSON.stringify({
+                                list: newDailyLoginUserList,
+                            }),
                         },
                         {
                             where: {

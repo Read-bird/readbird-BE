@@ -68,7 +68,9 @@ export const authJWT = async (
 
                     await DailyData.update(
                         {
-                            dailyLoginUserList: newDailyLoginUserList,
+                            dailyLoginUserList: JSON.stringify(
+                                newDailyLoginUserList,
+                            ),
                         },
                         {
                             where: {

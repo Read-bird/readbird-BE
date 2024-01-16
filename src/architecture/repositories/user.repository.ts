@@ -218,7 +218,7 @@ const createDailyData = async (today: string) => {
     return DailyData.create({
         today,
         touchedPlanButton: 1,
-        dailyLoginUserList: "{list : []}",
+        dailyLoginUserList: `{"list" : []}`,
     });
 };
 

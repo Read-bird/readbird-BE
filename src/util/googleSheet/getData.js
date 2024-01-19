@@ -91,7 +91,8 @@ export const getTodayDAU = async (today) => {
     if (!dailyData) {
         return 0;
     } else {
-        return JSON.parse(dailyData.dailyLoginUserList).length();
+        const userList = JSON.parse(dailyData.dailyLoginUserList);
+        return userList.list.length;
     }
 };
 
@@ -116,7 +117,24 @@ export const getTodayTouchPerCreatePlan = async (today) => {
         return 0;
     } else {
         return Math.round(
-            (dailyData.touchedPlanButton / dailyCreatedPlan) * 100,
+            (dailyCreatedPlan / dailyData.touchedPlanButton) * 100,
         ).toFixed(2);
     }
+};
+
+export const getPlanByTodayNewUser = async (today) => {
+    return User.count({
+        include: {
+            model: Plan,
+            required: true,
+            as: "plans",
+        },
+        where: {
+            createdAt: {
+                [Op.gte]: today,
+                [Op.lt]: getDateFormat(new Date()),
+            },
+        },
+        raw: true,
+    });
 };

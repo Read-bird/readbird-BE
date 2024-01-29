@@ -189,7 +189,7 @@ class RecordService {
         const monthDateArr = makeMonthArr(new Date(baseDate));
 
         for (let i = 0; i < monthDateArr.length; i++) {
-            let achievementStatus: string | null = "failed";
+            let achievementStatus: string | null = null;
 
             const findAllPlansByDate =
                 await this.recordRepository.getTodayPlans(

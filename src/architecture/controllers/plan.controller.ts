@@ -193,13 +193,18 @@ class PlanController {
             description: '플랜을 찾을 수 없는 경우',
         }*/
         try {
-            const { userId, endDate }: { userId: number; endDate: string } =
+            const {
+                userId,
+                startDate,
+                endDate,
+            }: { userId: number; startDate: string; endDate: string } =
                 request.body;
             const { planId } = request.params;
 
             const updatePlan = await this.planService.updatePlan(
                 userId,
                 planId,
+                startDate,
                 endDate,
             );
             response.status(200).json(updatePlan);

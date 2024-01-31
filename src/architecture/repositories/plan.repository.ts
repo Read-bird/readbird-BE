@@ -146,14 +146,35 @@ class PlanRepository {
         type: string,
         value: string,
     ) => {
-        return this.planModel.update(
+        await this.planModel.update(
             { [type]: value },
             {
                 where: {
                     userId,
                     planId,
                 },
-                raw: true,
+            },
+        );
+    };
+
+    updateStartDate = async (planId: number, date: string) => {
+        await this.planModel.update(
+            { startDate: date },
+            {
+                where: {
+                    planId,
+                },
+            },
+        );
+    };
+
+    updateEndDate = async (planId: number, date: string) => {
+        await this.planModel.update(
+            { endDate: date },
+            {
+                where: {
+                    planId,
+                },
             },
         );
     };

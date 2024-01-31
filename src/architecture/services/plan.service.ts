@@ -248,7 +248,12 @@ class PlanService {
         return weedPlans;
     };
 
-    updatePlan = async (userId: number, planId: any, endDate: string) => {
+    updatePlan = async (
+        userId: number,
+        planId: any,
+        startDate: string,
+        endDate: string,
+    ) => {
         if (!dateForm.test(endDate)) {
             throw new Error(
                 "Bad Request : 올바르지않은 날짜 형식입니다. 형식은 yyyy-mm-dd 입니다.",
@@ -271,12 +276,11 @@ class PlanService {
         if (plan.status === "delete")
             throw new Error("Bad Request : 이미 삭제한 플랜입니다.");
 
-        await this.planRepository.updatePlan(
-            userId,
-            plan.planId,
-            "endDate",
-            endDate,
-        );
+        if (startDate && plan.startDate > getDateFormat(new Date())) {
+            await this.planRepository.updateStartDate(plan.planId, startDate);
+        }
+
+        await this.planRepository.updateEndDate(plan.planId, endDate);
 
         const newPlan = await this.planRepository.findOnePlanById(planId);
 

@@ -9,7 +9,7 @@ import swaggerJson from "./swagger.json";
 import logger from "./util/logger/winston";
 import morganMiddleware from "./util/logger/morgan";
 import cron from "node-cron";
-import googleSheet from "./util/googleSheet/google_sheets";
+// import googleSheet from "./util/googleSheet/google_sheets";
 
 const app: Application = express();
 
@@ -43,9 +43,9 @@ app.listen(PORT, async () => {
 });
 
 //데이터 업데이트 스케줄링
-cron.schedule("10 0 * * *", async () => {
-    googleSheet();
-});
+// cron.schedule("10 0 * * *", async () => {
+//     googleSheet();
+// });
 
 app.get("/", (request: Request, response: Response) => {
     response.send(`${process.env.PORT}포트로 서버가 열렸습니다.`);
